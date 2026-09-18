@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enscape 360 Virtual Tour</title>
+  <title>Market 360 VR Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -45,7 +45,7 @@
       z-index: 100;
     }
 
-    /* Floor Buttons */
+    /* Floor/Zone Buttons */
     .level-selector { display: flex; gap: 8px; }
 
     .level-btn {
@@ -112,36 +112,35 @@
 </head>
 <body>
 
-  <!-- Google Arts Style Header UI -->
+  <!-- Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Main Lobby</h1>
-      <p id="location-subtitle">Floor 1 • Enscape Architectural View</p>
+      <h1 id="location-title">Central Market Hall</h1>
+      <p id="location-subtitle">Zone 1 • 360 Architectural Panorama</p>
     </div>
   </div>
 
-  <!-- Bottom Control Panel -->
+  <!-- Bottom Navigation Control Panel -->
   <div class="bottom-nav-container">
     <div class="level-selector">
-      <button class="level-btn active" onclick="filterByLevel(1, this)">Floor 1</button>
-      <button class="level-btn" onclick="filterByLevel(2, this)">Floor 2</button>
+      <button class="level-btn active" onclick="filterByLevel(1, this)">Main Hall</button>
+      <button class="level-btn" onclick="filterByLevel(2, this)">Outdoor Arcade</button>
     </div>
 
     <div class="thumbnail-strip" id="thumb-strip">
-      <!-- Generated automatically -->
+      <!-- Generated dynamically -->
     </div>
   </div>
 
   <!-- VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <!-- Preload Panoramas -->
-      <img id="pano-lobby" src="assets/floor1_lobby.jpg">
-      <img id="pano-gallery" src="assets/floor1_gallery.jpg">
-      <img id="pano-ramp" src="assets/floor2_ramp.jpg">
+      <!-- Preloaded Direct 360 Market Panorama (Equirectangular) -->
+      <img id="market-hall" crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Mercado_Central_de_Valencia_360_panorama.jpg">
+      <img id="market-square" crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Market_Square_360_panorama.jpg">
     </a-assets>
 
-    <!-- Camera Controller & Reticle for VR -->
+    <!-- Camera Controller & Gaze Reticle for VR -->
     <a-entity id="cameraRig">
       <a-camera id="camera" look-controls>
         <a-cursor 
@@ -155,52 +154,40 @@
     </a-entity>
 
     <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#pano-lobby" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="#market-hall" rotation="0 -90 0"></a-sky>
 
-    <!-- Ground Nav Marker -->
+    <!-- Street View Ground Hotspot Navigation Marker -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.8 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
-      <a-text value="Walk to Gallery" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-text value="Walk to Market Square" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
 
   <script>
-    // List of Scenes & Navigation Connections
+    // Market Scenes Configuration
     const scenes = [
       { 
-        id: 'pano-lobby', 
-        name: 'Main Lobby', 
+        id: 'market-hall', 
+        name: 'Central Market Hall', 
         level: 1, 
-        src: 'assets/floor1_lobby.jpg', 
-        thumb: 'assets/floor1_lobby_thumb.jpg', 
-        nextTarget: 'pano-gallery', 
-        nextLabel: 'Walk to Gallery', 
+        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Mercado_Central_de_Valencia_360_panorama.jpg', 
+        nextTarget: 'market-square', 
+        nextLabel: 'Walk to Market Square', 
         nextPos: '0 -1.8 -4' 
       },
       { 
-        id: 'pano-gallery', 
-        name: 'Exhibition Gallery', 
-        level: 1, 
-        src: 'assets/floor1_gallery.jpg', 
-        thumb: 'assets/floor1_gallery_thumb.jpg', 
-        nextTarget: 'pano-ramp', 
-        nextLabel: 'Go to Level 2 Ramp', 
-        nextPos: '3 -1.8 -3' 
-      },
-      { 
-        id: 'pano-ramp', 
-        name: 'Upper Level Ramp', 
+        id: 'market-square', 
+        name: 'Outdoor Market Square', 
         level: 2, 
-        src: 'assets/floor2_ramp.jpg', 
-        thumb: 'assets/floor2_ramp_thumb.jpg', 
-        nextTarget: 'pano-lobby', 
-        nextLabel: 'Return to Main Lobby', 
+        src: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Market_Square_360_panorama.jpg', 
+        nextTarget: 'market-hall', 
+        nextLabel: 'Enter Central Hall', 
         nextPos: '0 -1.8 4' 
       }
     ];
 
-    let activeSceneId = 'pano-lobby';
+    let activeSceneId = 'market-hall';
 
     window.onload = () => { renderThumbnails(1); };
 
@@ -216,7 +203,7 @@
         card.onclick = () => loadScene(scene.id);
 
         card.innerHTML = `
-          <img src="${scene.thumb}" alt="${scene.name}">
+          <img src="${scene.src}" alt="${scene.name}">
           <span>${scene.name}</span>
         `;
         container.appendChild(card);
@@ -239,7 +226,7 @@
       sky.setAttribute('src', `#${sceneData.id}`);
 
       document.getElementById('location-title').innerText = sceneData.name;
-      document.getElementById('location-subtitle').innerText = `Floor ${sceneData.level} • Enscape Architectural View`;
+      document.getElementById('location-subtitle').innerText = `Zone ${sceneData.level} • 360 Architectural Panorama`;
 
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
