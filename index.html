@@ -135,9 +135,8 @@
   <!-- VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <!-- Preloaded Direct 360 Market Panorama (Equirectangular) -->
-      <img id="market-hall" crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Mercado_Central_de_Valencia_360_panorama.jpg">
-      <img id="market-square" crossorigin="anonymous" src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Market_Square_360_panorama.jpg">
+      <!-- Preloaded Local Repository Image -->
+      <img id="market-hall" src="market.jpg">
     </a-assets>
 
     <!-- Camera Controller & Gaze Reticle for VR -->
@@ -160,7 +159,7 @@
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.8 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
-      <a-text value="Walk to Market Square" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-text value="Central Market Area" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
 
@@ -171,18 +170,18 @@
         id: 'market-hall', 
         name: 'Central Market Hall', 
         level: 1, 
-        src: 'https://upload.wikimedia.org/wikipedia/commons/6/6f/Mercado_Central_de_Valencia_360_panorama.jpg', 
-        nextTarget: 'market-square', 
-        nextLabel: 'Walk to Market Square', 
+        src: 'market.jpg', 
+        nextTarget: 'market-hall', 
+        nextLabel: 'Central Market Area', 
         nextPos: '0 -1.8 -4' 
       },
       { 
-        id: 'market-square', 
-        name: 'Outdoor Market Square', 
+        id: 'market-hall', 
+        name: 'Outdoor Arcade', 
         level: 2, 
-        src: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Market_Square_360_panorama.jpg', 
+        src: 'market.jpg', 
         nextTarget: 'market-hall', 
-        nextLabel: 'Enter Central Hall', 
+        nextLabel: 'Return to Main Hall', 
         nextPos: '0 -1.8 4' 
       }
     ];
@@ -232,7 +231,6 @@
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
         hotspot.setAttribute('position', sceneData.nextPos);
-        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}')`);
         hotspot.querySelector('a-text').setAttribute('value', sceneData.nextLabel);
       } else {
         hotspot.setAttribute('visible', 'false');
