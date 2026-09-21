@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multi-Floor Market 360 VR Experience</title>
+  <title>Market 360 - Ground Floor Tour</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -48,7 +48,7 @@
 
     .audio-btn:hover { background: #ffffff; color: #111111; }
 
-    /* --- 1. VERTICAL FLOOR SWITCHER (Google Maps Style on Left) --- */
+    /* --- VERTICAL FLOOR ELEVATOR SWITCHER (Left Side) --- */
     .floor-elevator-nav {
       position: absolute;
       top: 90px;
@@ -88,7 +88,7 @@
       box-shadow: 0 0 12px rgba(66, 133, 244, 0.7);
     }
 
-    /* --- 2. INTERACTIVE NAVIGATION MINI-MAP (Bottom Left) --- */
+    /* --- INTERACTIVE NAVIGATION MINI-MAP (Bottom Left) --- */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -124,7 +124,6 @@
       height: 100%;
     }
 
-    /* Architectural layout wireframe for the mini-map */
     .map-blueprint-grid {
       position: absolute;
       inset: 22px 10px 10px 10px;
@@ -178,9 +177,7 @@
       pointer-events: none;
     }
 
-    .bottom-nav-container > * {
-      pointer-events: auto;
-    }
+    .bottom-nav-container > * { pointer-events: auto; }
 
     .thumbnail-strip {
       display: flex;
@@ -227,7 +224,7 @@
 </head>
 <body>
 
-  <!-- Ambient Audio for Terrace/Market -->
+  <!-- Background Ambient Audio -->
   <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
@@ -236,28 +233,27 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Central Plaza Entrance</h1>
-      <p id="location-subtitle">Ground Floor • Architectural 360 View</p>
+      <h1 id="location-title">Modern Market Hall - Main Floor</h1>
+      <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
     </div>
     <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
       <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
     </button>
   </div>
 
-  <!-- 1. VERTICAL FLOOR SWITCHER (Google Maps/Street View Style) -->
+  <!-- 1. VERTICAL FLOOR SWITCHER -->
   <div class="floor-elevator-nav">
-    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Floor 3">3</button>
-    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Floor 2">2</button>
-    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Floor 1">1</button>
+    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
+    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2">2</button>
+    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1">1</button>
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 2. NAVIGATION MINI-MAP (Bottom Left) -->
+  <!-- 2. NAVIGATION MINI-MAP -->
   <div class="minimap-container">
     <div class="minimap-header" id="map-header">Level: Ground</div>
     <div class="minimap-body">
       <div class="map-blueprint-grid"></div>
-      <!-- Interactive Dots Placed Dynamically -->
       <div id="minimap-pins"></div>
     </div>
   </div>
@@ -272,10 +268,13 @@
   <!-- A-Frame VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <img id="market-hall" src="market.jpg">
+      <!-- Ground floor panorama rendered image -->
+      <img id="ground-render" src="ground_floor.jpg">
+      <!-- Fallback image for other floors until you upload them -->
+      <img id="fallback-render" src="market.jpg">
     </a-assets>
 
-    <!-- Camera Controller & Reticle for VR -->
+    <!-- Camera Controller & Reticle for Headsets -->
     <a-entity id="cameraRig">
       <a-camera id="camera" look-controls>
         <a-cursor 
@@ -288,14 +287,14 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#market-hall" rotation="0 -90 0"></a-sky>
+    <!-- 360 Sky Sphere (Starts loaded with ground floor image) -->
+    <a-sky id="sky-sphere" src="#ground-render" rotation="0 -90 0"></a-sky>
 
-    <!-- Ground Hotspot Navigation (Street View Ring Marker) -->
-    <a-entity id="hotspot-navigation" class="clickable" position="0 -1.8 -4" rotation="-90 0 0">
+    <!-- Street View Ground Hotspot Navigation Marker -->
+    <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
-      <a-text value="Walk Forward" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-text value="Explore Column Hall" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
 
@@ -327,96 +326,88 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Multi-Floor Market Database with Map Coordinates (mapX, mapY in percentage)
+    // Multi-Floor Database Configuration
     const scenes = [
-      // Ground Floor (Level 0)
+      // Ground Floor (Uses your uploaded render)
       { 
-        id: 'img-ground-plaza', 
-        name: 'Central Plaza Entrance', 
+        id: 'img-ground-main', 
+        assetId: 'ground-render',
+        name: 'Main Market Hall', 
         floorName: 'Ground Floor',
         floorCode: 'G',
         level: 0, 
-        src: 'market.jpg', 
-        mapX: 35, 
-        mapY: 65,
-        nextTarget: 'img-ground-arcade', 
-        nextLabel: 'Walk to Food Arcade', 
-        nextPos: '0 -1.8 -4' 
+        src: 'ground_floor.jpg', 
+        mapX: 40, 
+        mapY: 60,
+        nextTarget: 'img-ground-col', 
+        nextLabel: 'Walk toward Columns', 
+        nextPos: '2 -1.6 -4' 
       },
       { 
-        id: 'img-ground-arcade', 
-        name: 'Covered Food Arcade', 
+        id: 'img-ground-col', 
+        assetId: 'ground-render',
+        name: 'Column Gallery Walk', 
         floorName: 'Ground Floor',
         floorCode: 'G',
         level: 0, 
-        src: 'market.jpg', 
-        mapX: 68, 
+        src: 'ground_floor.jpg', 
+        mapX: 65, 
         mapY: 45,
-        nextTarget: 'img-ground-plaza', 
-        nextLabel: 'Return to Main Entrance', 
-        nextPos: '0 -1.8 4' 
+        nextTarget: 'img-ground-main', 
+        nextLabel: 'Return to Center', 
+        nextPos: '-2 -1.6 4' 
       },
 
-      // First Floor (Level 1)
+      // Level 1
       { 
-        id: 'img-floor1-atrium', 
-        name: 'First Floor Mezzanine', 
+        id: 'img-floor1', 
+        assetId: 'fallback-render',
+        name: 'Level 1 Retail Mezzanine', 
         floorName: 'First Floor',
         floorCode: '1',
         level: 1, 
         src: 'market.jpg', 
-        mapX: 45, 
-        mapY: 55,
-        nextTarget: 'img-floor1-shops', 
-        nextLabel: 'Walk to Retail Stalls', 
-        nextPos: '3 -1.8 -3' 
-      },
-      { 
-        id: 'img-floor1-shops', 
-        name: 'Artisan Retail Walk', 
-        floorName: 'First Floor',
-        floorCode: '1',
-        level: 1, 
-        src: 'market.jpg', 
-        mapX: 75, 
-        mapY: 35,
-        nextTarget: 'img-floor1-atrium', 
-        nextLabel: 'Back to Mezzanine', 
-        nextPos: '-3 -1.8 3' 
+        mapX: 50, 
+        mapY: 50,
+        nextTarget: 'img-floor1', 
+        nextLabel: 'Retail Corridor', 
+        nextPos: '0 -1.6 -4' 
       },
 
-      // Second Floor (Level 2)
+      // Level 2
       { 
-        id: 'img-floor2-dining', 
-        name: 'Level 2 Food Court', 
+        id: 'img-floor2', 
+        assetId: 'fallback-render',
+        name: 'Level 2 Food & Dining', 
         floorName: 'Second Floor',
         floorCode: '2',
         level: 2, 
         src: 'market.jpg', 
         mapX: 50, 
         mapY: 50,
-        nextTarget: 'img-floor2-dining', 
-        nextLabel: 'Central Seating Area', 
-        nextPos: '0 -1.8 -4' 
+        nextTarget: 'img-floor2', 
+        nextLabel: 'Dining Terrace', 
+        nextPos: '0 -1.6 -4' 
       },
 
-      // Third Floor / Rooftop (Level 3)
+      // Level 3
       { 
-        id: 'img-floor3-terrace', 
-        name: 'Rooftop Garden Market', 
-        floorName: 'Rooftop Deck (Level 3)',
+        id: 'img-floor3', 
+        assetId: 'fallback-render',
+        name: 'Level 3 Rooftop Overlook', 
+        floorName: 'Rooftop Terrace',
         floorCode: '3',
         level: 3, 
         src: 'market.jpg', 
         mapX: 50, 
         mapY: 50,
-        nextTarget: 'img-floor3-terrace', 
-        nextLabel: 'Panoramic Overlook', 
-        nextPos: '0 -1.8 -4' 
+        nextTarget: 'img-ground-main', 
+        nextLabel: 'Elevator to Ground Floor', 
+        nextPos: '0 -1.6 4' 
       }
     ];
 
-    let activeSceneId = 'img-ground-plaza';
+    let activeSceneId = 'img-ground-main';
     let currentFloor = 0;
 
     window.onload = () => { 
@@ -426,7 +417,6 @@
     function switchFloor(floorNum, btnElement) {
       currentFloor = floorNum;
       
-      // Update vertical elevator button active states
       document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -435,7 +425,6 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Automatically select the first scene of that floor
       const firstSceneOfFloor = scenes.find(s => s.level === floorNum);
       if (firstSceneOfFloor) {
         loadScene(firstSceneOfFloor.id);
@@ -445,7 +434,6 @@
     }
 
     function updateFloorUI(level) {
-      // 1. Render Bottom Thumbnails
       const thumbContainer = document.getElementById('thumb-strip');
       thumbContainer.innerHTML = '';
       const filteredScenes = scenes.filter(s => s.level === level);
@@ -462,7 +450,6 @@
         thumbContainer.appendChild(card);
       });
 
-      // 2. Render Mini-map Pins
       const mapContainer = document.getElementById('minimap-pins');
       mapContainer.innerHTML = '';
       document.getElementById('map-header').innerText = `Level: ${filteredScenes[0]?.floorCode || level}`;
@@ -484,7 +471,6 @@
 
       activeSceneId = sceneId;
 
-      // Ensure correct floor button is highlighted if scene jumped floors
       if (sceneData.level !== currentFloor) {
         currentFloor = sceneData.level;
         document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
@@ -492,15 +478,13 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Update Sky Material
+      // Switch 360 sky sphere to the scene's asset
       const sky = document.getElementById('sky-sphere');
-      sky.setAttribute('src', `#market-hall`);
+      sky.setAttribute('src', `#${sceneData.assetId}`);
 
-      // Update Header Text
       document.getElementById('location-title').innerText = sceneData.name;
-      document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 View`;
+      document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // Update Ground Navigation Ring
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
@@ -511,7 +495,6 @@
         hotspot.setAttribute('visible', 'false');
       }
 
-      // Refresh Thumbnails and Minimap Pins
       updateFloorUI(sceneData.level);
     }
   </script>
