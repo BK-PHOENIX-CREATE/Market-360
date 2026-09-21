@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 VR Experience</title>
+  <title>Multi-Floor Market 360 VR Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -66,7 +66,7 @@
       z-index: 100;
     }
 
-    /* Floor/Zone Buttons */
+    /* Floor Buttons */
     .level-selector { display: flex; gap: 8px; }
 
     .level-btn {
@@ -133,43 +133,48 @@
 </head>
 <body>
 
-  <!-- Audio Element (Ambient Mountain Wind) -->
-  <audio id="wind-audio" loop preload="auto" crossorigin="anonymous">
+  <!-- Ambient Audio for Open-air Decks & Terraces -->
+  <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
 
-  <!-- Header UI -->
+  <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Mountain Peak & Market</h1>
-      <p id="location-subtitle">Zone 1 • 360 Architectural Panorama</p>
+      <h1 id="location-title">Central Market Plaza</h1>
+      <p id="location-subtitle">Ground Floor • Architectural 360 View</p>
     </div>
-    <!-- Sound Toggle -->
     <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
-      <span id="sound-icon">🔈</span> <span id="sound-label">Enable Wind Audio</span>
+      <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
     </button>
   </div>
 
-  <!-- Bottom Navigation Control Panel -->
+  <!-- Bottom Floor & Scene Controls -->
   <div class="bottom-nav-container">
     <div class="level-selector">
-      <button class="level-btn active" onclick="filterByLevel(1, this)">Mountain Summit</button>
-      <button class="level-btn" onclick="filterByLevel(2, this)">Market Ridge</button>
+      <button class="level-btn active" onclick="filterByLevel(0, this)">Ground Floor</button>
+      <button class="level-btn" onclick="filterByLevel(1, this)">First Floor</button>
+      <button class="level-btn" onclick="filterByLevel(2, this)">Rooftop Terrace</button>
     </div>
 
     <div class="thumbnail-strip" id="thumb-strip">
-      <!-- Generated dynamically -->
+      <!-- Generated automatically -->
     </div>
   </div>
 
-  <!-- VR Canvas -->
+  <!-- A-Frame VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <img id="market-hall" src="market.jpg">
+      <!-- Enscape Render Assets (Default fallback points to market.jpg) -->
+      <img id="img-ground-plaza" src="market.jpg">
+      <img id="img-ground-arcade" src="market.jpg">
+      <img id="img-floor1-atrium" src="market.jpg">
+      <img id="img-floor1-shops" src="market.jpg">
+      <img id="img-rooftop-market" src="market.jpg">
     </a-assets>
 
-    <!-- Camera Controller & Gaze Reticle for VR -->
+    <!-- Camera Controller & Reticle for Headsets -->
     <a-entity id="cameraRig">
       <a-camera id="camera" look-controls>
         <a-cursor 
@@ -183,19 +188,19 @@
     </a-entity>
 
     <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#market-hall" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="#img-ground-plaza" rotation="0 -90 0"></a-sky>
 
-    <!-- Street View Ground Hotspot Navigation Marker -->
+    <!-- Ground Hotspot Navigation (Street View Ring Marker) -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.8 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
-      <a-text value="Walk along Ridge" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-text value="Walk Forward" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
 
   <script>
     // Audio Player Toggle
-    const audio = document.getElementById('wind-audio');
+    const audio = document.getElementById('ambient-audio');
     const soundBtn = document.getElementById('sound-btn');
     const soundLabel = document.getElementById('sound-label');
     const soundIcon = document.getElementById('sound-icon');
@@ -204,53 +209,86 @@
     function toggleAudio() {
       if (isPlaying) {
         audio.pause();
-        soundLabel.innerText = "Enable Wind Audio";
+        soundLabel.innerText = "Enable Ambience";
         soundIcon.innerText = "🔈";
         isPlaying = false;
       } else {
-        audio.volume = 0.5; // Set volume to 50%
+        audio.volume = 0.4;
         audio.play().then(() => {
-          soundLabel.innerText = "Mute Wind Audio";
+          soundLabel.innerText = "Mute Ambience";
           soundIcon.innerText = "🔊";
           isPlaying = true;
-        }).catch(err => {
-          console.warn("Audio playback waiting for interaction:", err);
-        });
+        }).catch(err => console.warn("Audio waiting for user click:", err));
       }
     }
 
-    // Auto-start audio when user enters VR mode
     document.querySelector('a-scene').addEventListener('enter-vr', () => {
-      if (!isPlaying) {
-        toggleAudio();
-      }
+      if (!isPlaying) toggleAudio();
     });
 
-    // Scene Database
+    // Multi-Floor Market Database
+    // Replace 'market.jpg' with your exported renders (e.g., 'g_plaza.jpg', 'f1_atrium.jpg')
     const scenes = [
+      // Ground Floor (Level 0)
       { 
-        id: 'market-hall', 
-        name: 'Mountain Summit Peak', 
-        level: 1, 
+        id: 'img-ground-plaza', 
+        name: 'Central Plaza Entrance', 
+        floorName: 'Ground Floor',
+        level: 0, 
         src: 'market.jpg', 
-        nextTarget: 'market-hall', 
-        nextLabel: 'Walk along Ridge', 
+        nextTarget: 'img-ground-arcade', 
+        nextLabel: 'Walk to Food Arcade', 
         nextPos: '0 -1.8 -4' 
       },
       { 
-        id: 'market-hall', 
-        name: 'Market Ridge Overlook', 
+        id: 'img-ground-arcade', 
+        name: 'Covered Food Arcade', 
+        floorName: 'Ground Floor',
+        level: 0, 
+        src: 'market.jpg', 
+        nextTarget: 'img-floor1-atrium', 
+        nextLabel: 'Take Escalator to Level 1', 
+        nextPos: '3 -1.8 -3' 
+      },
+
+      // First Floor (Level 1)
+      { 
+        id: 'img-floor1-atrium', 
+        name: 'First Floor Mezzanine', 
+        floorName: 'First Floor',
+        level: 1, 
+        src: 'market.jpg', 
+        nextTarget: 'img-floor1-shops', 
+        nextLabel: 'Browse Retail Stalls', 
+        nextPos: '-3 -1.8 -3' 
+      },
+      { 
+        id: 'img-floor1-shops', 
+        name: 'Artisan Boutique Walk', 
+        floorName: 'First Floor',
+        level: 1, 
+        src: 'market.jpg', 
+        nextTarget: 'img-rooftop-market', 
+        nextLabel: 'Go up to Rooftop Deck', 
+        nextPos: '0 -1.8 -4' 
+      },
+
+      // Rooftop / Terrace (Level 2)
+      { 
+        id: 'img-rooftop-market', 
+        name: 'Open Air Rooftop Market', 
+        floorName: 'Rooftop Terrace',
         level: 2, 
         src: 'market.jpg', 
-        nextTarget: 'market-hall', 
-        nextLabel: 'Return to Summit', 
+        nextTarget: 'img-ground-plaza', 
+        nextLabel: 'Take Elevator to Ground', 
         nextPos: '0 -1.8 4' 
       }
     ];
 
-    let activeSceneId = 'market-hall';
+    let activeSceneId = 'img-ground-plaza';
 
-    window.onload = () => { renderThumbnails(1); };
+    window.onload = () => { renderThumbnails(0); };
 
     function renderThumbnails(level) {
       const container = document.getElementById('thumb-strip');
@@ -283,21 +321,26 @@
 
       activeSceneId = sceneId;
 
+      // Swap Sky Background
       const sky = document.getElementById('sky-sphere');
       sky.setAttribute('src', `#${sceneData.id}`);
 
+      // Update Text Overlay
       document.getElementById('location-title').innerText = sceneData.name;
-      document.getElementById('location-subtitle').innerText = `Zone ${sceneData.level} • 360 Architectural Panorama`;
+      document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 View`;
 
+      // Update Ground Navigation Arrow/Ring
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
         hotspot.setAttribute('position', sceneData.nextPos);
+        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}')`);
         hotspot.querySelector('a-text').setAttribute('value', sceneData.nextLabel);
       } else {
         hotspot.setAttribute('visible', 'false');
       }
 
+      // Refresh thumbnail highlight
       renderThumbnails(sceneData.level);
     }
   </script>
