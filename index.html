@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Ground Floor Tour</title>
+  <title>Market 360 - Multi-Floor Virtual Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -161,7 +161,7 @@
       100% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0); }
     }
 
-    /* Bottom Overlay Navigation (Central Carousel) */
+    /* Bottom Navigation Carousel */
     .bottom-nav-container {
       position: absolute;
       bottom: 0;
@@ -224,7 +224,7 @@
 </head>
 <body>
 
-  <!-- Background Ambient Audio -->
+  <!-- Ambient Audio for Mountain & Market -->
   <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
@@ -241,11 +241,11 @@
     </button>
   </div>
 
-  <!-- 1. VERTICAL FLOOR SWITCHER -->
+  <!-- 1. VERTICAL FLOOR ELEVATOR SWITCHER -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
-    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2">2</button>
-    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1">1</button>
+    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
+    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1 / Exhibition Corridor">1</button>
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
@@ -258,7 +258,7 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation Control Panel -->
+  <!-- Bottom Navigation Carousel -->
   <div class="bottom-nav-container">
     <div class="thumbnail-strip" id="thumb-strip">
       <!-- Generated dynamically -->
@@ -268,13 +268,17 @@
   <!-- A-Frame VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <!-- Ground floor panorama rendered image -->
+      <!-- Ground Floor Render -->
       <img id="ground-render" src="ground_floor.jpg">
-      <!-- Fallback image for other floors until you upload them -->
+      <!-- First Floor Corridor Render -->
+      <img id="floor1-render" src="firstfloorcorridor_1.jpg">
+      <!-- Second Floor Render -->
+      <img id="floor2-render" src="panorama_1.jpg">
+      <!-- Fallback Render -->
       <img id="fallback-render" src="market.jpg">
     </a-assets>
 
-    <!-- Camera Controller & Reticle for Headsets -->
+    <!-- Camera Controller & Reticle for VR -->
     <a-entity id="cameraRig">
       <a-camera id="camera" look-controls>
         <a-cursor 
@@ -287,14 +291,14 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere (Starts loaded with ground floor image) -->
+    <!-- 360 Sky Sphere -->
     <a-sky id="sky-sphere" src="#ground-render" rotation="0 -90 0"></a-sky>
 
-    <!-- Street View Ground Hotspot Navigation Marker -->
+    <!-- Ground Hotspot Navigation Marker -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
-      <a-text value="Explore Column Hall" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-text value="Walk Forward" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
 
@@ -318,7 +322,7 @@
           soundLabel.innerText = "Mute Ambience";
           soundIcon.innerText = "🔊";
           isPlaying = true;
-        }).catch(err => console.warn("Audio waiting for user click:", err));
+        }).catch(err => console.warn("Audio waiting for user interaction:", err));
       }
     }
 
@@ -326,9 +330,9 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Multi-Floor Database Configuration
+    // Multi-Floor Scenes Database
     const scenes = [
-      // Ground Floor (Uses your uploaded render)
+      // Ground Floor (Level 0)
       { 
         id: 'img-ground-main', 
         assetId: 'ground-render',
@@ -339,58 +343,44 @@
         src: 'ground_floor.jpg', 
         mapX: 40, 
         mapY: 60,
-        nextTarget: 'img-ground-col', 
-        nextLabel: 'Walk toward Columns', 
-        nextPos: '2 -1.6 -4' 
-      },
-      { 
-        id: 'img-ground-col', 
-        assetId: 'ground-render',
-        name: 'Column Gallery Walk', 
-        floorName: 'Ground Floor',
-        floorCode: 'G',
-        level: 0, 
-        src: 'ground_floor.jpg', 
-        mapX: 65, 
-        mapY: 45,
-        nextTarget: 'img-ground-main', 
-        nextLabel: 'Return to Center', 
-        nextPos: '-2 -1.6 4' 
+        nextTarget: 'img-floor1-corridor', 
+        nextLabel: 'Go up to Level 1 Corridor', 
+        nextPos: '0 -1.6 -4' 
       },
 
-      // Level 1
+      // Level 1 (First Floor Corridor Render)
       { 
-        id: 'img-floor1', 
-        assetId: 'fallback-render',
-        name: 'Level 1 Retail Mezzanine', 
+        id: 'img-floor1-corridor', 
+        assetId: 'floor1-render',
+        name: 'First Floor Exhibition Corridor', 
         floorName: 'First Floor',
         floorCode: '1',
         level: 1, 
-        src: 'market.jpg', 
+        src: 'firstfloorcorridor_1.jpg', 
         mapX: 50, 
         mapY: 50,
-        nextTarget: 'img-floor1', 
-        nextLabel: 'Retail Corridor', 
+        nextTarget: 'img-floor2-main', 
+        nextLabel: 'Go up to Level 2 Gallery', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 2
+      // Level 2 (Panorama_1 Render)
       { 
-        id: 'img-floor2', 
-        assetId: 'fallback-render',
-        name: 'Level 2 Food & Dining', 
+        id: 'img-floor2-main', 
+        assetId: 'floor2-render',
+        name: '2nd Floor Market Gallery', 
         floorName: 'Second Floor',
         floorCode: '2',
         level: 2, 
-        src: 'market.jpg', 
-        mapX: 50, 
-        mapY: 50,
-        nextTarget: 'img-floor2', 
-        nextLabel: 'Dining Terrace', 
-        nextPos: '0 -1.6 -4' 
+        src: 'panorama_1.jpg', 
+        mapX: 52, 
+        mapY: 48,
+        nextTarget: 'img-floor1-corridor', 
+        nextLabel: 'Down to Level 1 Corridor', 
+        nextPos: '0 -1.6 4' 
       },
 
-      // Level 3
+      // Level 3 (Rooftop Terrace)
       { 
         id: 'img-floor3', 
         assetId: 'fallback-render',
@@ -401,8 +391,8 @@
         src: 'market.jpg', 
         mapX: 50, 
         mapY: 50,
-        nextTarget: 'img-ground-main', 
-        nextLabel: 'Elevator to Ground Floor', 
+        nextTarget: 'img-floor1-corridor', 
+        nextLabel: 'Down to Level 1', 
         nextPos: '0 -1.6 4' 
       }
     ];
