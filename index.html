@@ -69,7 +69,7 @@
       pointer-events: none;
     }
 
-    /* 1. Outer Bokeh Frame Layer (Linked with uppercase .JPG extension) */
+    /* 1. Outer Bokeh Frame Layer */
     .bokeh-background {
       position: absolute;
       inset: -40px;
@@ -434,20 +434,20 @@
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- 1. Outer Bokeh Frame Layer (Linked to market_render.JPG) -->
+    <!-- 1. Outer Bokeh Frame Layer -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- 2. Overall Market Render Viewport (Separate Image: market_render.JPG) -->
+    <!-- 2. Overall Market Render Viewport -->
     <div class="market-render-wrapper">
       <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
       <!-- 3. Curved Rectangle Navigation Button -->
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo (50px by 50px) -->
+    <!-- 4. Bottom Left Corner Logo -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
@@ -482,8 +482,8 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">2nd Floor Market Gallery - Station 1</h1>
-      <p id="location-subtitle">Second Floor • Architectural 360 Panorama</p>
+      <h1 id="location-title">Main Market Hall</h1>
+      <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
     </div>
     <div class="header-controls">
       <button class="back-home-btn" onclick="returnToStartup()">
@@ -498,14 +498,14 @@
   <!-- Vertical Floor Elevator Switcher -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
-    <button class="floor-box-btn active" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
+    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
     <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1 / Exhibition Corridor">1</button>
-    <button class="floor-box-btn" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
+    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
   <!-- Navigation Floor Plan Seeker -->
-  <div class="minimap-container" onclick="toggleFloor2Node()" title="Click to toggle station view">
-    <div class="minimap-header" id="map-header">Level 2 Corridor Plan: Station 1</div>
+  <div class="minimap-container" title="Ground Floor Plan">
+    <div class="minimap-header" id="map-header">Ground Floor Atrium</div>
     <div class="minimap-body">
       <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
     </div>
@@ -540,14 +540,14 @@
     </a-entity>
 
     <!-- 360 Sky Sphere Background -->
-    <a-sky id="sky-sphere" src="panorama_1.jpg" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="ground_floor.jpg" rotation="0 -90 0"></a-sky>
 
     <!-- Navigation Seeker Hotspot -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
       <a-text 
-        value="Walk Forward" 
+        value="Go up to Level 1 Corridor" 
         align="center" 
         position="0 -0.8 0" 
         rotation="90 0 0" 
@@ -604,7 +604,7 @@
     });
 
     const scenes = [
-      // Ground Floor
+      // Ground Floor (Initial Start Point)
       { 
         id: 'img-ground-main', 
         name: 'Main Market Hall', 
@@ -680,11 +680,11 @@
       }
     ];
 
-    let activeSceneId = 'img-floor2-node1';
-    let currentFloor = 2;
+    let activeSceneId = 'img-ground-main';
+    let currentFloor = 0;
 
     window.onload = () => { 
-      loadScene('img-floor2-node1', false);
+      loadScene('img-ground-main', false);
     };
 
     function switchFloor(floorNum, btnElement) {
@@ -704,17 +704,6 @@
         loadScene(firstSceneOfFloor.id, true);
       } else {
         updateFloorUI(floorNum);
-      }
-    }
-
-    function toggleFloor2Node() {
-      if (isTransitioning) return;
-      if (currentFloor === 2) {
-        if (activeSceneId === 'img-floor2-node1') {
-          loadScene('img-floor2-node2', true);
-        } else {
-          loadScene('img-floor2-node1', true);
-        }
       }
     }
 
