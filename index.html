@@ -88,20 +88,22 @@
       box-shadow: 0 0 12px rgba(66, 133, 244, 0.7);
     }
 
-    /* --- INTERACTIVE NAVIGATION MINI-MAP (Bottom Left) --- */
+    /* --- INTERACTIVE NAVIGATION CORRIDOR MAP (Bottom Left) --- */
     .minimap-container {
       position: absolute;
       bottom: 24px;
       left: 24px;
-      width: 170px;
-      height: 130px;
-      background: rgba(20, 20, 20, 0.75);
-      border: 2px solid rgba(255, 255, 255, 0.6);
+      width: 380px;
+      max-width: 45vw;
+      height: 90px;
+      background: rgba(20, 20, 20, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.7);
       border-radius: 10px;
       backdrop-filter: blur(6px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
       z-index: 100;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .minimap-header {
@@ -110,55 +112,31 @@
       left: 0;
       width: 100%;
       padding: 3px 8px;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.65);
       color: #eee;
       font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      z-index: 2;
     }
 
     .minimap-body {
       position: relative;
       width: 100%;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 14px;
     }
 
-    .map-blueprint-grid {
-      position: absolute;
-      inset: 22px 10px 10px 10px;
-      border: 1px dashed rgba(255, 255, 255, 0.25);
-      border-radius: 4px;
-    }
-
-    /* Radar Hotspot Markers on the Map */
-    .map-dot {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #4285F4;
-      border: 2px solid #ffffff;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease;
-    }
-
-    .map-dot:hover {
-      transform: translate(-50%, -50%) scale(1.3);
-      background: #34A853;
-    }
-
-    .map-dot.active {
-      background: #EA4335;
-      box-shadow: 0 0 10px #EA4335;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7); }
-      70% { box-shadow: 0 0 0 10px rgba(234, 67, 53, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(234, 67, 53, 0); }
+    #minimap-img {
+      width: 95%;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
     }
 
     /* Bottom Navigation Carousel */
@@ -183,7 +161,7 @@
       display: flex;
       gap: 12px;
       overflow-x: auto;
-      max-width: 60vw;
+      max-width: 50vw;
       padding-bottom: 6px;
     }
 
@@ -233,8 +211,8 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Modern Market Hall - Main Floor</h1>
-      <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
+      <h1 id="location-title">2nd Floor Market Gallery - Station 1</h1>
+      <p id="location-subtitle">Second Floor • Architectural 360 Panorama</p>
     </div>
     <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
       <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
@@ -244,17 +222,16 @@
   <!-- 1. VERTICAL FLOOR ELEVATOR SWITCHER -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
-    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
+    <button class="floor-box-btn active" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
     <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1 / Exhibition Corridor">1</button>
-    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
+    <button class="floor-box-btn" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 2. NAVIGATION MINI-MAP -->
-  <div class="minimap-container">
-    <div class="minimap-header" id="map-header">Level: Ground</div>
+  <!-- 2. NAVIGATION FLOOR PLAN SEEKER (Bottom Left) -->
+  <div class="minimap-container" onclick="toggleFloor2Node()" title="Click to toggle station view">
+    <div class="minimap-header" id="map-header">Level 2 Corridor Plan: Station 1</div>
     <div class="minimap-body">
-      <div class="map-blueprint-grid"></div>
-      <div id="minimap-pins"></div>
+      <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
     </div>
   </div>
 
@@ -272,8 +249,9 @@
       <img id="ground-render" src="ground_floor.jpg">
       <!-- First Floor Corridor Render -->
       <img id="floor1-render" src="firstfloorcorridor_1.jpg">
-      <!-- Second Floor Render -->
-      <img id="floor2-render" src="panorama_1.jpg">
+      <!-- Second Floor Renders -->
+      <img id="floor2-render-1" src="panorama_1.jpg">
+      <img id="floor2-render-2" src="panorama_2.jpg">
       <!-- Fallback Render -->
       <img id="fallback-render" src="market.jpg">
     </a-assets>
@@ -292,9 +270,9 @@
     </a-entity>
 
     <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#ground-render" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="#floor2-render-1" rotation="0 -90 0"></a-sky>
 
-    <!-- Ground Hotspot Navigation Marker -->
+    <!-- Ground Hotspot Navigation Marker (Walk Seeker) -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
@@ -330,7 +308,7 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Multi-Floor Scenes Database
+    // Multi-Floor Scenes Database with Dynamic Plan Map Assignment
     const scenes = [
       // Ground Floor (Level 0)
       { 
@@ -341,14 +319,14 @@
         floorCode: 'G',
         level: 0, 
         src: 'ground_floor.jpg', 
-        mapX: 40, 
-        mapY: 60,
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Ground Floor Atrium',
         nextTarget: 'img-floor1-corridor', 
         nextLabel: 'Go up to Level 1 Corridor', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 1 (First Floor Corridor Render)
+      // Level 1
       { 
         id: 'img-floor1-corridor', 
         assetId: 'floor1-render',
@@ -357,30 +335,46 @@
         floorCode: '1',
         level: 1, 
         src: 'firstfloorcorridor_1.jpg', 
-        mapX: 50, 
-        mapY: 50,
-        nextTarget: 'img-floor2-main', 
-        nextLabel: 'Go up to Level 2 Gallery', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Level 1 Corridor',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Go up to 2nd Floor Gallery', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 2 (Panorama_1 Render)
+      // Level 2 - Node 1 (Station 1)
       { 
-        id: 'img-floor2-main', 
-        assetId: 'floor2-render',
-        name: '2nd Floor Market Gallery', 
+        id: 'img-floor2-node1', 
+        assetId: 'floor2-render-1',
+        name: '2nd Floor Gallery - Station 1', 
         floorName: 'Second Floor',
         floorCode: '2',
         level: 2, 
         src: 'panorama_1.jpg', 
-        mapX: 52, 
-        mapY: 48,
-        nextTarget: 'img-floor1-corridor', 
-        nextLabel: 'Down to Level 1 Corridor', 
-        nextPos: '0 -1.6 4' 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Level 2 Corridor: Station 1',
+        nextTarget: 'img-floor2-node2', 
+        nextLabel: 'Walk down hallway to Station 2', 
+        nextPos: '2.5 -1.4 -4' 
       },
 
-      // Level 3 (Rooftop Terrace)
+      // Level 2 - Node 2 (Station 2)
+      { 
+        id: 'img-floor2-node2', 
+        assetId: 'floor2-render-2',
+        name: '2nd Floor Gallery - Station 2', 
+        floorName: 'Second Floor',
+        floorCode: '2',
+        level: 2, 
+        src: 'panorama_2.jpg', 
+        planImg: 'panorama_2_plan.png',
+        planTitle: 'Level 2 Corridor: Station 2',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Return back to Station 1', 
+        nextPos: '-2.5 -1.4 4' 
+      },
+
+      // Level 3
       { 
         id: 'img-floor3', 
         assetId: 'fallback-render',
@@ -389,19 +383,19 @@
         floorCode: '3',
         level: 3, 
         src: 'market.jpg', 
-        mapX: 50, 
-        mapY: 50,
-        nextTarget: 'img-floor1-corridor', 
-        nextLabel: 'Down to Level 1', 
+        planImg: 'panorama_2_plan.png',
+        planTitle: 'Level 3 Rooftop',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Down to Level 2', 
         nextPos: '0 -1.6 4' 
       }
     ];
 
-    let activeSceneId = 'img-ground-main';
-    let currentFloor = 0;
+    let activeSceneId = 'img-floor2-node1';
+    let currentFloor = 2;
 
     window.onload = () => { 
-      updateFloorUI(0);
+      loadScene('img-floor2-node1');
     };
 
     function switchFloor(floorNum, btnElement) {
@@ -423,6 +417,16 @@
       }
     }
 
+    function toggleFloor2Node() {
+      if (currentFloor === 2) {
+        if (activeSceneId === 'img-floor2-node1') {
+          loadScene('img-floor2-node2');
+        } else {
+          loadScene('img-floor2-node1');
+        }
+      }
+    }
+
     function updateFloorUI(level) {
       const thumbContainer = document.getElementById('thumb-strip');
       thumbContainer.innerHTML = '';
@@ -439,20 +443,6 @@
         `;
         thumbContainer.appendChild(card);
       });
-
-      const mapContainer = document.getElementById('minimap-pins');
-      mapContainer.innerHTML = '';
-      document.getElementById('map-header').innerText = `Level: ${filteredScenes[0]?.floorCode || level}`;
-
-      filteredScenes.forEach(scene => {
-        const dot = document.createElement('div');
-        dot.className = `map-dot ${scene.id === activeSceneId ? 'active' : ''}`;
-        dot.style.left = `${scene.mapX}%`;
-        dot.style.top = `${scene.mapY}%`;
-        dot.title = scene.name;
-        dot.onclick = () => loadScene(scene.id);
-        mapContainer.appendChild(dot);
-      });
     }
 
     function loadScene(sceneId) {
@@ -468,13 +458,21 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Switch 360 sky sphere to the scene's asset
+      // 1. Switch 360 Sky Sphere
       const sky = document.getElementById('sky-sphere');
       sky.setAttribute('src', `#${sceneData.assetId}`);
 
+      // 2. Update Header
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
+      // 3. Update Floor Plan Blueprint Image and Header Label
+      const mapImg = document.getElementById('minimap-img');
+      const mapHeader = document.getElementById('map-header');
+      mapImg.src = sceneData.planImg;
+      mapHeader.innerText = sceneData.planTitle;
+
+      // 4. Update Navigation Hotspot
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
