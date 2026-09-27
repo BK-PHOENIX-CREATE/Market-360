@@ -68,11 +68,11 @@
       pointer-events: none;
     }
 
-    /* 1. Outer Bokeh Frame Layer */
+    /* 1. Outer Bokeh Frame Layer (Takes colors from market render) */
     .bokeh-background {
       position: absolute;
       inset: -40px;
-      background: url('ground_floor.jpg') center/cover no-repeat;
+      background: url('market_render.jpg') center/cover no-repeat;
       filter: blur(35px) brightness(0.65) saturate(1.4);
       transform: scale(1.1);
       z-index: 1;
@@ -97,7 +97,7 @@
       100% { transform: translateY(-40px) scale(1.15); }
     }
 
-    /* 2. Main Market Render Card Container */
+    /* 2. Overall Market Render Card Container */
     .market-render-wrapper {
       position: relative;
       z-index: 3;
@@ -432,20 +432,20 @@
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- 1. Outer Bokeh Frame Layer -->
+    <!-- 1. Outer Bokeh Frame Layer (Linked to market_render.jpg) -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- 2. Overall Market Render Viewport -->
+    <!-- 2. Overall Market Render Viewport (Separate Image: market_render.jpg) -->
     <div class="market-render-wrapper">
-      <img src="ground_floor.jpg" alt="Overall Market Render" class="market-render-image">
+      <img src="market_render.jpg" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
       <!-- 3. Curved Rectangle Navigation Button -->
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo (40px by 40px) -->
+    <!-- 4. Bottom Left Corner Logo -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
