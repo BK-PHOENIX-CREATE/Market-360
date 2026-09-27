@@ -48,7 +48,7 @@
 
     .audio-btn:hover { background: #ffffff; color: #111111; }
 
-    /* --- VERTICAL FLOOR ELEVATOR SWITCHER (Left Side) --- */
+    /* Vertical Floor Elevator Switcher */
     .floor-elevator-nav {
       position: absolute;
       top: 90px;
@@ -88,7 +88,7 @@
       box-shadow: 0 0 12px rgba(66, 133, 244, 0.7);
     }
 
-    /* --- INTERACTIVE NAVIGATION CORRIDOR MAP (Bottom Left) --- */
+    /* Interactive Floor Plan Seeker */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -219,7 +219,7 @@
     </button>
   </div>
 
-  <!-- 1. VERTICAL FLOOR ELEVATOR SWITCHER -->
+  <!-- Vertical Floor Elevator -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
     <button class="floor-box-btn active" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
@@ -227,7 +227,7 @@
     <button class="floor-box-btn" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 2. NAVIGATION FLOOR PLAN (Bottom Left) -->
+  <!-- Floor Plan Container -->
   <div class="minimap-container" onclick="toggleFloor2Node()" title="Click to toggle station view">
     <div class="minimap-header" id="map-header">Level 2 Corridor Plan: Station 1</div>
     <div class="minimap-body">
@@ -235,24 +235,13 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation Carousel -->
+  <!-- Bottom Thumbnails -->
   <div class="bottom-nav-container">
-    <div class="thumbnail-strip" id="thumb-strip">
-      <!-- Generated dynamically -->
-    </div>
+    <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
   <!-- A-Frame VR Canvas -->
-  <a-scene embedded vr-mode-ui="enabled: true">
-    <a-assets>
-      <img id="ground-render" src="ground_floor.jpg">
-      <img id="floor1-render" src="firstfloorcorridor_1.jpg">
-      <img id="floor2-render-1" src="panorama_1.jpg">
-      <img id="floor2-render-2" src="panorama_2.jpg">
-      <img id="fallback-render" src="market.jpg">
-    </a-assets>
-
-    <!-- Camera Controller & Reticle for VR -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
     <a-entity id="cameraRig">
       <a-camera id="camera" look-controls>
         <a-cursor 
@@ -265,10 +254,10 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere -->
+    <!-- Sky entity container -->
     <a-sky id="sky-sphere" src="panorama_1.jpg" rotation="0 -90 0"></a-sky>
 
-    <!-- Ground Hotspot Navigation Marker (Walk Seeker) -->
+    <!-- Navigation Seeker Hotspot -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
@@ -277,7 +266,6 @@
   </a-scene>
 
   <script>
-    // Audio Player Toggle
     const audio = document.getElementById('ambient-audio');
     const soundBtn = document.getElementById('sound-btn');
     const soundLabel = document.getElementById('sound-label');
@@ -296,7 +284,7 @@
           soundLabel.innerText = "Mute Ambience";
           soundIcon.innerText = "🔊";
           isPlaying = true;
-        }).catch(err => console.warn("Audio waiting for user interaction:", err));
+        }).catch(err => console.warn(err));
       }
     }
 
@@ -304,9 +292,7 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Multi-Floor Scenes Database
     const scenes = [
-      // Ground Floor (Level 0)
       { 
         id: 'img-ground-main', 
         name: 'Main Market Hall', 
@@ -317,11 +303,9 @@
         planImg: 'panorama_1_plan.png',
         planTitle: 'Ground Floor Atrium',
         nextTarget: 'img-floor1-corridor', 
-        nextLabel: 'Go up to Level 1 Corridor', 
+        nextLabel: 'Go to Level 1 Corridor', 
         nextPos: '0 -1.6 -4' 
       },
-
-      // Level 1
       { 
         id: 'img-floor1-corridor', 
         name: 'First Floor Exhibition Corridor', 
@@ -335,8 +319,6 @@
         nextLabel: 'Go up to 2nd Floor Gallery', 
         nextPos: '0 -1.6 -4' 
       },
-
-      // Level 2 - Node 1 (Station 1)
       { 
         id: 'img-floor2-node1', 
         name: '2nd Floor Gallery - Station 1', 
@@ -347,11 +329,9 @@
         planImg: 'panorama_1_plan.png',
         planTitle: 'Level 2 Corridor: Station 1',
         nextTarget: 'img-floor2-node2', 
-        nextLabel: 'Walk forward to Station 2', 
+        nextLabel: 'Walk to Station 2', 
         nextPos: '0 -1.4 -4' 
       },
-
-      // Level 2 - Node 2 (Station 2)
       { 
         id: 'img-floor2-node2', 
         name: '2nd Floor Gallery - Station 2', 
@@ -365,15 +345,13 @@
         nextLabel: 'Walk back to Station 1', 
         nextPos: '0 -1.4 4' 
       },
-
-      // Level 3
       { 
         id: 'img-floor3', 
         name: 'Level 3 Rooftop Overlook', 
         floorName: 'Rooftop Terrace',
         floorCode: '3',
         level: 3, 
-        src: 'market.jpg', 
+        src: 'ground_floor.jpg', 
         planImg: 'panorama_2_plan.png',
         planTitle: 'Level 3 Rooftop',
         nextTarget: 'img-floor2-node1', 
@@ -449,28 +427,28 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // 1. Force WebGL 360 Texture Reload via Direct URL
+      // Hard Texture Re-binding (forces WebGL GPU reload)
       const sky = document.getElementById('sky-sphere');
-      sky.setAttribute('material', 'src', sceneData.src);
-      
-      // Force Three.js texture update
-      if (sky.components && sky.components.material && sky.components.material.material) {
-        if (sky.components.material.material.map) {
-          sky.components.material.material.map.needsUpdate = true;
+      const loader = new THREE.TextureLoader();
+      loader.load(sceneData.src, function(texture) {
+        const mesh = sky.getObject3D('mesh');
+        if (mesh) {
+          mesh.material.map = texture;
+          mesh.material.needsUpdate = true;
         }
-      }
+      });
 
-      // 2. Update Header
+      // Update Titles
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // 3. Update Floor Plan Blueprint Image
+      // Update Map Blueprint
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = sceneData.planImg;
       mapHeader.innerText = sceneData.planTitle;
 
-      // 4. Update Navigation Hotspot
+      // Update Navigation Seekers
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
