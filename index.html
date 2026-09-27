@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Multi-Floor Virtual Experience</title>
+  <title>Market 360 - Seamless VR Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -136,7 +136,7 @@
       height: auto;
       object-fit: contain;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.35s ease;
     }
 
     /* Bottom Navigation Carousel */
@@ -235,32 +235,41 @@
     </div>
   </div>
 
-  <!-- Bottom Thumbnails -->
+  <!-- Bottom Navigation Carousel -->
   <div class="bottom-nav-container">
     <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
   <!-- A-Frame VR Canvas -->
   <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
-    <a-entity id="cameraRig">
-      <a-camera id="camera" look-controls>
+    <a-entity id="cameraRig" position="0 0 0">
+      <a-camera id="camera" look-controls wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
           color="#FFFFFF"
           raycaster="objects: .clickable"
           animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
+
+        <!-- Seamless Black Fade Sphere Attached to Camera -->
+        <a-sphere 
+          id="fade-sphere" 
+          radius="0.1" 
+          position="0 0 -0.05"
+          material="color: #000000; side: back; shader: flat; transparent: true; opacity: 0"
+          visible="false">
+        </a-sphere>
       </a-camera>
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- Sky entity container -->
+    <!-- 360 Sky Sphere Background -->
     <a-sky id="sky-sphere" src="panorama_1.jpg" rotation="0 -90 0"></a-sky>
 
     <!-- Navigation Seeker Hotspot -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
-      <a-circle radius="0.3" color="#4285F4" opacity="0.5"></a-circle>
+      <a-circle radius="0.3" color="#4285F4" opacity="0.55"></a-circle>
       <a-text value="Walk Forward" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
     </a-entity>
   </a-scene>
@@ -271,6 +280,7 @@
     const soundLabel = document.getElementById('sound-label');
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
+    let isTransitioning = false;
 
     function toggleAudio() {
       if (isPlaying) {
@@ -293,6 +303,7 @@
     });
 
     const scenes = [
+      // Ground Floor
       { 
         id: 'img-ground-main', 
         name: 'Main Market Hall', 
@@ -303,9 +314,11 @@
         planImg: 'panorama_1_plan.png',
         planTitle: 'Ground Floor Atrium',
         nextTarget: 'img-floor1-corridor', 
-        nextLabel: 'Go to Level 1 Corridor', 
+        nextLabel: 'Go up to Level 1 Corridor', 
         nextPos: '0 -1.6 -4' 
       },
+
+      // Level 1
       { 
         id: 'img-floor1-corridor', 
         name: 'First Floor Exhibition Corridor', 
@@ -319,6 +332,8 @@
         nextLabel: 'Go up to 2nd Floor Gallery', 
         nextPos: '0 -1.6 -4' 
       },
+
+      // Level 2 - Node 1 (Station 1)
       { 
         id: 'img-floor2-node1', 
         name: '2nd Floor Gallery - Station 1', 
@@ -329,9 +344,11 @@
         planImg: 'panorama_1_plan.png',
         planTitle: 'Level 2 Corridor: Station 1',
         nextTarget: 'img-floor2-node2', 
-        nextLabel: 'Walk to Station 2', 
+        nextLabel: 'Walk down hallway to Station 2', 
         nextPos: '0 -1.4 -4' 
       },
+
+      // Level 2 - Node 2 (Station 2)
       { 
         id: 'img-floor2-node2', 
         name: '2nd Floor Gallery - Station 2', 
@@ -345,6 +362,8 @@
         nextLabel: 'Walk back to Station 1', 
         nextPos: '0 -1.4 4' 
       },
+
+      // Level 3
       { 
         id: 'img-floor3', 
         name: 'Level 3 Rooftop Overlook', 
@@ -364,10 +383,11 @@
     let currentFloor = 2;
 
     window.onload = () => { 
-      loadScene('img-floor2-node1');
+      loadScene('img-floor2-node1', false);
     };
 
     function switchFloor(floorNum, btnElement) {
+      if (isTransitioning) return;
       currentFloor = floorNum;
       
       document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
@@ -380,18 +400,19 @@
 
       const firstSceneOfFloor = scenes.find(s => s.level === floorNum);
       if (firstSceneOfFloor) {
-        loadScene(firstSceneOfFloor.id);
+        loadScene(firstSceneOfFloor.id, true);
       } else {
         updateFloorUI(floorNum);
       }
     }
 
     function toggleFloor2Node() {
+      if (isTransitioning) return;
       if (currentFloor === 2) {
         if (activeSceneId === 'img-floor2-node1') {
-          loadScene('img-floor2-node2');
+          loadScene('img-floor2-node2', true);
         } else {
-          loadScene('img-floor2-node1');
+          loadScene('img-floor2-node1', true);
         }
       }
     }
@@ -404,7 +425,7 @@
       filteredScenes.forEach(scene => {
         const card = document.createElement('div');
         card.className = `thumb-card ${scene.id === activeSceneId ? 'active' : ''}`;
-        card.onclick = () => loadScene(scene.id);
+        card.onclick = () => loadScene(scene.id, true);
 
         card.innerHTML = `
           <img src="${scene.src}" alt="${scene.name}">
@@ -414,11 +435,71 @@
       });
     }
 
-    function loadScene(sceneId) {
+    // Seamless Transition Engine
+    function loadScene(sceneId, animate = true) {
+      if (isTransitioning && animate) return;
       const sceneData = scenes.find(s => s.id === sceneId);
       if (!sceneData) return;
 
-      activeSceneId = sceneId;
+      const fadeSphere = document.getElementById('fade-sphere');
+      const cameraRig = document.getElementById('cameraRig');
+      const hotspot = document.getElementById('hotspot-navigation');
+
+      if (!animate) {
+        applySceneData(sceneData);
+        return;
+      }
+
+      isTransitioning = true;
+      fadeSphere.setAttribute('visible', 'true');
+
+      // 1. Calculate direction vector towards hotspot for forward dolly motion
+      const hotspotPos = hotspot.getAttribute('position');
+      const moveX = (hotspotPos.x || 0) * 0.35;
+      const moveZ = (hotspotPos.z || -4) * 0.35;
+
+      // 2. Animate camera walking forward
+      cameraRig.setAttribute('animation', {
+        property: 'position',
+        to: `${moveX} 0 ${moveZ}`,
+        dur: 400,
+        easing: 'easeInQuad'
+      });
+
+      // 3. Fade out to black
+      fadeSphere.setAttribute('animation', {
+        property: 'material.opacity',
+        from: 0,
+        to: 1,
+        dur: 400,
+        easing: 'easeInQuad'
+      });
+
+      // 4. Midpoint: swap texture, reset camera rig position, swap UI
+      setTimeout(() => {
+        applySceneData(sceneData);
+        cameraRig.removeAttribute('animation');
+        cameraRig.setAttribute('position', '0 0 0');
+
+        // 5. Fade back in
+        fadeSphere.setAttribute('animation', {
+          property: 'material.opacity',
+          from: 1,
+          to: 0,
+          dur: 450,
+          easing: 'easeOutQuad'
+        });
+
+        setTimeout(() => {
+          fadeSphere.setAttribute('visible', 'false');
+          fadeSphere.removeAttribute('animation');
+          isTransitioning = false;
+        }, 460);
+      }, 410);
+    }
+
+    function applySceneData(sceneData) {
+      activeSceneId = sceneData.id;
 
       if (sceneData.level !== currentFloor) {
         currentFloor = sceneData.level;
@@ -427,7 +508,7 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Hard Texture Re-binding (forces WebGL GPU reload)
+      // Rebind WebGL texture directly using TextureLoader
       const sky = document.getElementById('sky-sphere');
       const loader = new THREE.TextureLoader();
       loader.load(sceneData.src, function(texture) {
@@ -438,22 +519,26 @@
         }
       });
 
-      // Update Titles
+      // Update text
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // Update Map Blueprint
+      // Update floor plan map with smooth opacity cross-fade
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
-      mapImg.src = sceneData.planImg;
-      mapHeader.innerText = sceneData.planTitle;
+      mapImg.style.opacity = '0.2';
+      setTimeout(() => {
+        mapImg.src = sceneData.planImg;
+        mapHeader.innerText = sceneData.planTitle;
+        mapImg.style.opacity = '1';
+      }, 150);
 
-      // Update Navigation Seekers
+      // Update Navigation Hotspot
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
         hotspot.setAttribute('position', sceneData.nextPos);
-        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}')`);
+        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}', true)`);
         hotspot.querySelector('a-text').setAttribute('value', sceneData.nextLabel);
       } else {
         hotspot.setAttribute('visible', 'false');
