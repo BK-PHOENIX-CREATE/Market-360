@@ -151,7 +151,7 @@
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4. Bottom Left Corner Logo (Reduced by 20% to 40px) */
+    /* 4. Bottom Left Corner Logo (40px by 40px) */
     .startup-logo {
       position: absolute;
       bottom: 24px;
@@ -239,7 +239,13 @@
       letter-spacing: -0.01em;
     }
 
-    .audio-btn {
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audio-btn, .back-home-btn {
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.4);
       color: #ffffff;
@@ -257,7 +263,7 @@
       gap: 6px;
     }
 
-    .audio-btn:hover { 
+    .audio-btn:hover, .back-home-btn:hover { 
       background: #ffffff; 
       color: #111111; 
     }
@@ -477,9 +483,14 @@
       <h1 id="location-title">2nd Floor Market Gallery - Station 1</h1>
       <p id="location-subtitle">Second Floor • Architectural 360 Panorama</p>
     </div>
-    <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
-      <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
-    </button>
+    <div class="header-controls">
+      <button class="back-home-btn" onclick="returnToStartup()">
+        <span>🏠</span> <span>Home</span>
+      </button>
+      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
+        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
+      </button>
+    </div>
   </div>
 
   <!-- Vertical Floor Elevator Switcher -->
@@ -554,11 +565,16 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // Startup Experience Trigger
+    // Startup Experience Triggers
     function startNavigationExperience() {
       const startupScreen = document.getElementById('startup-screen');
       startupScreen.classList.add('hidden');
       if (!isPlaying) toggleAudio();
+    }
+
+    function returnToStartup() {
+      const startupScreen = document.getElementById('startup-screen');
+      startupScreen.classList.remove('hidden');
     }
 
     function toggleAudio() {
