@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Seamless VR Experience</title>
+  <title>Market 360 - Virtual Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -47,6 +47,164 @@
       width: 100%; 
       height: 100%; 
       overflow: hidden; 
+      background-color: #000000;
+    }
+
+    /* --- STARTUP LANDING OVERLAY --- */
+    #startup-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+    }
+
+    #startup-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* 1. Outer Bokeh Frame Layer */
+    .bokeh-background {
+      position: absolute;
+      inset: -40px;
+      background: url('ground_floor.jpg') center/cover no-repeat;
+      filter: blur(35px) brightness(0.65) saturate(1.4);
+      transform: scale(1.1);
+      z-index: 1;
+    }
+
+    .bokeh-light {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.45;
+      mix-blend-mode: screen;
+      animation: floatBokeh 10s infinite alternate ease-in-out;
+      z-index: 2;
+    }
+
+    .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
+    .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
+    .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
+
+    @keyframes floatBokeh {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-40px) scale(1.15); }
+    }
+
+    /* 2. Main Market Render Card Container */
+    .market-render-wrapper {
+      position: relative;
+      z-index: 3;
+      width: 82vw;
+      height: 72vh;
+      max-width: 1200px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .market-render-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      transition: transform 6s ease-out;
+    }
+
+    .market-render-wrapper:hover .market-render-image {
+      transform: scale(1.06);
+    }
+
+    /* 3. Center "Let's Navigate" Curved Rectangle Button */
+    .center-cta-btn {
+      position: absolute;
+      z-index: 10;
+      padding: 16px 42px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      border-radius: 40px;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .center-cta-btn:hover {
+      background: #ffffff;
+      color: #111111;
+      transform: scale(1.06);
+      box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+    }
+
+    /* 4. Bottom Left Corner Logo */
+    .startup-logo {
+      position: absolute;
+      bottom: 22px;
+      left: 24px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .startup-logo img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    }
+
+    /* 5. Bottom Academic Credits Bar */
+    .startup-credits-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 10px 28px;
+      background: rgba(18, 18, 20, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .credit-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #f5f5f7;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .credit-label {
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+    }
+
+    .credit-value {
+      font-weight: 700;
+      letter-spacing: -0.01em;
     }
 
     /* Top Overlay Header */
@@ -79,7 +237,6 @@
       letter-spacing: -0.01em;
     }
 
-    /* Audio Toggle Button */
     .audio-btn {
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.4);
@@ -103,7 +260,7 @@
       color: #111111; 
     }
 
-    /* Vertical Floor Elevator Switcher */
+    /* Vertical Floor Elevator */
     .floor-elevator-nav {
       position: absolute;
       top: 90px;
@@ -144,7 +301,7 @@
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
     }
 
-    /* Interactive Floor Plan Seeker */
+    /* Interactive Floor Plan */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -196,7 +353,7 @@
       transition: opacity 0.35s ease;
     }
 
-    /* Bottom Navigation Carousel */
+    /* Bottom Carousel */
     .bottom-nav-container {
       position: absolute;
       bottom: 0;
@@ -265,6 +422,47 @@
 </head>
 <body>
 
+  <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
+  <div id="startup-screen">
+    <!-- 1. Outer Bokeh Frame Layer -->
+    <div class="bokeh-background"></div>
+    <div class="bokeh-light orb1"></div>
+    <div class="bokeh-light orb2"></div>
+    <div class="bokeh-light orb3"></div>
+
+    <!-- 2. Overall Market Render Viewport -->
+    <div class="market-render-wrapper">
+      <img src="ground_floor.jpg" alt="Overall Market Render" class="market-render-image">
+      <!-- 3. Curved Rectangle Navigation Button -->
+      <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
+    </div>
+
+    <!-- 4. Bottom Left Corner Logo -->
+    <div class="startup-logo">
+      <img src="logo.png" alt="Project Logo" onerror="this.style.display='none'">
+    </div>
+
+    <!-- 5. Bottom Academic Credits Bar -->
+    <div class="startup-credits-bar">
+      <div class="credit-item">
+        <span class="credit-label">Name:</span>
+        <span class="credit-value">Balakrishna Darla</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Year:</span>
+        <span class="credit-value">Vth Year</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Sem:</span>
+        <span class="credit-value">IX</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Roll no:</span>
+        <span class="credit-value">Vu22arch0100016</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Ambient Audio -->
   <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
@@ -282,7 +480,7 @@
     </button>
   </div>
 
-  <!-- 1. VERTICAL FLOOR ELEVATOR SWITCHER -->
+  <!-- Vertical Floor Elevator Switcher -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
     <button class="floor-box-btn active" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
@@ -290,7 +488,7 @@
     <button class="floor-box-btn" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 2. NAVIGATION FLOOR PLAN SEEKER -->
+  <!-- Navigation Floor Plan Seeker -->
   <div class="minimap-container" onclick="toggleFloor2Node()" title="Click to toggle station view">
     <div class="minimap-header" id="map-header">Level 2 Corridor Plan: Station 1</div>
     <div class="minimap-body">
@@ -354,6 +552,13 @@
     let isPlaying = false;
     let isTransitioning = false;
 
+    // Startup Experience Trigger
+    function startNavigationExperience() {
+      const startupScreen = document.getElementById('startup-screen');
+      startupScreen.classList.add('hidden');
+      if (!isPlaying) toggleAudio();
+    }
+
     function toggleAudio() {
       if (isPlaying) {
         audio.pause();
@@ -371,6 +576,10 @@
     }
 
     document.querySelector('a-scene').addEventListener('enter-vr', () => {
+      const startupScreen = document.getElementById('startup-screen');
+      if (!startupScreen.classList.contains('hidden')) {
+        startupScreen.classList.add('hidden');
+      }
       if (!isPlaying) toggleAudio();
     });
 
