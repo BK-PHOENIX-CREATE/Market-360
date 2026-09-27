@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Virtual Experience</title>
+  <title>Market 360 - Seamless VR Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -129,12 +129,12 @@
     .center-cta-btn {
       position: absolute;
       z-index: 10;
-      padding: 16px 42px;
+      padding: 14px 38px;
       background: rgba(255, 255, 255, 0.18);
       border: 1.5px solid rgba(255, 255, 255, 0.6);
       border-radius: 40px;
       color: #ffffff;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.01em;
       cursor: pointer;
@@ -151,22 +151,28 @@
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4. Bottom Left Corner Logo */
+    /* 4. Bottom Left Corner Logo (Scaled down precisely to match user layout) */
     .startup-logo {
       position: absolute;
-      bottom: 22px;
+      bottom: 24px;
       left: 24px;
       z-index: 10;
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      overflow: hidden;
     }
 
     .startup-logo img {
-      height: 48px;
-      width: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     /* 5. Bottom Academic Credits Bar */
@@ -437,9 +443,9 @@
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo -->
+    <!-- 4. Bottom Left Corner Logo (Scaled to match reference box) -->
     <div class="startup-logo">
-      <img src="logo.png" alt="Project Logo" onerror="this.style.display='none'">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
 
     <!-- 5. Bottom Academic Credits Bar -->
