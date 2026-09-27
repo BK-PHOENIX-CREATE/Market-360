@@ -202,7 +202,7 @@
 </head>
 <body>
 
-  <!-- Ambient Audio for Mountain & Market -->
+  <!-- Ambient Audio -->
   <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
@@ -227,7 +227,7 @@
     <button class="floor-box-btn" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 2. NAVIGATION FLOOR PLAN SEEKER (Bottom Left) -->
+  <!-- 2. NAVIGATION FLOOR PLAN (Bottom Left) -->
   <div class="minimap-container" onclick="toggleFloor2Node()" title="Click to toggle station view">
     <div class="minimap-header" id="map-header">Level 2 Corridor Plan: Station 1</div>
     <div class="minimap-body">
@@ -245,14 +245,10 @@
   <!-- A-Frame VR Canvas -->
   <a-scene embedded vr-mode-ui="enabled: true">
     <a-assets>
-      <!-- Ground Floor Render -->
       <img id="ground-render" src="ground_floor.jpg">
-      <!-- First Floor Corridor Render -->
       <img id="floor1-render" src="firstfloorcorridor_1.jpg">
-      <!-- Second Floor Renders -->
       <img id="floor2-render-1" src="panorama_1.jpg">
       <img id="floor2-render-2" src="panorama_2.jpg">
-      <!-- Fallback Render -->
       <img id="fallback-render" src="market.jpg">
     </a-assets>
 
@@ -270,7 +266,7 @@
     </a-entity>
 
     <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#floor2-render-1" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="panorama_1.jpg" rotation="0 -90 0"></a-sky>
 
     <!-- Ground Hotspot Navigation Marker (Walk Seeker) -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
@@ -308,12 +304,11 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Multi-Floor Scenes Database with Dynamic Plan Map Assignment
+    // Multi-Floor Scenes Database
     const scenes = [
       // Ground Floor (Level 0)
       { 
         id: 'img-ground-main', 
-        assetId: 'ground-render',
         name: 'Main Market Hall', 
         floorName: 'Ground Floor',
         floorCode: 'G',
@@ -329,7 +324,6 @@
       // Level 1
       { 
         id: 'img-floor1-corridor', 
-        assetId: 'floor1-render',
         name: 'First Floor Exhibition Corridor', 
         floorName: 'First Floor',
         floorCode: '1',
@@ -345,7 +339,6 @@
       // Level 2 - Node 1 (Station 1)
       { 
         id: 'img-floor2-node1', 
-        assetId: 'floor2-render-1',
         name: '2nd Floor Gallery - Station 1', 
         floorName: 'Second Floor',
         floorCode: '2',
@@ -354,14 +347,13 @@
         planImg: 'panorama_1_plan.png',
         planTitle: 'Level 2 Corridor: Station 1',
         nextTarget: 'img-floor2-node2', 
-        nextLabel: 'Walk down hallway to Station 2', 
-        nextPos: '2.5 -1.4 -4' 
+        nextLabel: 'Walk forward to Station 2', 
+        nextPos: '0 -1.4 -4' 
       },
 
       // Level 2 - Node 2 (Station 2)
       { 
         id: 'img-floor2-node2', 
-        assetId: 'floor2-render-2',
         name: '2nd Floor Gallery - Station 2', 
         floorName: 'Second Floor',
         floorCode: '2',
@@ -370,14 +362,13 @@
         planImg: 'panorama_2_plan.png',
         planTitle: 'Level 2 Corridor: Station 2',
         nextTarget: 'img-floor2-node1', 
-        nextLabel: 'Return back to Station 1', 
-        nextPos: '-2.5 -1.4 4' 
+        nextLabel: 'Walk back to Station 1', 
+        nextPos: '0 -1.4 4' 
       },
 
       // Level 3
       { 
         id: 'img-floor3', 
-        assetId: 'fallback-render',
         name: 'Level 3 Rooftop Overlook', 
         floorName: 'Rooftop Terrace',
         floorCode: '3',
@@ -458,15 +449,22 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // 1. Switch 360 Sky Sphere
+      // 1. Force WebGL 360 Texture Reload via Direct URL
       const sky = document.getElementById('sky-sphere');
-      sky.setAttribute('src', `#${sceneData.assetId}`);
+      sky.setAttribute('material', 'src', sceneData.src);
+      
+      // Force Three.js texture update
+      if (sky.components && sky.components.material && sky.components.material.material) {
+        if (sky.components.material.material.map) {
+          sky.components.material.material.map.needsUpdate = true;
+        }
+      }
 
       // 2. Update Header
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // 3. Update Floor Plan Blueprint Image and Header Label
+      // 3. Update Floor Plan Blueprint Image
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = sceneData.planImg;
