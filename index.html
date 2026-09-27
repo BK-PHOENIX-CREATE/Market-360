@@ -8,19 +8,20 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
   <style>
-    * { 
+    /* Universal Apple San Francisco Typography Reset */
+    *, *::before, *::after { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
     body, html { 
       width: 100%; 
       height: 100%; 
       overflow: hidden; 
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "San Francisco", Helvetica, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Top Overlay Header */
@@ -37,14 +38,12 @@
       color: #ffffff;
       z-index: 100;
       pointer-events: auto;
-      font-family: inherit;
     }
 
     .header-title h1 { 
-      font-size: 18px; 
+      font-size: 19px; 
       font-weight: 600; 
-      letter-spacing: -0.02em; 
-      font-family: inherit;
+      letter-spacing: -0.025em; 
     }
     
     .header-title p { 
@@ -53,7 +52,6 @@
       color: rgba(255, 255, 255, 0.75); 
       margin-top: 2px; 
       letter-spacing: -0.01em;
-      font-family: inherit;
     }
 
     /* Audio Toggle Button */
@@ -66,10 +64,9 @@
       font-size: 12px;
       font-weight: 500;
       letter-spacing: -0.01em;
-      font-family: inherit;
       cursor: pointer;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
@@ -90,19 +87,17 @@
       flex-direction: column;
       gap: 8px;
       z-index: 100;
-      font-family: inherit;
     }
 
     .floor-box-btn {
       width: 42px;
       height: 42px;
       background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      font-family: inherit;
       color: #1d1d1f;
       display: flex;
       align-items: center;
@@ -118,7 +113,7 @@
     }
 
     .floor-box-btn.active {
-      background: #0071e3; /* Apple Blue */
+      background: #0071e3; /* Apple Accent Blue */
       color: #ffffff;
       border-color: #0077ed;
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
@@ -133,7 +128,7 @@
       max-width: 45vw;
       height: 90px;
       background: rgba(28, 28, 30, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -141,7 +136,6 @@
       z-index: 100;
       overflow: hidden;
       cursor: pointer;
-      font-family: inherit;
     }
 
     .minimap-header {
@@ -152,11 +146,10 @@
       padding: 4px 10px;
       background: rgba(0, 0, 0, 0.55);
       color: #f5f5f7;
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      font-family: inherit;
       z-index: 2;
     }
 
@@ -192,7 +185,6 @@
       gap: 12px;
       z-index: 90;
       pointer-events: none;
-      font-family: inherit;
     }
 
     .bottom-nav-container > * { pointer-events: auto; }
@@ -203,7 +195,6 @@
       overflow-x: auto;
       max-width: 50vw;
       padding-bottom: 6px;
-      font-family: inherit;
     }
 
     .thumb-card {
@@ -216,7 +207,6 @@
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-      font-family: inherit;
     }
 
     .thumb-card img { 
@@ -235,7 +225,6 @@
       font-size: 10px;
       font-weight: 500;
       letter-spacing: -0.01em;
-      font-family: inherit;
       padding: 4px;
       text-align: center;
       white-space: nowrap;
@@ -315,11 +304,20 @@
     <!-- 360 Sky Sphere Background -->
     <a-sky id="sky-sphere" src="panorama_1.jpg" rotation="0 -90 0"></a-sky>
 
-    <!-- Navigation Seeker Hotspot -->
+    <!-- Navigation Seeker Hotspot with Clean Sans-Serif Typography -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
-      <a-circle radius="0.3" color="#0071E3" opacity="0.6"></a-circle>
-      <a-text value="Walk Forward" align="center" position="0 -0.8 0" rotation="90 0 0" scale="1.2 1.2 1.2" color="#FFFFFF"></a-text>
+      <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
+      <a-text 
+        value="Walk Forward" 
+        align="center" 
+        position="0 -0.8 0" 
+        rotation="90 0 0" 
+        scale="1.2 1.2 1.2" 
+        color="#FFFFFF" 
+        font="dejavu" 
+        letter-spacing="-0.5">
+      </a-text>
     </a-entity>
   </a-scene>
 
@@ -557,7 +555,7 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Rebind WebGL texture directly using TextureLoader
+      // Force WebGL Texture Reload via THREE.TextureLoader
       const sky = document.getElementById('sky-sphere');
       const loader = new THREE.TextureLoader();
       loader.load(sceneData.src, function(texture) {
