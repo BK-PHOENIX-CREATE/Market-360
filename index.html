@@ -151,14 +151,14 @@
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4. Bottom Left Corner Logo (Reduced by 30%) */
+    /* 4. Bottom Left Corner Logo (Reduced by 20% to 40px) */
     .startup-logo {
       position: absolute;
       bottom: 24px;
       left: 28px;
       z-index: 10;
-      width: 68px;
-      height: 68px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -439,7 +439,7 @@
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo (Reduced by 30%) -->
+    <!-- 4. Bottom Left Corner Logo (40px by 40px) -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
@@ -809,12 +809,8 @@
       // Update Floor Plan Blueprint Image
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
-      mapImg.style.opacity = '0.2';
-      setTimeout(() => {
-        mapImg.src = sceneData.planImg;
-        mapHeader.innerText = sceneData.planTitle;
-        mapImg.style.opacity = '1';
-      }, 150);
+      mapImg.src = sceneData.planImg;
+      mapHeader.innerText = sceneData.planTitle;
 
       // Update Navigation Hotspot
       const hotspot = document.getElementById('hotspot-navigation');
