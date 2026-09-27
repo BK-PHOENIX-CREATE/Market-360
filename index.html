@@ -447,7 +447,7 @@
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo -->
+    <!-- 4. Bottom Left Corner Logo (50px by 50px) -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
@@ -539,7 +539,7 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere Background -->
+    <!-- 360 Sky Sphere Background (Set to updated ground_floor.jpg) -->
     <a-sky id="sky-sphere" src="ground_floor.jpg" rotation="0 -90 0"></a-sky>
 
     <!-- Navigation Seeker Hotspot -->
@@ -566,6 +566,9 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
+
+    // Cache-busting timestamp to force browser to load fresh ground_floor.jpg
+    const buildTimestamp = Date.now();
 
     // Startup Experience Triggers
     function startNavigationExperience() {
@@ -604,7 +607,7 @@
     });
 
     const scenes = [
-      // Ground Floor (Initial Start Point)
+      // Ground Floor
       { 
         id: 'img-ground-main', 
         name: 'Main Market Hall', 
@@ -707,6 +710,17 @@
       }
     }
 
+    function toggleFloor2Node() {
+      if (isTransitioning) return;
+      if (currentFloor === 2) {
+        if (activeSceneId === 'img-floor2-node1') {
+          loadScene('img-floor2-node2', true);
+        } else {
+          loadScene('img-floor2-node1', true);
+        }
+      }
+    }
+
     function updateFloorUI(level) {
       const thumbContainer = document.getElementById('thumb-strip');
       thumbContainer.innerHTML = '';
@@ -717,8 +731,9 @@
         card.className = `thumb-card ${scene.id === activeSceneId ? 'active' : ''}`;
         card.onclick = () => loadScene(scene.id, true);
 
+        // Uses timestamp to bypass aggressive browser caching of re-uploaded files
         card.innerHTML = `
-          <img src="${scene.src}" alt="${scene.name}">
+          <img src="${scene.src}?v=${buildTimestamp}" alt="${scene.name}">
           <span>${scene.name}</span>
         `;
         thumbContainer.appendChild(card);
@@ -798,10 +813,12 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Direct WebGL texture reload via THREE.TextureLoader
+      // Direct WebGL texture reload via THREE.TextureLoader with timestamp cache buster
       const sky = document.getElementById('sky-sphere');
       const loader = new THREE.TextureLoader();
-      loader.load(sceneData.src, function(texture) {
+      const freshUrl = `${sceneData.src}?v=${buildTimestamp}`;
+      
+      loader.load(freshUrl, function(texture) {
         const mesh = sky.getObject3D('mesh');
         if (mesh) {
           mesh.material.map = texture;
