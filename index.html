@@ -50,7 +50,7 @@
       background-color: #000000;
     }
 
-    /* --- STARTUP LANDING OVERLAY (Fully Opaque Background to prevent bleed-through) --- */
+    /* --- STARTUP LANDING OVERLAY --- */
     #startup-screen {
       position: fixed;
       inset: 0;
@@ -69,11 +69,11 @@
       pointer-events: none;
     }
 
-    /* 1. Outer Bokeh Frame Layer */
+    /* 1. Outer Bokeh Frame Layer (Linked with uppercase .JPG extension) */
     .bokeh-background {
       position: absolute;
       inset: -40px;
-      background: url('market_render.jpg') center/cover no-repeat;
+      background: url('market_render.JPG') center/cover no-repeat;
       filter: blur(35px) brightness(0.6) saturate(1.4);
       transform: scale(1.1);
       z-index: 1;
@@ -434,15 +434,15 @@
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- 1. Outer Bokeh Frame Layer -->
+    <!-- 1. Outer Bokeh Frame Layer (Linked to market_render.JPG) -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- 2. Overall Market Render Viewport -->
+    <!-- 2. Overall Market Render Viewport (Separate Image: market_render.JPG) -->
     <div class="market-render-wrapper">
-      <img src="market_render.jpg" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
+      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
       <!-- 3. Curved Rectangle Navigation Button -->
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
