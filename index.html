@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Seamless VR Experience</title>
+  <title>Market 360 - Virtual Experience</title>
   <!-- A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
@@ -129,12 +129,12 @@
     .center-cta-btn {
       position: absolute;
       z-index: 10;
-      padding: 14px 38px;
+      padding: 16px 42px;
       background: rgba(255, 255, 255, 0.18);
       border: 1.5px solid rgba(255, 255, 255, 0.6);
       border-radius: 40px;
       color: #ffffff;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 600;
       letter-spacing: -0.01em;
       cursor: pointer;
@@ -151,28 +151,30 @@
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4. Bottom Left Corner Logo (Scaled down precisely to match user layout) */
+    /* 4. Bottom Left Corner Logo (Sized precisely to reference box) */
     .startup-logo {
       position: absolute;
       bottom: 24px;
       left: 24px;
       z-index: 10;
-      width: 32px;
-      height: 32px;
+      width: 44px;
+      height: 44px;
       background: rgba(255, 255, 255, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 6px;
+      border-radius: 8px;
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      padding: 4px;
     }
 
     .startup-logo img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     /* 5. Bottom Academic Credits Bar */
@@ -443,7 +445,7 @@
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo (Scaled to match reference box) -->
+    <!-- 4. Bottom Left Corner Logo (Resized to match reference box) -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
