@@ -211,7 +211,7 @@
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
     /* =========================================================
-       HOVER-TRIGGERED FLOOR DROPDOWN SYSTEM
+       STICKY / PERSISTENT FLOOR DROPDOWN MENU
        ========================================================= */
     .floor-dropdown-wrapper {
       position: absolute;
@@ -223,7 +223,6 @@
       align-items: flex-start;
     }
 
-    /* Primary trigger box showing the active floor code */
     .floor-dropdown-trigger {
       display: flex;
       align-items: center;
@@ -268,25 +267,24 @@
       color: #555555;
     }
 
-    /* Hover effect on trigger */
-    .floor-dropdown-wrapper:hover .floor-dropdown-trigger {
+    .floor-dropdown-wrapper.open .floor-dropdown-trigger {
       background: #ffffff;
       box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
       border-color: #0071e3;
     }
 
-    .floor-dropdown-wrapper:hover .trigger-arrow {
+    .floor-dropdown-wrapper.open .trigger-arrow {
       transform: rotate(180deg);
       color: #0071e3;
     }
 
-    /* Dropdown menu list (Hidden by default, drops down on hover) */
+    /* Menu container stays open when .open is toggled */
     .floor-dropdown-menu {
       position: absolute;
       top: calc(100% + 6px);
       left: 0;
       width: 195px;
-      background: rgba(22, 22, 26, 0.94);
+      background: rgba(22, 22, 26, 0.96);
       border: 1.5px solid rgba(255, 255, 255, 0.25);
       border-radius: 14px;
       backdrop-filter: blur(25px);
@@ -299,19 +297,17 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(-8px) scale(0.96);
-      transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.25s;
+      transition: opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1), transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.22s;
       pointer-events: none;
     }
 
-    /* Revealed when mouse is over the container */
-    .floor-dropdown-wrapper:hover .floor-dropdown-menu {
+    .floor-dropdown-wrapper.open .floor-dropdown-menu {
       opacity: 1;
       visibility: visible;
       transform: translateY(0) scale(1);
       pointer-events: auto;
     }
 
-    /* Individual floor item inside dropdown */
     .floor-menu-item {
       display: flex;
       align-items: center;
@@ -375,7 +371,7 @@
       box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
     }
 
-    /* Compact Mini-Map in Bottom-Left (140px x 135px) */
+    /* Compact Mini-Map in Bottom-Left */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -672,46 +668,46 @@
     </div>
   </div>
 
-  <!-- ==================== HOVER-ACTIVATED FLOOR DROPDOWN ==================== -->
-  <div class="floor-dropdown-wrapper">
-    <div class="floor-dropdown-trigger" title="Hover to view and switch floors">
+  <!-- ==================== PERSISTENT FLOOR DROPDOWN ==================== -->
+  <div class="floor-dropdown-wrapper" id="floor-dropdown">
+    <div class="floor-dropdown-trigger" onclick="toggleFloorDropdown(event)">
       <span class="trigger-icon">🏢</span>
       <span class="trigger-code" id="active-floor-badge">S</span>
       <span id="active-floor-name">Site</span>
       <span class="trigger-arrow">▾</span>
     </div>
 
-    <!-- Dropdown Menu revealed on hover -->
-    <div class="floor-dropdown-menu">
-      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this)">
+    <!-- Dropdown Menu stays open while switching floors -->
+    <div class="floor-dropdown-menu" id="floor-menu">
+      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
         <span class="menu-badge">TR</span>
         <span class="menu-label">Terrace</span>
       </button>
-      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this)">
+      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this, event)">
         <span class="menu-badge">3</span>
         <span class="menu-label">Third Floor</span>
       </button>
-      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this)">
+      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this, event)">
         <span class="menu-badge">2</span>
         <span class="menu-label">Second Floor</span>
       </button>
-      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this)">
+      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this, event)">
         <span class="menu-badge">1</span>
         <span class="menu-label">First Floor</span>
       </button>
-      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this)">
+      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this, event)">
         <span class="menu-badge">G</span>
         <span class="menu-label">Ground Floor</span>
       </button>
-      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this)">
+      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this, event)">
         <span class="menu-badge">P1</span>
         <span class="menu-label">Podium-1</span>
       </button>
-      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this)">
+      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this, event)">
         <span class="menu-badge">ST</span>
         <span class="menu-label">Stilt Floor</span>
       </button>
-      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this)">
+      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this, event)">
         <span class="menu-badge">S</span>
         <span class="menu-label">Site</span>
       </button>
@@ -797,6 +793,21 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
+
+    // Toggle and Click-Outside Listeners for Dropdown
+    function toggleFloorDropdown(e) {
+      if (e) e.stopPropagation();
+      const wrapper = document.getElementById('floor-dropdown');
+      wrapper.classList.toggle('open');
+    }
+
+    // Clicking outside closes the dropdown
+    window.addEventListener('click', function(e) {
+      const wrapper = document.getElementById('floor-dropdown');
+      if (wrapper && !wrapper.contains(e.target)) {
+        wrapper.classList.remove('open');
+      }
+    });
 
     function startNavigationExperience() {
       document.getElementById('startup-screen').classList.add('hidden');
@@ -961,11 +972,11 @@
       document.getElementById('enlarged-map-modal').classList.add('hidden');
     }
 
-    function switchFloor(floorNum, btnElement) {
+    function switchFloor(floorNum, btnElement, e) {
+      if (e) e.stopPropagation(); // Keep menu open when switching
       if (isTransitioning) return;
       currentFloorLevel = floorNum;
 
-      // Update active state in dropdown
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -974,7 +985,6 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Update trigger button label and badge
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
       if (floorConfig) {
         const badge = document.getElementById('active-floor-badge');
@@ -998,13 +1008,11 @@
       activePointId = pointData.id;
       currentFloorLevel = floorNum;
 
-      // Ensure trigger box reflects the active floor
       const badge = document.getElementById('active-floor-badge');
       const nameLabel = document.getElementById('active-floor-name');
       if (badge) badge.innerText = floorConfig.floorCode;
       if (nameLabel) nameLabel.innerText = floorConfig.floorName;
 
-      // Ensure menu item highlights correctly
       document.querySelectorAll('.floor-menu-item').forEach(btn => {
         btn.classList.toggle('active', parseInt(btn.getAttribute('data-floor')) === floorNum);
       });
