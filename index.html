@@ -725,7 +725,7 @@
       <span class="expand-hint">⤢ ENLARGE</span>
     </div>
     <div class="minimap-body">
-      <img id="minimap-img" src="site_plan.jpg" onerror="this.src='market_render.JPG'" alt="Current Floor Plan">
+      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Current Floor Plan">
     </div>
   </div>
 
@@ -742,7 +742,7 @@
       </div>
 
       <div class="enlarged-blueprint-stage">
-        <img id="enlarged-blueprint-img" src="site_plan.jpg" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
+        <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
         <div id="pins-container"></div>
       </div>
     </div>
@@ -774,7 +774,8 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <a-sky id="sky-sphere" src="site_1.jpg" rotation="0 -90 0"></a-sky>
+    <!-- Pointing directly to site_1.png -->
+    <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
 
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
@@ -841,20 +842,22 @@
 
     /* 
       MASTER CONFIGURATION:
-      Site Level configured with the 3 points (1, 2, 3) from your marked site plan
+      Configured exactly to match the uploaded .png files in the repository:
+      - site_plan.png
+      - site_1.png, site_2.png, site_3.png
     */
     const floorPlansConfig = [
       {
         level: 0,
         floorName: "Site",
         floorCode: "S",
-        planImg: "site_plan.jpg",
+        planImg: "site_plan.png",
         planTitle: "Site Layout Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 63, pinY: 20, src: "site_1.jpg", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-2", name: "Lower Right Avenue", pinNum: "2", pinX: 69, pinY: 69, src: "site_2.jpg", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14, pinY: 37, src: "site_3.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 63, pinY: 20, src: "site_1.png", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-2", name: "Lower Right Avenue", pinNum: "2", pinX: 69, pinY: 69, src: "site_2.png", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14, pinY: 37, src: "site_3.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -865,7 +868,7 @@
         planTitle: "Stilt Parking & Entry Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -876,7 +879,7 @@
         planTitle: "Podium-1 Promenade Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -887,8 +890,8 @@
         planTitle: "Ground Floor Market Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "ground-node-1", name: "Ground Market Hall", pinNum: "1", pinX: 35, pinY: 45, src: "ground_1.jpg", fallbackSrc: "market_render.JPG" },
-          { id: "ground-node-2", name: "Atrium Plaza", pinNum: "2", pinX: 65, pinY: 55, src: "ground_2.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "ground-node-1", name: "Ground Market Hall", pinNum: "1", pinX: 35, pinY: 45, src: "ground_1.png", fallbackSrc: "market_render.JPG" },
+          { id: "ground-node-2", name: "Atrium Plaza", pinNum: "2", pinX: 65, pinY: 55, src: "ground_2.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -899,7 +902,7 @@
         planTitle: "First Floor Corridor Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -910,8 +913,8 @@
         planTitle: "Second Floor Gallery Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "second-node-1", name: "Station 1", pinNum: "1", pinX: 25, pinY: 50, src: "second_1.jpg", fallbackSrc: "market_render.JPG" },
-          { id: "second-node-2", name: "Station 2", pinNum: "2", pinX: 70, pinY: 50, src: "second_2.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "second-node-1", name: "Station 1", pinNum: "1", pinX: 25, pinY: 50, src: "second_1.png", fallbackSrc: "market_render.JPG" },
+          { id: "second-node-2", name: "Station 2", pinNum: "2", pinX: 70, pinY: 50, src: "second_2.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -922,7 +925,7 @@
         planTitle: "Third Floor Deck Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
@@ -933,7 +936,7 @@
         planTitle: "Rooftop Terrace Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG" }
         ]
       }
     ];
