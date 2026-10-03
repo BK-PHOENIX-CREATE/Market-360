@@ -210,9 +210,7 @@
     }
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
-    /* =========================================================
-       CLEAN FLOOR DROPDOWN MENU (No emoji icon)
-       ========================================================= */
+    /* Floor Dropdown */
     .floor-dropdown-wrapper {
       position: absolute;
       top: 80px;
@@ -378,7 +376,7 @@
       box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
     }
 
-    /* Compact Mini-Map in Bottom-Left (140px x 135px) */
+    /* Mini-Map in Bottom-Left */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -532,7 +530,7 @@
       user-select: none;
     }
 
-    /* Numbered Teleportation Nodes (1, 2, 3...) */
+    /* Numbered Teleportation Nodes */
     .map-teleport-pin {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -666,7 +664,7 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Site Entrance</h1>
+      <h1 id="location-title">Upper Junction</h1>
       <p id="location-subtitle">Site • Architectural 360 Panorama</p>
     </div>
     <div class="header-controls">
@@ -675,7 +673,7 @@
     </div>
   </div>
 
-  <!-- ==================== FLOOR DROPDOWN (No emoji) ==================== -->
+  <!-- ==================== FLOOR DROPDOWN ==================== -->
   <div class="floor-dropdown-wrapper" id="floor-dropdown">
     <div class="floor-dropdown-trigger" id="floor-trigger">
       <span class="trigger-code" id="active-floor-badge">S</span>
@@ -727,7 +725,7 @@
       <span class="expand-hint">⤢ ENLARGE</span>
     </div>
     <div class="minimap-body">
-      <img id="minimap-img" src="market_render.JPG" alt="Current Floor Plan">
+      <img id="minimap-img" src="site_plan.jpg" onerror="this.src='market_render.JPG'" alt="Current Floor Plan">
     </div>
   </div>
 
@@ -744,7 +742,7 @@
       </div>
 
       <div class="enlarged-blueprint-stage">
-        <img id="enlarged-blueprint-img" src="market_render.JPG" alt="Enlarged Blueprint">
+        <img id="enlarged-blueprint-img" src="site_plan.jpg" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
         <div id="pins-container"></div>
       </div>
     </div>
@@ -776,7 +774,7 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <a-sky id="sky-sphere" src="market_render.JPG" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="site_1.jpg" rotation="0 -90 0"></a-sky>
 
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
@@ -841,17 +839,22 @@
       }
     }
 
+    /* 
+      MASTER CONFIGURATION:
+      Site Level configured with the 3 points (1, 2, 3) from your marked site plan
+    */
     const floorPlansConfig = [
       {
         level: 0,
         floorName: "Site",
         floorCode: "S",
-        planImg: "site_plan.png",
+        planImg: "site_plan.jpg",
         planTitle: "Site Layout Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "site-node-1", name: "Site Entrance", pinNum: "1", pinX: 25, pinY: 55, src: "site_1.jpg", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-2", name: "Central Courtyard", pinNum: "2", pinX: 50, pinY: 45, src: "site_2.jpg", fallbackSrc: "market_render.JPG" }
+          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 63, pinY: 20, src: "site_1.jpg", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-2", name: "Lower Right Avenue", pinNum: "2", pinX: 69, pinY: 69, src: "site_2.jpg", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14, pinY: 37, src: "site_3.jpg", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
