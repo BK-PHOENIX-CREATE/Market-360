@@ -211,7 +211,7 @@
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
     /* =========================================================
-       STICKY / PERSISTENT FLOOR DROPDOWN MENU
+       HOVER-TO-OPEN / SELECT-TO-CLOSE FLOOR DROPDOWN
        ========================================================= */
     .floor-dropdown-wrapper {
       position: absolute;
@@ -267,18 +267,17 @@
       color: #555555;
     }
 
-    .floor-dropdown-wrapper.open .floor-dropdown-trigger {
+    .floor-dropdown-wrapper.is-open .floor-dropdown-trigger {
       background: #ffffff;
       box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
       border-color: #0071e3;
     }
 
-    .floor-dropdown-wrapper.open .trigger-arrow {
+    .floor-dropdown-wrapper.is-open .trigger-arrow {
       transform: rotate(180deg);
       color: #0071e3;
     }
 
-    /* Menu container stays open when .open is toggled */
     .floor-dropdown-menu {
       position: absolute;
       top: calc(100% + 6px);
@@ -301,7 +300,8 @@
       pointer-events: none;
     }
 
-    .floor-dropdown-wrapper.open .floor-dropdown-menu {
+    /* Menu opens when .is-open class is active */
+    .floor-dropdown-wrapper.is-open .floor-dropdown-menu {
       opacity: 1;
       visibility: visible;
       transform: translateY(0) scale(1);
@@ -371,7 +371,7 @@
       box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
     }
 
-    /* Compact Mini-Map in Bottom-Left */
+    /* Compact Mini-Map in Bottom-Left (140px x 135px) */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -668,16 +668,16 @@
     </div>
   </div>
 
-  <!-- ==================== PERSISTENT FLOOR DROPDOWN ==================== -->
+  <!-- ==================== HOVER-DROPDOWN FLOOR SELECTOR ==================== -->
   <div class="floor-dropdown-wrapper" id="floor-dropdown">
-    <div class="floor-dropdown-trigger" onclick="toggleFloorDropdown(event)">
+    <div class="floor-dropdown-trigger">
       <span class="trigger-icon">🏢</span>
       <span class="trigger-code" id="active-floor-badge">S</span>
       <span id="active-floor-name">Site</span>
       <span class="trigger-arrow">▾</span>
     </div>
 
-    <!-- Dropdown Menu stays open while switching floors -->
+    <!-- Dropdown Menu -->
     <div class="floor-dropdown-menu" id="floor-menu">
       <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
         <span class="menu-badge">TR</span>
@@ -794,20 +794,25 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // Toggle and Click-Outside Listeners for Dropdown
-    function toggleFloorDropdown(e) {
-      if (e) e.stopPropagation();
-      const wrapper = document.getElementById('floor-dropdown');
-      wrapper.classList.toggle('open');
-    }
+    // --- Hover to Drop Down / Auto-Close Logic ---
+    const dropdownWrapper = document.getElementById('floor-dropdown');
+    let hoverOpenAllowed = true;
 
-    // Clicking outside closes the dropdown
-    window.addEventListener('click', function(e) {
-      const wrapper = document.getElementById('floor-dropdown');
-      if (wrapper && !wrapper.contains(e.target)) {
-        wrapper.classList.remove('open');
+    dropdownWrapper.addEventListener('mouseenter', () => {
+      if (hoverOpenAllowed) {
+        dropdownWrapper.classList.add('is-open');
       }
     });
+
+    dropdownWrapper.addEventListener('mouseleave', () => {
+      dropdownWrapper.classList.remove('is-open');
+      hoverOpenAllowed = true; // reset so next hover drops down again
+    });
+
+    function closeFloorDropdown() {
+      dropdownWrapper.classList.remove('is-open');
+      hoverOpenAllowed = false; // prevents immediate reopening while cursor is still on the item
+    }
 
     function startNavigationExperience() {
       document.getElementById('startup-screen').classList.add('hidden');
@@ -973,9 +978,12 @@
     }
 
     function switchFloor(floorNum, btnElement, e) {
-      if (e) e.stopPropagation(); // Keep menu open when switching
+      if (e) e.stopPropagation();
       if (isTransitioning) return;
       currentFloorLevel = floorNum;
+
+      // Automatically closes the dropdown menu immediately on click
+      closeFloorDropdown();
 
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
