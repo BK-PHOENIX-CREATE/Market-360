@@ -69,7 +69,7 @@
       pointer-events: none;
     }
 
-    /* 1. Outer Bokeh Frame Layer */
+    /* Outer Bokeh Frame Layer */
     .bokeh-background {
       position: absolute;
       inset: -40px;
@@ -98,7 +98,7 @@
       100% { transform: translateY(-40px) scale(1.15); }
     }
 
-    /* 2. Overall Market Render Card Container */
+    /* Overall Market Render Card Container */
     .market-render-wrapper {
       position: relative;
       z-index: 3;
@@ -127,7 +127,7 @@
       transform: scale(1.06);
     }
 
-    /* 3. Center "Let's Navigate" Curved Rectangle Button */
+    /* Center "Let's Navigate" Curved Rectangle Button */
     .center-cta-btn {
       position: absolute;
       z-index: 10;
@@ -153,7 +153,7 @@
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* 4. Bottom Left Corner Logo (50px by 50px) */
+    /* Bottom Left Corner Logo (50px by 50px) */
     .startup-logo {
       position: absolute;
       bottom: 24px;
@@ -173,7 +173,7 @@
       object-fit: contain;
     }
 
-    /* 5. Bottom Academic Credits Bar */
+    /* Bottom Academic Credits Bar */
     .startup-credits-bar {
       position: absolute;
       bottom: 24px;
@@ -311,7 +311,7 @@
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
     }
 
-    /* Interactive Floor Plan */
+    /* Mini-Map In Corner */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -328,6 +328,12 @@
       z-index: 100;
       overflow: hidden;
       cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .minimap-container:hover {
+      transform: scale(1.02);
+      border-color: #0071e3;
     }
 
     .minimap-header {
@@ -336,13 +342,22 @@
       left: 0;
       width: 100%;
       padding: 4px 10px;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.65);
       color: #f5f5f7;
       font-size: 10.5px;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .minimap-header span.expand-hint {
+      color: #0071e3;
+      font-size: 9.5px;
+      font-weight: 600;
     }
 
     .minimap-body {
@@ -361,6 +376,164 @@
       object-fit: contain;
       pointer-events: none;
       transition: opacity 0.35s ease;
+    }
+
+    /* --- ENLARGED MAP MODAL (Workflow from Diagram) --- */
+    #enlarged-map-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+
+    #enlarged-map-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* Modal Backdrop with Bokeh Filter */
+    .map-modal-bokeh-bg {
+      position: absolute;
+      inset: -30px;
+      background: url('market_render.JPG') center/cover no-repeat;
+      filter: blur(40px) brightness(0.4) saturate(1.3);
+      z-index: 1;
+    }
+
+    /* Modal Card Container */
+    .enlarged-map-card {
+      position: relative;
+      z-index: 2;
+      width: 82vw;
+      max-width: 1050px;
+      background: rgba(22, 22, 26, 0.88);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .enlarged-map-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding-bottom: 12px;
+    }
+
+    .enlarged-map-title h2 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .enlarged-map-title p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 2px;
+    }
+
+    .close-map-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-map-btn:hover {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    /* Blueprint Stage with Clickable Teleport Pins */
+    .enlarged-blueprint-stage {
+      position: relative;
+      width: 100%;
+      height: 52vh;
+      min-height: 320px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #enlarged-blueprint-img {
+      width: 96%;
+      height: 90%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Teleport Point Pins (Numbered 1, 2, 3...) */
+    .map-teleport-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #0071e3;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9), 0 4px 10px rgba(0,0,0,0.5);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 10;
+    }
+
+    .map-teleport-pin:hover {
+      background: #ffffff;
+      color: #0071e3;
+      transform: translate(-50%, -50%) scale(1.22);
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.9);
+    }
+
+    .map-teleport-pin.active-node {
+      background: #34c759;
+      box-shadow: 0 0 20px rgba(52, 199, 89, 0.9);
+    }
+
+    .map-teleport-pin span.pin-tooltip {
+      position: absolute;
+      bottom: 44px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .map-teleport-pin:hover span.pin-tooltip {
+      opacity: 1;
     }
 
     /* Bottom Carousel */
@@ -434,25 +607,24 @@
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- 1. Outer Bokeh Frame Layer -->
+    <!-- Outer Bokeh Frame Layer -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- 2. Overall Market Render Viewport -->
+    <!-- Overall Market Render Viewport -->
     <div class="market-render-wrapper">
       <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
-      <!-- 3. Curved Rectangle Navigation Button -->
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- 4. Bottom Left Corner Logo (50px by 50px) -->
+    <!-- Bottom Left Corner Logo (50px by 50px) -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
 
-    <!-- 5. Bottom Academic Credits Bar -->
+    <!-- Bottom Academic Credits Bar -->
     <div class="startup-credits-bar">
       <div class="credit-item">
         <span class="credit-label">Name:</span>
@@ -503,11 +675,34 @@
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- Navigation Floor Plan Seeker -->
-  <div class="minimap-container" title="Ground Floor Plan">
-    <div class="minimap-header" id="map-header">Ground Floor Atrium</div>
+  <!-- 1. Mini-Map in Corner (Click to Enlarge) -->
+  <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and teleport">
+    <div class="minimap-header">
+      <span id="map-header">Ground Floor Atrium</span>
+      <span class="expand-hint">⤢ ENLARGE</span>
+    </div>
     <div class="minimap-body">
       <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
+    </div>
+  </div>
+
+  <!-- 2 & 3. ENLARGED MAP OVERLAY WITH BOKEH & TELEPORT POINTS (Diagram Workflow) -->
+  <div id="enlarged-map-modal" class="hidden">
+    <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
+    <div class="enlarged-map-card">
+      <div class="enlarged-map-header-bar">
+        <div class="enlarged-map-title">
+          <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
+          <p>Select any numbered station point to teleport directly to that 360 view</p>
+        </div>
+        <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close Map</button>
+      </div>
+
+      <div class="enlarged-blueprint-stage" id="enlarged-blueprint-stage">
+        <img id="enlarged-blueprint-img" src="panorama_1_plan.png" alt="Enlarged Blueprint">
+        <!-- Teleport Pins are populated dynamically by JavaScript based on floor plan -->
+        <div id="pins-container"></div>
+      </div>
     </div>
   </div>
 
@@ -539,7 +734,7 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere Background (Set to updated ground_floor.jpg) -->
+    <!-- 360 Sky Sphere Background -->
     <a-sky id="sky-sphere" src="ground_floor.jpg" rotation="0 -90 0"></a-sky>
 
     <!-- Navigation Seeker Hotspot -->
@@ -566,8 +761,6 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
-
-    // Cache-busting timestamp to force browser to load fresh ground_floor.jpg
     const buildTimestamp = Date.now();
 
     // Startup Experience Triggers
@@ -606,6 +799,7 @@
       if (!isPlaying) toggleAudio();
     });
 
+    // Scene Database with Blueprint Teleport Coordinates (X%, Y% on map)
     const scenes = [
       // Ground Floor
       { 
@@ -617,6 +811,9 @@
         src: 'ground_floor.jpg', 
         planImg: 'panorama_1_plan.png',
         planTitle: 'Ground Floor Atrium',
+        pinNum: '1',
+        pinX: 20,
+        pinY: 48,
         nextTarget: 'img-floor1-corridor', 
         nextLabel: 'Go up to Level 1 Corridor', 
         nextPos: '0 -1.6 -4' 
@@ -632,12 +829,15 @@
         src: 'firstfloorcorridor_1.jpg', 
         planImg: 'panorama_1_plan.png',
         planTitle: 'Level 1 Corridor',
+        pinNum: '1',
+        pinX: 35,
+        pinY: 48,
         nextTarget: 'img-floor2-node1', 
         nextLabel: 'Go up to 2nd Floor Gallery', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 2 - Node 1 (Station 1)
+      // Level 2 - Station 1 (Pin 1)
       { 
         id: 'img-floor2-node1', 
         name: '2nd Floor Gallery - Station 1', 
@@ -647,12 +847,15 @@
         src: 'panorama_1.jpg', 
         planImg: 'panorama_1_plan.png',
         planTitle: 'Level 2 Corridor: Station 1',
+        pinNum: '1',
+        pinX: 18,
+        pinY: 50,
         nextTarget: 'img-floor2-node2', 
         nextLabel: 'Walk down hallway to Station 2', 
         nextPos: '0 -1.4 -4' 
       },
 
-      // Level 2 - Node 2 (Station 2)
+      // Level 2 - Station 2 (Pin 2)
       { 
         id: 'img-floor2-node2', 
         name: '2nd Floor Gallery - Station 2', 
@@ -662,6 +865,9 @@
         src: 'panorama_2.jpg', 
         planImg: 'panorama_2_plan.png',
         planTitle: 'Level 2 Corridor: Station 2',
+        pinNum: '2',
+        pinX: 62,
+        pinY: 50,
         nextTarget: 'img-floor2-node1', 
         nextLabel: 'Walk back to Station 1', 
         nextPos: '0 -1.4 4' 
@@ -677,6 +883,9 @@
         src: 'ground_floor.jpg', 
         planImg: 'panorama_2_plan.png',
         planTitle: 'Level 3 Rooftop',
+        pinNum: '1',
+        pinX: 50,
+        pinY: 50,
         nextTarget: 'img-floor2-node1', 
         nextLabel: 'Down to Level 2', 
         nextPos: '0 -1.6 4' 
@@ -690,6 +899,47 @@
       loadScene('img-ground-main', false);
     };
 
+    /* --- ENLARGED MAP MODAL ENGINE --- */
+    function openEnlargedMap() {
+      const modal = document.getElementById('enlarged-map-modal');
+      const enlargedImg = document.getElementById('enlarged-blueprint-img');
+      const modalTitle = document.getElementById('enlarged-modal-title');
+      const pinsContainer = document.getElementById('pins-container');
+
+      const currentScene = scenes.find(s => s.id === activeSceneId) || scenes[0];
+      enlargedImg.src = currentScene.planImg;
+      modalTitle.innerText = `${currentScene.floorName} - ${currentScene.planTitle}`;
+
+      // Render Teleport Pins for the active floor
+      pinsContainer.innerHTML = '';
+      const floorScenes = scenes.filter(s => s.level === currentFloor);
+
+      floorScenes.forEach((scene) => {
+        const pin = document.createElement('div');
+        pin.className = `map-teleport-pin ${scene.id === activeSceneId ? 'active-node' : ''}`;
+        pin.style.left = `${scene.pinX}%`;
+        pin.style.top = `${scene.pinY}%`;
+        pin.innerHTML = `
+          ${scene.pinNum}
+          <span class="pin-tooltip">${scene.name}</span>
+        `;
+        pin.onclick = (e) => {
+          e.stopPropagation();
+          closeEnlargedMap();
+          loadScene(scene.id, true);
+        };
+        pinsContainer.appendChild(pin);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEnlargedMap() {
+      const modal = document.getElementById('enlarged-map-modal');
+      modal.classList.add('hidden');
+    }
+
+    // Floor Elevator Switcher
     function switchFloor(floorNum, btnElement) {
       if (isTransitioning) return;
       currentFloor = floorNum;
@@ -710,17 +960,6 @@
       }
     }
 
-    function toggleFloor2Node() {
-      if (isTransitioning) return;
-      if (currentFloor === 2) {
-        if (activeSceneId === 'img-floor2-node1') {
-          loadScene('img-floor2-node2', true);
-        } else {
-          loadScene('img-floor2-node1', true);
-        }
-      }
-    }
-
     function updateFloorUI(level) {
       const thumbContainer = document.getElementById('thumb-strip');
       thumbContainer.innerHTML = '';
@@ -731,7 +970,6 @@
         card.className = `thumb-card ${scene.id === activeSceneId ? 'active' : ''}`;
         card.onclick = () => loadScene(scene.id, true);
 
-        // Uses timestamp to bypass aggressive browser caching of re-uploaded files
         card.innerHTML = `
           <img src="${scene.src}?v=${buildTimestamp}" alt="${scene.name}">
           <span>${scene.name}</span>
@@ -758,12 +996,11 @@
       isTransitioning = true;
       fadeSphere.setAttribute('visible', 'true');
 
-      // 1. Calculate direction vector towards hotspot for forward dolly motion
+      // Forward motion toward hotspot
       const hotspotPos = hotspot.getAttribute('position');
       const moveX = (hotspotPos.x || 0) * 0.35;
       const moveZ = (hotspotPos.z || -4) * 0.35;
 
-      // 2. Animate camera walking forward
       cameraRig.setAttribute('animation', {
         property: 'position',
         to: `${moveX} 0 ${moveZ}`,
@@ -771,7 +1008,6 @@
         easing: 'easeInQuad'
       });
 
-      // 3. Fade out to black
       fadeSphere.setAttribute('animation', {
         property: 'material.opacity',
         from: 0,
@@ -780,13 +1016,12 @@
         easing: 'easeInQuad'
       });
 
-      // 4. Midpoint: swap texture, reset camera rig position, swap UI
+      // Midpoint: Texture load & reset
       setTimeout(() => {
         applySceneData(sceneData);
         cameraRig.removeAttribute('animation');
         cameraRig.setAttribute('position', '0 0 0');
 
-        // 5. Fade back in
         fadeSphere.setAttribute('animation', {
           property: 'material.opacity',
           from: 1,
@@ -813,7 +1048,7 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Direct WebGL texture reload via THREE.TextureLoader with timestamp cache buster
+      // WebGL texture reload via THREE.TextureLoader
       const sky = document.getElementById('sky-sphere');
       const loader = new THREE.TextureLoader();
       const freshUrl = `${sceneData.src}?v=${buildTimestamp}`;
@@ -830,7 +1065,7 @@
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // Update Floor Plan Blueprint Image
+      // Update Mini-Map Blueprint & Header
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = sceneData.planImg;
