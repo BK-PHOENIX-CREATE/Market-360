@@ -4,11 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market 360 - Virtual Experience</title>
-  <!-- A-Frame WebXR Framework -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <!-- Preload critical startup assets for instant first paint -->
+  <link rel="preload" as="image" href="market_render.JPG">
+  <link rel="preload" as="image" href="logo.png">
+
+  <!-- A-Frame WebXR Framework (deferred execution) -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js" defer></script>
 
   <style>
-    /* 1. EMBEDDED APPLE SAN FRANCISCO FONT DEFINITIONS */
+    /* 1. EMBEDDED APPLE SAN FRANCISCO FONT DEFINITIONS WITH DISPLAY SWAP */
     @font-face {
       font-family: 'SF Pro Custom';
       src: url('SF-Pro-Text-Regular.otf') format('opentype');
@@ -38,7 +43,7 @@
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "San Francisco", sans-serif !important;
+      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "San Francisco", sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -60,7 +65,8 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+      will-change: opacity, visibility;
     }
 
     #startup-screen.hidden {
@@ -69,24 +75,26 @@
       pointer-events: none;
     }
 
-    /* Outer Bokeh Frame Layer */
+    /* 1. Outer Bokeh Frame Layer */
     .bokeh-background {
       position: absolute;
-      inset: -40px;
+      inset: -30px;
       background: url('market_render.JPG') center/cover no-repeat;
-      filter: blur(35px) brightness(0.6) saturate(1.4);
-      transform: scale(1.1);
+      filter: blur(30px) brightness(0.6) saturate(1.3);
+      transform: scale(1.08);
       z-index: 1;
+      will-change: transform;
     }
 
     .bokeh-light {
       position: absolute;
       border-radius: 50%;
-      filter: blur(30px);
+      filter: blur(25px);
       opacity: 0.45;
       mix-blend-mode: screen;
       animation: floatBokeh 10s infinite alternate ease-in-out;
       z-index: 2;
+      will-change: transform;
     }
 
     .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
@@ -95,10 +103,10 @@
 
     @keyframes floatBokeh {
       0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-40px) scale(1.15); }
+      100% { transform: translateY(-30px) scale(1.1); }
     }
 
-    /* Overall Market Render Card Container */
+    /* 2. Overall Market Render Card Container */
     .market-render-wrapper {
       position: relative;
       z-index: 3;
@@ -107,27 +115,27 @@
       max-width: 1200px;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000000;
+      background: #111111;
     }
 
     .market-render-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(1.02);
-      transition: transform 6s ease-out;
+      transform: scale(1.01);
+      transition: transform 3s ease-out;
     }
 
     .market-render-wrapper:hover .market-render-image {
-      transform: scale(1.06);
+      transform: scale(1.04);
     }
 
-    /* Center "Let's Navigate" Curved Rectangle Button */
+    /* 3. Center "Let's Navigate" Curved Rectangle Button */
     .center-cta-btn {
       position: absolute;
       z-index: 10;
@@ -140,20 +148,20 @@
       font-weight: 600;
       letter-spacing: -0.01em;
       cursor: pointer;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.15);
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     .center-cta-btn:hover {
       background: #ffffff;
       color: #111111;
-      transform: scale(1.06);
+      transform: scale(1.05);
       box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* Bottom Left Corner Logo (50px by 50px) */
+    /* 4. Bottom Left Corner Logo */
     .startup-logo {
       position: absolute;
       bottom: 24px;
@@ -173,7 +181,7 @@
       object-fit: contain;
     }
 
-    /* Bottom Academic Credits Bar */
+    /* 5. Bottom Academic Credits Bar */
     .startup-credits-bar {
       position: absolute;
       bottom: 24px;
@@ -227,25 +235,10 @@
       pointer-events: auto;
     }
 
-    .header-title h1 { 
-      font-size: 19px; 
-      font-weight: 700; 
-      letter-spacing: -0.025em; 
-    }
-    
-    .header-title p { 
-      font-size: 12px; 
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.75); 
-      margin-top: 2px; 
-      letter-spacing: -0.01em;
-    }
+    .header-title h1 { font-size: 19px; font-weight: 700; letter-spacing: -0.025em; }
+    .header-title p { font-size: 12px; font-weight: 400; color: rgba(255, 255, 255, 0.75); margin-top: 2px; }
 
-    .header-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .header-controls { display: flex; align-items: center; gap: 10px; }
 
     .audio-btn, .back-home-btn {
       background: rgba(255, 255, 255, 0.2);
@@ -255,20 +248,16 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
-      letter-spacing: -0.01em;
       cursor: pointer;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .audio-btn:hover, .back-home-btn:hover { 
-      background: #ffffff; 
-      color: #111111; 
-    }
+    .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
     /* Vertical Floor Elevator */
     .floor-elevator-nav {
@@ -289,7 +278,6 @@
       border-radius: 10px;
       font-size: 16px;
       font-weight: 700;
-      letter-spacing: -0.02em;
       color: #1d1d1f;
       display: flex;
       align-items: center;
@@ -299,11 +287,7 @@
       transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    .floor-box-btn:hover {
-      background: #ffffff;
-      transform: scale(1.06);
-    }
-
+    .floor-box-btn:hover { background: #ffffff; transform: scale(1.06); }
     .floor-box-btn.active {
       background: #0071e3;
       color: #ffffff;
@@ -311,7 +295,7 @@
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
     }
 
-    /* Mini-Map In Corner */
+    /* Mini-Map in Corner */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -322,8 +306,8 @@
       background: rgba(28, 28, 30, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
       z-index: 100;
       overflow: hidden;
@@ -331,10 +315,7 @@
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
 
-    .minimap-container:hover {
-      transform: scale(1.02);
-      border-color: #0071e3;
-    }
+    .minimap-container:hover { transform: scale(1.02); border-color: #0071e3; }
 
     .minimap-header {
       position: absolute;
@@ -354,11 +335,7 @@
       align-items: center;
     }
 
-    .minimap-header span.expand-hint {
-      color: #0071e3;
-      font-size: 9.5px;
-      font-weight: 600;
-    }
+    .minimap-header span.expand-hint { color: #0071e3; font-size: 9.5px; font-weight: 600; }
 
     .minimap-body {
       position: relative;
@@ -375,10 +352,10 @@
       height: auto;
       object-fit: contain;
       pointer-events: none;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.25s ease;
     }
 
-    /* --- ENLARGED MAP MODAL (Workflow from Diagram) --- */
+    /* Enlarged Map Modal */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -386,31 +363,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.4s ease, visibility 0.4s;
+      transition: opacity 0.3s ease, visibility 0.3s;
     }
 
-    #enlarged-map-modal.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    #enlarged-map-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-    /* Modal Backdrop with Bokeh Filter */
     .map-modal-bokeh-bg {
       position: absolute;
       inset: -30px;
       background: url('market_render.JPG') center/cover no-repeat;
-      filter: blur(40px) brightness(0.4) saturate(1.3);
+      filter: blur(35px) brightness(0.4) saturate(1.3);
       z-index: 1;
     }
 
-    /* Modal Card Container */
     .enlarged-map-card {
       position: relative;
       z-index: 2;
       width: 82vw;
       max-width: 1050px;
-      background: rgba(22, 22, 26, 0.88);
+      background: rgba(22, 22, 26, 0.9);
       border: 1.5px solid rgba(255, 255, 255, 0.35);
       border-radius: 20px;
       padding: 24px;
@@ -431,17 +402,8 @@
       padding-bottom: 12px;
     }
 
-    .enlarged-map-title h2 {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .enlarged-map-title p {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.65);
-      margin-top: 2px;
-    }
+    .enlarged-map-title h2 { font-size: 18px; font-weight: 700; }
+    .enlarged-map-title p { font-size: 12px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
 
     .close-map-btn {
       background: rgba(255, 255, 255, 0.15);
@@ -455,12 +417,8 @@
       transition: all 0.2s ease;
     }
 
-    .close-map-btn:hover {
-      background: #ffffff;
-      color: #111111;
-    }
+    .close-map-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Blueprint Stage with Clickable Teleport Pins */
     .enlarged-blueprint-stage {
       position: relative;
       width: 100%;
@@ -483,7 +441,6 @@
       user-select: none;
     }
 
-    /* Teleport Point Pins (Numbered 1, 2, 3...) */
     .map-teleport-pin {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -499,22 +456,18 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9), 0 4px 10px rgba(0,0,0,0.5);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
       z-index: 10;
     }
 
     .map-teleport-pin:hover {
       background: #ffffff;
       color: #0071e3;
-      transform: translate(-50%, -50%) scale(1.22);
-      box-shadow: 0 0 24px rgba(255, 255, 255, 0.9);
+      transform: translate(-50%, -50%) scale(1.2);
     }
 
-    .map-teleport-pin.active-node {
-      background: #34c759;
-      box-shadow: 0 0 20px rgba(52, 199, 89, 0.9);
-    }
+    .map-teleport-pin.active-node { background: #34c759; }
 
     .map-teleport-pin span.pin-tooltip {
       position: absolute;
@@ -532,9 +485,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .map-teleport-pin:hover span.pin-tooltip {
-      opacity: 1;
-    }
+    .map-teleport-pin:hover span.pin-tooltip { opacity: 1; }
 
     /* Bottom Carousel */
     .bottom-nav-container {
@@ -571,14 +522,10 @@
       overflow: hidden;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: border-color 0.2s ease;
     }
 
-    .thumb-card img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-    }
+    .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
 
     .thumb-card span {
       position: absolute;
@@ -589,7 +536,6 @@
       color: #ffffff;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: -0.01em;
       padding: 4px;
       text-align: center;
       white-space: nowrap;
@@ -597,56 +543,42 @@
       text-overflow: ellipsis;
     }
 
-    .thumb-card.active {
-      border-color: #0071e3;
-      box-shadow: 0 0 12px rgba(0, 113, 227, 0.8);
-    }
+    .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
 </head>
 <body>
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- Outer Bokeh Frame Layer -->
+    <!-- 1. Outer Bokeh Frame Layer -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- Overall Market Render Viewport -->
+    <!-- 2. Overall Market Render Viewport -->
     <div class="market-render-wrapper">
-      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
+      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" loading="eager" decoding="async" onerror="this.src='ground_floor.jpg'">
+      <!-- 3. Curved Rectangle Navigation Button -->
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- Bottom Left Corner Logo (50px by 50px) -->
+    <!-- 4. Bottom Left Corner Logo -->
     <div class="startup-logo">
-      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+      <img src="logo.png" alt="Logo" loading="eager" decoding="async" onerror="this.style.display='none'">
     </div>
 
-    <!-- Bottom Academic Credits Bar -->
+    <!-- 5. Bottom Academic Credits Bar -->
     <div class="startup-credits-bar">
-      <div class="credit-item">
-        <span class="credit-label">Name:</span>
-        <span class="credit-value">Balakrishna Darla</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Year:</span>
-        <span class="credit-value">Vth Year</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Sem:</span>
-        <span class="credit-value">IX</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Roll no:</span>
-        <span class="credit-value">Vu22arch0100016</span>
-      </div>
+      <div class="credit-item"><span class="credit-label">Name:</span><span class="credit-value">Balakrishna Darla</span></div>
+      <div class="credit-item"><span class="credit-label">Year:</span><span class="credit-value">Vth Year</span></div>
+      <div class="credit-item"><span class="credit-label">Sem:</span><span class="credit-value">IX</span></div>
+      <div class="credit-item"><span class="credit-label">Roll no:</span><span class="credit-value">Vu22arch0100016</span></div>
     </div>
   </div>
 
   <!-- Ambient Audio -->
-  <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
+  <audio id="ambient-audio" loop preload="none" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
@@ -658,12 +590,8 @@
       <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
     </div>
     <div class="header-controls">
-      <button class="back-home-btn" onclick="returnToStartup()">
-        <span>🏠</span> <span>Home</span>
-      </button>
-      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
-        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
-      </button>
+      <button class="back-home-btn" onclick="returnToStartup()"><span>🏠</span> <span>Home</span></button>
+      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()"><span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span></button>
     </div>
   </div>
 
@@ -675,18 +603,18 @@
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
   </div>
 
-  <!-- 1. Mini-Map in Corner (Click to Enlarge) -->
+  <!-- Mini-Map In Corner -->
   <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and teleport">
     <div class="minimap-header">
       <span id="map-header">Ground Floor Atrium</span>
       <span class="expand-hint">⤢ ENLARGE</span>
     </div>
     <div class="minimap-body">
-      <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
+      <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan" loading="lazy">
     </div>
   </div>
 
-  <!-- 2 & 3. ENLARGED MAP OVERLAY WITH BOKEH & TELEPORT POINTS (Diagram Workflow) -->
+  <!-- Enlarged Map Modal -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -700,7 +628,6 @@
 
       <div class="enlarged-blueprint-stage" id="enlarged-blueprint-stage">
         <img id="enlarged-blueprint-img" src="panorama_1_plan.png" alt="Enlarged Blueprint">
-        <!-- Teleport Pins are populated dynamically by JavaScript based on floor plan -->
         <div id="pins-container"></div>
       </div>
     </div>
@@ -761,12 +688,18 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
-    const buildTimestamp = Date.now();
+    let vrInitialized = false;
 
     // Startup Experience Triggers
     function startNavigationExperience() {
       const startupScreen = document.getElementById('startup-screen');
       startupScreen.classList.add('hidden');
+      
+      // Lazy load VR 360 texture and audio only upon user interaction
+      if (!vrInitialized) {
+        vrInitialized = true;
+        loadScene('img-ground-main', false);
+      }
       if (!isPlaying) toggleAudio();
     }
 
@@ -799,7 +732,6 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Scene Database with Blueprint Teleport Coordinates (X%, Y% on map)
     const scenes = [
       // Ground Floor
       { 
@@ -895,11 +827,10 @@
     let activeSceneId = 'img-ground-main';
     let currentFloor = 0;
 
-    window.onload = () => { 
-      loadScene('img-ground-main', false);
-    };
+    // Cache texture instances in memory so revisiting scenes is instantaneous
+    const textureMemoryCache = new Map();
 
-    /* --- ENLARGED MAP MODAL ENGINE --- */
+    /* Enlarged Map Modal Engine */
     function openEnlargedMap() {
       const modal = document.getElementById('enlarged-map-modal');
       const enlargedImg = document.getElementById('enlarged-blueprint-img');
@@ -910,7 +841,6 @@
       enlargedImg.src = currentScene.planImg;
       modalTitle.innerText = `${currentScene.floorName} - ${currentScene.planTitle}`;
 
-      // Render Teleport Pins for the active floor
       pinsContainer.innerHTML = '';
       const floorScenes = scenes.filter(s => s.level === currentFloor);
 
@@ -935,11 +865,9 @@
     }
 
     function closeEnlargedMap() {
-      const modal = document.getElementById('enlarged-map-modal');
-      modal.classList.add('hidden');
+      document.getElementById('enlarged-map-modal').classList.add('hidden');
     }
 
-    // Floor Elevator Switcher
     function switchFloor(floorNum, btnElement) {
       if (isTransitioning) return;
       currentFloor = floorNum;
@@ -971,7 +899,7 @@
         card.onclick = () => loadScene(scene.id, true);
 
         card.innerHTML = `
-          <img src="${scene.src}?v=${buildTimestamp}" alt="${scene.name}">
+          <img src="${scene.src}" alt="${scene.name}" loading="lazy" decoding="async">
           <span>${scene.name}</span>
         `;
         thumbContainer.appendChild(card);
@@ -996,7 +924,6 @@
       isTransitioning = true;
       fadeSphere.setAttribute('visible', 'true');
 
-      // Forward motion toward hotspot
       const hotspotPos = hotspot.getAttribute('position');
       const moveX = (hotspotPos.x || 0) * 0.35;
       const moveZ = (hotspotPos.z || -4) * 0.35;
@@ -1004,7 +931,7 @@
       cameraRig.setAttribute('animation', {
         property: 'position',
         to: `${moveX} 0 ${moveZ}`,
-        dur: 400,
+        dur: 350,
         easing: 'easeInQuad'
       });
 
@@ -1012,11 +939,10 @@
         property: 'material.opacity',
         from: 0,
         to: 1,
-        dur: 400,
+        dur: 350,
         easing: 'easeInQuad'
       });
 
-      // Midpoint: Texture load & reset
       setTimeout(() => {
         applySceneData(sceneData);
         cameraRig.removeAttribute('animation');
@@ -1026,7 +952,7 @@
           property: 'material.opacity',
           from: 1,
           to: 0,
-          dur: 450,
+          dur: 400,
           easing: 'easeOutQuad'
         });
 
@@ -1034,8 +960,8 @@
           fadeSphere.setAttribute('visible', 'false');
           fadeSphere.removeAttribute('animation');
           isTransitioning = false;
-        }, 460);
-      }, 410);
+        }, 410);
+      }, 360);
     }
 
     function applySceneData(sceneData) {
@@ -1048,30 +974,35 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // WebGL texture reload via THREE.TextureLoader
+      // Memory-cached WebGL Texture Loading
       const sky = document.getElementById('sky-sphere');
-      const loader = new THREE.TextureLoader();
-      const freshUrl = `${sceneData.src}?v=${buildTimestamp}`;
       
-      loader.load(freshUrl, function(texture) {
+      if (textureMemoryCache.has(sceneData.src)) {
         const mesh = sky.getObject3D('mesh');
         if (mesh) {
-          mesh.material.map = texture;
+          mesh.material.map = textureMemoryCache.get(sceneData.src);
           mesh.material.needsUpdate = true;
         }
-      });
+      } else {
+        const loader = new THREE.TextureLoader();
+        loader.load(sceneData.src, function(texture) {
+          textureMemoryCache.set(sceneData.src, texture);
+          const mesh = sky.getObject3D('mesh');
+          if (mesh) {
+            mesh.material.map = texture;
+            mesh.material.needsUpdate = true;
+          }
+        });
+      }
 
-      // Update Header Text
       document.getElementById('location-title').innerText = sceneData.name;
       document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
 
-      // Update Mini-Map Blueprint & Header
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = sceneData.planImg;
       mapHeader.innerText = sceneData.planTitle;
 
-      // Update Navigation Hotspot
       const hotspot = document.getElementById('hotspot-navigation');
       if (sceneData.nextTarget) {
         hotspot.setAttribute('visible', 'true');
