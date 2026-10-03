@@ -447,7 +447,9 @@
       filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
     }
 
-    /* Enlarged Blueprint Modal with Bokeh Background */
+    /* =========================================================
+       ENLARGED BLUEPRINT MODAL (Tailored Tight to Image Ratio)
+       ========================================================= */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -469,32 +471,38 @@
       filter: blur(40px) brightness(0.4) saturate(1.3);
       z-index: 1;
     }
+
+    /* Width wraps snugly to the image ratio with zero extra black bars */
     .enlarged-map-card {
       position: relative;
       z-index: 2;
-      width: 82vw;
-      max-width: 1050px;
-      background: rgba(22, 22, 26, 0.92);
+      width: fit-content;
+      max-width: 90vw;
+      background: rgba(22, 22, 26, 0.94);
       border: 1.5px solid rgba(255, 255, 255, 0.35);
       border-radius: 20px;
-      padding: 24px;
+      padding: 20px 22px;
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
+
     .enlarged-map-header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 24px;
       color: #ffffff;
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding-bottom: 12px;
+      width: 100%;
     }
-    .enlarged-map-title h2 { font-size: 18px; font-weight: 700; }
-    .enlarged-map-title p { font-size: 12px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
+
+    .enlarged-map-title h2 { font-size: 17px; font-weight: 700; }
+    .enlarged-map-title p { font-size: 11.5px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
 
     .close-map-btn {
       background: rgba(255, 255, 255, 0.15);
@@ -505,45 +513,43 @@
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
       transition: all 0.2s ease;
     }
     .close-map-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Centered Stage */
+    /* Seamless Stage hugging the exact image boundary */
     .enlarged-blueprint-stage {
       position: relative;
-      width: 100%;
-      height: 56vh;
-      min-height: 320px;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
+      width: fit-content;
+      height: auto;
+      background: transparent;
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      margin: 0 auto;
     }
 
-    /* Tight wrapper that hugs the rendered image so pins never float outside */
     .blueprint-image-wrapper {
       position: relative;
-      display: inline-flex;
-      max-width: 100%;
-      max-height: 100%;
-      align-items: center;
-      justify-content: center;
+      display: inline-block;
+      line-height: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     #enlarged-blueprint-img {
-      max-width: 100%;
-      max-height: 54vh;
+      max-height: 66vh;
+      max-width: 82vw;
       width: auto;
       height: auto;
       object-fit: contain;
       display: block;
       pointer-events: none;
       user-select: none;
-      border-radius: 6px;
     }
 
     #pins-container {
@@ -752,7 +758,7 @@
     </div>
   </div>
 
-  <!-- Enlarged Blueprint Modal with Bokeh Background & Precise Pin Alignment -->
+  <!-- Enlarged Blueprint Modal (Fitted strictly to image ratio) -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -765,7 +771,6 @@
       </div>
 
       <div class="enlarged-blueprint-stage">
-        <!-- Wrapper ensuring pins align precisely with the image bounds -->
         <div class="blueprint-image-wrapper">
           <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
           <div id="pins-container"></div>
@@ -865,12 +870,6 @@
       }
     }
 
-    /* 
-      SITE TELEPORT POINTS:
-      Point 1: Upper Junction
-      Point 2: Lower Right Avenue
-      Point 3: West Entrance Street
-    */
     const floorPlansConfig = [
       {
         level: 0,
