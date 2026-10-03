@@ -210,7 +210,7 @@
     }
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Vertical Floor Elevator: 8 Levels */
+    /* Vertical Floor Elevator */
     .floor-elevator-nav {
       position: absolute;
       top: 80px;
@@ -219,7 +219,7 @@
       flex-direction: column;
       gap: 6px;
       z-index: 100;
-      max-height: calc(100vh - 200px);
+      max-height: calc(100vh - 320px);
       overflow-y: auto;
       scrollbar-width: none;
     }
@@ -249,63 +249,77 @@
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
     }
 
-    /* Bottom-Left Mini-Map Preview */
+    /* =========================================================
+       UPDATED BOTTOM-LEFT MAP (Red Box Proportion: ~220px x 210px)
+       ========================================================= */
     .minimap-container {
       position: absolute;
       bottom: 24px;
       left: 24px;
-      width: 380px;
-      max-width: 45vw;
-      height: 95px;
-      background: rgba(28, 28, 30, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 12px;
+      width: 220px;
+      height: 210px;
+      background: rgba(24, 24, 28, 0.9);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      border-radius: 14px;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
       z-index: 100;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .minimap-container:hover {
-      transform: scale(1.02);
+      transform: translateY(-3px) scale(1.02);
       border-color: #0071e3;
+      box-shadow: 0 14px 35px rgba(0, 113, 227, 0.4);
     }
     .minimap-header {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
-      padding: 4px 10px;
-      background: rgba(0, 0, 0, 0.65);
+      padding: 7px 12px;
+      background: rgba(0, 0, 0, 0.7);
       color: #f5f5f7;
-      font-size: 10.5px;
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      z-index: 2;
+      letter-spacing: 0.03em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-shrink: 0;
     }
-    .minimap-header span.expand-hint { color: #0071e3; font-size: 9.5px; font-weight: 700; }
+    .minimap-header span#map-header {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 130px;
+    }
+    .minimap-header span.expand-hint {
+      color: #0071e3;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
 
     .minimap-body {
       position: relative;
       width: 100%;
-      height: 100%;
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-top: 16px;
+      padding: 8px;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 70%);
     }
     #minimap-img {
-      width: 95%;
-      height: auto;
-      max-height: 70px;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       pointer-events: none;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     }
 
     /* Enlarged Blueprint Modal with Bokeh Background */
@@ -546,7 +560,7 @@
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Site">S</button>
   </div>
 
-  <!-- Bottom-Left Mini-Map (Click to open enlarged modal) -->
+  <!-- Bottom-Left Mini-Map (Resized to match the red box reference) -->
   <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and view teleport points">
     <div class="minimap-header">
       <span id="map-header">Site Layout Plan</span>
@@ -651,17 +665,12 @@
       }
     }
 
-    /* 
-      MASTER CONFIGURATION:
-      This is where we add each floor's plan and its multiple 360 teleport points (pins).
-      Update the planImg and points array as you upload files.
-    */
     const floorPlansConfig = [
       {
         level: 0,
         floorName: "Site",
         floorCode: "S",
-        planImg: "site_plan.png", // Upload this to GitHub
+        planImg: "site_plan.png",
         planTitle: "Site Layout Plan",
         fallbackImg: "market_render.JPG",
         points: [
@@ -765,12 +774,10 @@
 
       const floorConfig = floorPlansConfig.find(f => f.level === currentFloorLevel) || floorPlansConfig[0];
       
-      // Load floor plan with automatic fallback
       enlargedImg.src = floorConfig.planImg;
       enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
       modalTitle.innerText = `${floorConfig.floorName} - ${floorConfig.planTitle}`;
 
-      // Render Teleportation Pins
       pinsContainer.innerHTML = '';
       floorConfig.points.forEach((pt) => {
         const pin = document.createElement('div');
@@ -848,18 +855,15 @@
     }
 
     function applyView(floorConfig, pointData) {
-      // Header Updates
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      // Mini-map Updates
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       mapHeader.innerText = floorConfig.planTitle;
 
-      // 360 Panorama Load with fallback
       const sky = document.getElementById('sky-sphere');
       const loader = new THREE.TextureLoader();
       loader.load(pointData.src, function(texture) {
@@ -872,7 +876,6 @@
         });
       });
 
-      // Bottom Thumbnails Strip
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
