@@ -509,10 +509,11 @@
     }
     .close-map-btn:hover { background: #ffffff; color: #111111; }
 
+    /* Centered Stage */
     .enlarged-blueprint-stage {
       position: relative;
       width: 100%;
-      height: 52vh;
+      height: 56vh;
       min-height: 320px;
       background: rgba(0, 0, 0, 0.45);
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -522,20 +523,41 @@
       justify-content: center;
       overflow: hidden;
     }
+
+    /* Tight wrapper that hugs the rendered image so pins never float outside */
+    .blueprint-image-wrapper {
+      position: relative;
+      display: inline-flex;
+      max-width: 100%;
+      max-height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
     #enlarged-blueprint-img {
-      width: 96%;
-      height: 90%;
+      max-width: 100%;
+      max-height: 54vh;
+      width: auto;
+      height: auto;
       object-fit: contain;
+      display: block;
       pointer-events: none;
       user-select: none;
+      border-radius: 6px;
+    }
+
+    #pins-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
     }
 
     /* Numbered Teleportation Nodes */
     .map-teleport-pin {
       position: absolute;
       transform: translate(-50%, -50%);
-      width: 38px;
-      height: 38px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       background: #0071e3;
       border: 2px solid #ffffff;
@@ -547,8 +569,9 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 0 16px rgba(0, 113, 227, 0.9);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease;
       z-index: 10;
+      pointer-events: auto;
     }
     .map-teleport-pin:hover {
       background: #ffffff;
@@ -562,7 +585,7 @@
     }
     .map-teleport-pin span.pin-tooltip {
       position: absolute;
-      bottom: 44px;
+      bottom: 42px;
       background: rgba(0, 0, 0, 0.85);
       color: #ffffff;
       font-size: 11px;
@@ -718,7 +741,7 @@
     </div>
   </div>
 
-  <!-- Bottom-Left Mini-Map (Compact 140px x 135px) -->
+  <!-- Bottom-Left Mini-Map -->
   <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and view teleport points">
     <div class="minimap-header">
       <span id="map-header">Site Layout Plan</span>
@@ -729,7 +752,7 @@
     </div>
   </div>
 
-  <!-- Enlarged Blueprint Modal with Bokeh Background & Interactive Teleport Points -->
+  <!-- Enlarged Blueprint Modal with Bokeh Background & Precise Pin Alignment -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -742,8 +765,11 @@
       </div>
 
       <div class="enlarged-blueprint-stage">
-        <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
-        <div id="pins-container"></div>
+        <!-- Wrapper ensuring pins align precisely with the image bounds -->
+        <div class="blueprint-image-wrapper">
+          <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
+          <div id="pins-container"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -774,7 +800,6 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- Pointing directly to site_1.png -->
     <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
 
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
@@ -799,7 +824,7 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // --- Dynamic dropdown controllers ---
+    // Dropdown interactions
     const dropdownWrapper = document.getElementById('floor-dropdown');
     const dropdownTrigger = document.getElementById('floor-trigger');
     const dropdownMenu = document.getElementById('floor-menu');
@@ -841,10 +866,10 @@
     }
 
     /* 
-      MASTER CONFIGURATION:
-      Configured exactly to match the uploaded .png files in the repository:
-      - site_plan.png
-      - site_1.png, site_2.png, site_3.png
+      SITE TELEPORT POINTS:
+      Point 1: Upper Junction
+      Point 2: Lower Right Avenue
+      Point 3: West Entrance Street
     */
     const floorPlansConfig = [
       {
@@ -855,9 +880,9 @@
         planTitle: "Site Layout Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 63, pinY: 20, src: "site_1.png", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 62.5, pinY: 21, src: "site_1.png", fallbackSrc: "market_render.JPG" },
           { id: "site-node-2", name: "Lower Right Avenue", pinNum: "2", pinX: 69, pinY: 69, src: "site_2.png", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14, pinY: 37, src: "site_3.png", fallbackSrc: "market_render.JPG" }
+          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14.5, pinY: 55, src: "site_3.png", fallbackSrc: "market_render.JPG" }
         ]
       },
       {
