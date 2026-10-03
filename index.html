@@ -1,330 +1,854 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>360 VR Market Map Interface</title>
-    <!-- A-Frame VR Framework [cite: 1] -->
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <style>
-        /* [cite: 2] SF Pro Font Embedding - Looks for file in repo, then falls back */
-        @font-face {
-            font-family: 'SF Pro Display';
-            src: url('SF-Pro-Display-Regular.otf') format('opentype');
-            font-weight: 400;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market 360 - Virtual Experience</title>
+  <!-- A-Frame WebXR Framework -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #000;
-        }
+  <style>
+    /* 1. EMBEDDED APPLE SAN FRANCISCO FONT DEFINITIONS */
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
 
-        .hidden { display: none !important; }
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
 
-        /* [cite: 15] 1. Startup Landing Page (State 1) */
-        #landing-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            transition: opacity 0.8s ease;
-        }
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
 
-        /* [cite: 15] Background Bokeh effect for State 1 */
-        .bokeh-background {
-            position: absolute;
-            top: -50px; left: -50px;
-            width: calc(100% + 100px);
-            height: calc(100% + 100px);
-            background-size: cover;
-            background-position: center;
-            filter: blur(40px) brightness(0.7);
-            z-index: 1;
-        }
+    /* 2. UNIVERSAL TYPOGRAPHY BINDING */
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "San Francisco", sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body, html { 
+      width: 100%; 
+      height: 100%; 
+      overflow: hidden; 
+      background-color: #000000;
+    }
 
-        /* [cite: 15] Opaque focused card for State 1 */
-        #focused-card {
-            position: relative;
-            width: 1200px;
-            height: 675px; /* 16:9 Aspect ratio */
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+    /* --- STARTUP LANDING OVERLAY --- */
+    #startup-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background-color: #09090b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+    }
 
-        #focused-card .market-logo {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 25px;
-        }
+    #startup-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
-        #lets-navigate-btn {
-            padding: 18px 50px;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background-color: white;
-            color: black;
-            border: 2px solid #D0D0D0;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+    /* 1. Outer Bokeh Frame Layer */
+    .bokeh-background {
+      position: absolute;
+      inset: -40px;
+      background: url('market_render.JPG') center/cover no-repeat;
+      filter: blur(35px) brightness(0.6) saturate(1.4);
+      transform: scale(1.1);
+      z-index: 1;
+    }
 
-        #lets-navigate-btn:hover {
-            background-color: black;
-            color: white;
-            border-color: black;
-            transform: scale(1.05);
-        }
+    .bokeh-light {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.45;
+      mix-blend-mode: screen;
+      animation: floatBokeh 10s infinite alternate ease-in-out;
+      z-index: 2;
+    }
 
-        #focused-card .description {
-            color: #8E8E93;
-            font-size: 14px;
-            margin-top: 20px;
-        }
+    .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
+    .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
+    .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
 
-        /* Custom credits bar referencing image_12.png [cite: 1, 15] */
-        #credits-bar {
-            position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border-radius: 25px;
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            font-size: 11px;
-            white-space: nowrap;
-        }
+    @keyframes floatBokeh {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-40px) scale(1.15); }
+    }
 
-        /* [cite: 15] 2. Map Page - State 2/3 (Opaque Card on Bokeh Background) */
-        #map-page {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 90;
-        }
+    /* 2. Overall Market Render Card Container */
+    .market-render-wrapper {
+      position: relative;
+      z-index: 3;
+      width: 82vw;
+      height: 72vh;
+      max-width: 1200px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000000;
+    }
 
-        #enlarged-map-frame {
-            position: relative;
-            width: 1200px; /* Matching State 1 size */
-            height: 675px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            overflow: hidden;
-        }
+    .market-render-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      transition: transform 6s ease-out;
+    }
 
-        #floor-plan-container {
-            position: relative;
-            width: 80%; /* Map image within the frame */
-            height: 80%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .market-render-wrapper:hover .market-render-image {
+      transform: scale(1.06);
+    }
 
-        .floor-plan-img {
-            max-width: 100%;
-            max-height: 100%;
-            border: 1px solid black;
-            cursor: pointer;
-        }
+    /* 3. Center "Let's Navigate" Curved Rectangle Button */
+    .center-cta-btn {
+      position: absolute;
+      z-index: 10;
+      padding: 16px 42px;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      border-radius: 40px;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.15);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
 
-        /* [cite: 3] Hotspot/Teleport Points */
-        .hotspot {
-            position: absolute;
-            width: 30px; height: 30px;
-            background-color: white;
-            border: 2px solid #5AC8FA;
-            border-radius: 50%;
-            color: black;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
+    .center-cta-btn:hover {
+      background: #ffffff;
+      color: #111111;
+      transform: scale(1.06);
+      box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
+    }
 
-        .hotspot:hover {
-            background-color: #5AC8FA;
-            color: white;
-            transform: scale(1.15);
-        }
+    /* 4. Bottom Left Corner Logo (50px by 50px) */
+    .startup-logo {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      z-index: 10;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+    }
 
-        .hotspot .number {
-            font-size: 16px;
-            font-weight: 700;
-        }
+    .startup-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
 
-        .hotspot .label {
-            position: absolute;
-            top: 35px;
-            font-size: 10px;
-            white-space: nowrap;
-            opacity: 0;
-            color: black;
-            transition: opacity 0.2s ease;
-        }
+    /* 5. Bottom Academic Credits Bar */
+    .startup-credits-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 10px 28px;
+      background: rgba(18, 18, 20, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
 
-        .hotspot:hover .label { opacity: 1; }
+    .credit-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #f5f5f7;
+      font-size: 13px;
+      white-space: nowrap;
+    }
 
-        /* Customizable hotspot positions on floor plan [cite: 3] */
-        .hotspot-1 { top: 20%; left: 15%; }
-        .hotspot-2 { top: 60%; left: 20%; }
-        .hotspot-3 { top: 30%; left: 50%; }
-        .hotspot-4 { top: 70%; left: 80%; }
-        .hotspot-5 { top: 30%; left: 85%; }
+    .credit-label {
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+    }
 
-        /* Active hotspot state [cite: 3] */
-        .hotspot.active {
-            background-color: black;
-            color: white;
-            border-color: black;
-        }
+    .credit-value {
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
 
-        /* [cite: 15] 3. The Live 3D Tour View (State 3 - fullscreen) */
-        #tour-view {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 5; /* Behind the overlays */
-        }
-    </style>
+    /* Top Overlay Header */
+    .header-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
+      color: #ffffff;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .header-title h1 { 
+      font-size: 19px; 
+      font-weight: 700; 
+      letter-spacing: -0.025em; 
+    }
+    
+    .header-title p { 
+      font-size: 12px; 
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.75); 
+      margin-top: 2px; 
+      letter-spacing: -0.01em;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .audio-btn, .back-home-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .audio-btn:hover, .back-home-btn:hover { 
+      background: #ffffff; 
+      color: #111111; 
+    }
+
+    /* Vertical Floor Elevator */
+    .floor-elevator-nav {
+      position: absolute;
+      top: 90px;
+      left: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .floor-box-btn {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1d1d1f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .floor-box-btn:hover {
+      background: #ffffff;
+      transform: scale(1.06);
+    }
+
+    .floor-box-btn.active {
+      background: #0071e3;
+      color: #ffffff;
+      border-color: #0077ed;
+      box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
+    }
+
+    /* Interactive Floor Plan */
+    .minimap-container {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 380px;
+      max-width: 45vw;
+      height: 90px;
+      background: rgba(28, 28, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .minimap-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.55);
+      color: #f5f5f7;
+      font-size: 10.5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      z-index: 2;
+    }
+
+    .minimap-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 14px;
+    }
+
+    #minimap-img {
+      width: 95%;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    /* Bottom Carousel */
+    .bottom-nav-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 70%, transparent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 90;
+      pointer-events: none;
+    }
+
+    .bottom-nav-container > * { pointer-events: auto; }
+
+    .thumbnail-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      max-width: 50vw;
+      padding-bottom: 6px;
+    }
+
+    .thumb-card {
+      position: relative;
+      flex: 0 0 auto;
+      width: 110px;
+      height: 65px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .thumb-card img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; 
+    }
+
+    .thumb-card span {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      padding: 4px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .thumb-card.active {
+      border-color: #0071e3;
+      box-shadow: 0 0 12px rgba(0, 113, 227, 0.8);
+    }
+  </style>
 </head>
 <body>
 
-    <!-- [cite: 15] 1. The Startup Landing Page (State 1) -->
-    <div id="landing-page">
-        <!-- Background bokeh linking to Panorama 1 [cite: 15] -->
-        <div class="bokeh-background" style="background-image: url('panorama_1.jpg');"></div>
-        
-        <div id="focused-card">
-            <!-- Market Logo [cite: 4] -->
-            <img src="logo.png" alt="Market Logo" class="market-logo" onerror="this.style.display='none'">
-            <button id="lets-navigate-btn">Let's Navigate</button>
-            <p class="description">Architectural 360 Panorama</p>
-            
-            <!-- [cite: 1, 15] Academic Credits Bar referencing image_12.png -->
-            <div id="credits-bar">
-                <span class="credit-item">Name: Balakrishna Darla</span>
-                <span class="credit-item">Year: Vth Year</span>
-                <span class="credit-item">Sem: IX</span>
-                <span class="credit-item">Roll no: Vu22arch0100016</span>
-            </div>
-        </div>
+  <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
+  <div id="startup-screen">
+    <!-- 1. Outer Bokeh Frame Layer -->
+    <div class="bokeh-background"></div>
+    <div class="bokeh-light orb1"></div>
+    <div class="bokeh-light orb2"></div>
+    <div class="bokeh-light orb3"></div>
+
+    <!-- 2. Overall Market Render Viewport -->
+    <div class="market-render-wrapper">
+      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
+      <!-- 3. Curved Rectangle Navigation Button -->
+      <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- [cite: 15] 2. The Interactive Floor Plan Map (State 2/3) -->
-    <div id="map-page" class="hidden">
-        <div class="bokeh-background" style="background-image: url('panorama_1.jpg');"></div>
-        <div id="enlarged-map-frame">
-            <div id="floor-plan-container">
-                <img src="floor_plan.png" alt="Floor Plan Blueprint" class="floor-plan-img">
-                
-                <!-- [cite: 3] Teleport Hotspots referencing image_23.png -->
-                <div class="hotspot hotspot-1" onclick="teleportToPan(1, this)" title="Entry Station 1">
-                    <span class="number">1</span>
-                    <span class="label">Entry</span>
-                </div>
-                <div class="hotspot hotspot-2" onclick="teleportToPan(2, this)" title="Station 2">
-                    <span class="number">2</span>
-                    <span class="label">Corridor A</span>
-                </div>
-                <div class="hotspot hotspot-3" onclick="teleportToPan(3, this)" title="Station 3">
-                    <span class="number">3</span>
-                    <span class="label">Vendor Row</span>
-                </div>
-                <div class="hotspot hotspot-4" onclick="teleportToPan(4, this)" title="Station 4">
-                    <span class="number">4</span>
-                    <span class="label">Atrium</span>
-                </div>
-                <div class="hotspot hotspot-5" onclick="teleportToPan(5, this)" title="Station 5">
-                    <span class="number">5</span>
-                    <span class="label">Exit Gate</span>
-                </div>
-            </div>
-        </div>
+    <!-- 4. Bottom Left Corner Logo (50px by 50px) -->
+    <div class="startup-logo">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
 
-    <!-- [cite: 3] 3. The 3D VR Tour Environment -->
-    <div id="tour-view" class="hidden">
-        <a-scene embedded vr-mode-ui="enabled: true">
-            <a-assets>
-                <img id="pan-1" src="panorama_1.jpg">
-                <img id="pan-2" src="panorama_2.jpg">
-                <img id="pan-3" src="panorama_3.jpg">
-                <img id="pan-4" src="panorama_4.jpg">
-                <img id="pan-5" src="panorama_5.jpg">
-            </a-assets>
-
-            <!-- [cite: 3] 360 Sky Background linked to image sources -->
-            <a-sky id="sky-sphere" src="#pan-1" rotation="0 -90 0"></a-sky>
-            
-            <a-entity camera look-controls position="0 1.6 0"></a-entity>
-        </a-scene>
+    <!-- 5. Bottom Academic Credits Bar -->
+    <div class="startup-credits-bar">
+      <div class="credit-item">
+        <span class="credit-label">Name:</span>
+        <span class="credit-value">Balakrishna Darla</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Year:</span>
+        <span class="credit-value">Vth Year</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Sem:</span>
+        <span class="credit-value">IX</span>
+      </div>
+      <div class="credit-item">
+        <span class="credit-label">Roll no:</span>
+        <span class="credit-value">Vu22arch0100016</span>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // State and transition logic
-        const landingPage = document.getElementById('landing-page');
-        const mapPage = document.getElementById('map-page');
-        const tourView = document.getElementById('tour-view');
-        const letsNavigateBtn = document.getElementById('lets-navigate-btn');
-        const skySphere = document.getElementById('sky-sphere');
+  <!-- Ambient Audio -->
+  <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
+    <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
+    <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
+  </audio>
 
-        // [cite: 15] Event 1: Start Tour
-        letsNavigateBtn.addEventListener('click', () => {
-            landingPage.classList.add('hidden');
-            mapPage.classList.remove('hidden');
-            tourView.classList.remove('hidden');
+  <!-- Top Header UI -->
+  <div class="header-bar">
+    <div class="header-title">
+      <h1 id="location-title">Main Market Hall</h1>
+      <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
+    </div>
+    <div class="header-controls">
+      <button class="back-home-btn" onclick="returnToStartup()">
+        <span>🏠</span> <span>Home</span>
+      </button>
+      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
+        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vertical Floor Elevator Switcher -->
+  <div class="floor-elevator-nav">
+    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
+    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
+    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1 / Exhibition Corridor">1</button>
+    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
+  </div>
+
+  <!-- Navigation Floor Plan Seeker -->
+  <div class="minimap-container" title="Ground Floor Plan">
+    <div class="minimap-header" id="map-header">Ground Floor Atrium</div>
+    <div class="minimap-body">
+      <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Carousel -->
+  <div class="bottom-nav-container">
+    <div class="thumbnail-strip" id="thumb-strip"></div>
+  </div>
+
+  <!-- A-Frame VR Canvas -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
+    <a-entity id="cameraRig" position="0 0 0">
+      <a-camera id="camera" look-controls wasd-controls="enabled: false">
+        <a-cursor 
+          id="cursor"
+          color="#FFFFFF"
+          raycaster="objects: .clickable"
+          animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
+        </a-cursor>
+
+        <!-- Seamless Black Fade Sphere Attached to Camera -->
+        <a-sphere 
+          id="fade-sphere" 
+          radius="0.1" 
+          position="0 0 -0.05"
+          material="color: #000000; side: back; shader: flat; transparent: true; opacity: 0"
+          visible="false">
+        </a-sphere>
+      </a-camera>
+      <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
+    </a-entity>
+
+    <!-- 360 Sky Sphere Background (Set to updated ground_floor.jpg) -->
+    <a-sky id="sky-sphere" src="ground_floor.jpg" rotation="0 -90 0"></a-sky>
+
+    <!-- Navigation Seeker Hotspot -->
+    <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
+      <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
+      <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
+      <a-text 
+        value="Go up to Level 1 Corridor" 
+        align="center" 
+        position="0 -0.8 0" 
+        rotation="90 0 0" 
+        scale="1.2 1.2 1.2" 
+        color="#FFFFFF" 
+        font="dejavu" 
+        letter-spacing="-0.5">
+      </a-text>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const audio = document.getElementById('ambient-audio');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundLabel = document.getElementById('sound-label');
+    const soundIcon = document.getElementById('sound-icon');
+    let isPlaying = false;
+    let isTransitioning = false;
+
+    // Cache-busting timestamp to force browser to load fresh ground_floor.jpg
+    const buildTimestamp = Date.now();
+
+    // Startup Experience Triggers
+    function startNavigationExperience() {
+      const startupScreen = document.getElementById('startup-screen');
+      startupScreen.classList.add('hidden');
+      if (!isPlaying) toggleAudio();
+    }
+
+    function returnToStartup() {
+      const startupScreen = document.getElementById('startup-screen');
+      startupScreen.classList.remove('hidden');
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        soundLabel.innerText = "Enable Ambience";
+        soundIcon.innerText = "🔈";
+        isPlaying = false;
+      } else {
+        audio.volume = 0.4;
+        audio.play().then(() => {
+          soundLabel.innerText = "Mute Ambience";
+          soundIcon.innerText = "🔊";
+          isPlaying = true;
+        }).catch(err => console.warn(err));
+      }
+    }
+
+    document.querySelector('a-scene').addEventListener('enter-vr', () => {
+      const startupScreen = document.getElementById('startup-screen');
+      if (!startupScreen.classList.contains('hidden')) {
+        startupScreen.classList.add('hidden');
+      }
+      if (!isPlaying) toggleAudio();
+    });
+
+    const scenes = [
+      // Ground Floor
+      { 
+        id: 'img-ground-main', 
+        name: 'Main Market Hall', 
+        floorName: 'Ground Floor',
+        floorCode: 'G',
+        level: 0, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Ground Floor Atrium',
+        nextTarget: 'img-floor1-corridor', 
+        nextLabel: 'Go up to Level 1 Corridor', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // Level 1
+      { 
+        id: 'img-floor1-corridor', 
+        name: 'First Floor Exhibition Corridor', 
+        floorName: 'First Floor',
+        floorCode: '1',
+        level: 1, 
+        src: 'firstfloorcorridor_1.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Level 1 Corridor',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Go up to 2nd Floor Gallery', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // Level 2 - Node 1 (Station 1)
+      { 
+        id: 'img-floor2-node1', 
+        name: '2nd Floor Gallery - Station 1', 
+        floorName: 'Second Floor',
+        floorCode: '2',
+        level: 2, 
+        src: 'panorama_1.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Level 2 Corridor: Station 1',
+        nextTarget: 'img-floor2-node2', 
+        nextLabel: 'Walk down hallway to Station 2', 
+        nextPos: '0 -1.4 -4' 
+      },
+
+      // Level 2 - Node 2 (Station 2)
+      { 
+        id: 'img-floor2-node2', 
+        name: '2nd Floor Gallery - Station 2', 
+        floorName: 'Second Floor',
+        floorCode: '2',
+        level: 2, 
+        src: 'panorama_2.jpg', 
+        planImg: 'panorama_2_plan.png',
+        planTitle: 'Level 2 Corridor: Station 2',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Walk back to Station 1', 
+        nextPos: '0 -1.4 4' 
+      },
+
+      // Level 3
+      { 
+        id: 'img-floor3', 
+        name: 'Level 3 Rooftop Overlook', 
+        floorName: 'Rooftop Terrace',
+        floorCode: '3',
+        level: 3, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_2_plan.png',
+        planTitle: 'Level 3 Rooftop',
+        nextTarget: 'img-floor2-node1', 
+        nextLabel: 'Down to Level 2', 
+        nextPos: '0 -1.6 4' 
+      }
+    ];
+
+    let activeSceneId = 'img-ground-main';
+    let currentFloor = 0;
+
+    window.onload = () => { 
+      loadScene('img-ground-main', false);
+    };
+
+    function switchFloor(floorNum, btnElement) {
+      if (isTransitioning) return;
+      currentFloor = floorNum;
+      
+      document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        const matchingBtn = document.querySelector(`.floor-box-btn[data-floor="${floorNum}"]`);
+        if (matchingBtn) matchingBtn.classList.add('active');
+      }
+
+      const firstSceneOfFloor = scenes.find(s => s.level === floorNum);
+      if (firstSceneOfFloor) {
+        loadScene(firstSceneOfFloor.id, true);
+      } else {
+        updateFloorUI(floorNum);
+      }
+    }
+
+    function toggleFloor2Node() {
+      if (isTransitioning) return;
+      if (currentFloor === 2) {
+        if (activeSceneId === 'img-floor2-node1') {
+          loadScene('img-floor2-node2', true);
+        } else {
+          loadScene('img-floor2-node1', true);
+        }
+      }
+    }
+
+    function updateFloorUI(level) {
+      const thumbContainer = document.getElementById('thumb-strip');
+      thumbContainer.innerHTML = '';
+      const filteredScenes = scenes.filter(s => s.level === level);
+
+      filteredScenes.forEach(scene => {
+        const card = document.createElement('div');
+        card.className = `thumb-card ${scene.id === activeSceneId ? 'active' : ''}`;
+        card.onclick = () => loadScene(scene.id, true);
+
+        // Uses timestamp to bypass aggressive browser caching of re-uploaded files
+        card.innerHTML = `
+          <img src="${scene.src}?v=${buildTimestamp}" alt="${scene.name}">
+          <span>${scene.name}</span>
+        `;
+        thumbContainer.appendChild(card);
+      });
+    }
+
+    // Seamless Transition Engine
+    function loadScene(sceneId, animate = true) {
+      if (isTransitioning && animate) return;
+      const sceneData = scenes.find(s => s.id === sceneId);
+      if (!sceneData) return;
+
+      const fadeSphere = document.getElementById('fade-sphere');
+      const cameraRig = document.getElementById('cameraRig');
+      const hotspot = document.getElementById('hotspot-navigation');
+
+      if (!animate) {
+        applySceneData(sceneData);
+        return;
+      }
+
+      isTransitioning = true;
+      fadeSphere.setAttribute('visible', 'true');
+
+      // 1. Calculate direction vector towards hotspot for forward dolly motion
+      const hotspotPos = hotspot.getAttribute('position');
+      const moveX = (hotspotPos.x || 0) * 0.35;
+      const moveZ = (hotspotPos.z || -4) * 0.35;
+
+      // 2. Animate camera walking forward
+      cameraRig.setAttribute('animation', {
+        property: 'position',
+        to: `${moveX} 0 ${moveZ}`,
+        dur: 400,
+        easing: 'easeInQuad'
+      });
+
+      // 3. Fade out to black
+      fadeSphere.setAttribute('animation', {
+        property: 'material.opacity',
+        from: 0,
+        to: 1,
+        dur: 400,
+        easing: 'easeInQuad'
+      });
+
+      // 4. Midpoint: swap texture, reset camera rig position, swap UI
+      setTimeout(() => {
+        applySceneData(sceneData);
+        cameraRig.removeAttribute('animation');
+        cameraRig.setAttribute('position', '0 0 0');
+
+        // 5. Fade back in
+        fadeSphere.setAttribute('animation', {
+          property: 'material.opacity',
+          from: 1,
+          to: 0,
+          dur: 450,
+          easing: 'easeOutQuad'
         });
 
-        // [cite: 15] Event 2: Teleport and View Panorama (Hotspot clicked) [cite: 3]
-        function teleportToPan(sceneNumber, hotspotElement) {
-            
-            // Hide the opaque map overlay to reveal the full tour view
-            mapPage.classList.add('hidden');
+        setTimeout(() => {
+          fadeSphere.setAttribute('visible', 'false');
+          fadeSphere.removeAttribute('animation');
+          isTransitioning = false;
+        }, 460);
+      }, 410);
+    }
 
-            // Change the 360 sky sphere source using A-Frame [cite: 3]
-            skySphere.setAttribute('src', `#pan-${sceneNumber}`);
-            skySphere.setAttribute('rotation', '0 -90 0'); // Optional: reset camera to face forward [cite: 3]
+    function applySceneData(sceneData) {
+      activeSceneId = sceneData.id;
 
-            // Visual active state update on the map
-            document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
-            hotspotElement.classList.add('active');
+      if (sceneData.level !== currentFloor) {
+        currentFloor = sceneData.level;
+        document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
+        const matchingBtn = document.querySelector(`.floor-box-btn[data-floor="${sceneData.level}"]`);
+        if (matchingBtn) matchingBtn.classList.add('active');
+      }
+
+      // Direct WebGL texture reload via THREE.TextureLoader with timestamp cache buster
+      const sky = document.getElementById('sky-sphere');
+      const loader = new THREE.TextureLoader();
+      const freshUrl = `${sceneData.src}?v=${buildTimestamp}`;
+      
+      loader.load(freshUrl, function(texture) {
+        const mesh = sky.getObject3D('mesh');
+        if (mesh) {
+          mesh.material.map = texture;
+          mesh.material.needsUpdate = true;
         }
-    </script>
+      });
+
+      // Update Header Text
+      document.getElementById('location-title').innerText = sceneData.name;
+      document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
+
+      // Update Floor Plan Blueprint Image
+      const mapImg = document.getElementById('minimap-img');
+      const mapHeader = document.getElementById('map-header');
+      mapImg.src = sceneData.planImg;
+      mapHeader.innerText = sceneData.planTitle;
+
+      // Update Navigation Hotspot
+      const hotspot = document.getElementById('hotspot-navigation');
+      if (sceneData.nextTarget) {
+        hotspot.setAttribute('visible', 'true');
+        hotspot.setAttribute('position', sceneData.nextPos);
+        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}', true)`);
+        hotspot.querySelector('a-text').setAttribute('value', sceneData.nextLabel);
+      } else {
+        hotspot.setAttribute('visible', 'false');
+      }
+
+      updateFloorUI(sceneData.level);
+    }
+  </script>
 </body>
 </html>
