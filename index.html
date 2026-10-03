@@ -8,7 +8,6 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
 
   <style>
-    /* 1. EMBEDDED APPLE SAN FRANCISCO FONT DEFINITIONS */
     @font-face {
       font-family: 'SF Pro Custom';
       src: url('SF-Pro-Text-Regular.otf') format('opentype');
@@ -16,7 +15,6 @@
       font-style: normal;
       font-display: swap;
     }
-
     @font-face {
       font-family: 'SF Pro Custom';
       src: url('SF-Pro-Text-Medium.otf') format('opentype');
@@ -24,7 +22,6 @@
       font-style: normal;
       font-display: swap;
     }
-
     @font-face {
       font-family: 'SF Pro Custom';
       src: url('SF-Pro-Text-Bold.otf') format('opentype');
@@ -33,14 +30,12 @@
       font-display: swap;
     }
 
-    /* 2. UNIVERSAL TYPOGRAPHY BINDING */
     *, *::before, *::after { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "San Francisco", sans-serif !important;
+      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif !important;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
     
     body, html { 
@@ -50,7 +45,7 @@
       background-color: #000000;
     }
 
-    /* --- STARTUP LANDING OVERLAY --- */
+    /* Startup Landing Screen */
     #startup-screen {
       position: fixed;
       inset: 0;
@@ -60,7 +55,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
     }
 
     #startup-screen.hidden {
@@ -69,7 +64,6 @@
       pointer-events: none;
     }
 
-    /* Outer Bokeh Frame Layer */
     .bokeh-background {
       position: absolute;
       inset: -40px;
@@ -88,7 +82,6 @@
       animation: floatBokeh 10s infinite alternate ease-in-out;
       z-index: 2;
     }
-
     .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
     .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
     .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
@@ -98,7 +91,6 @@
       100% { transform: translateY(-40px) scale(1.15); }
     }
 
-    /* Overall Market Render Card Container */
     .market-render-wrapper {
       position: relative;
       z-index: 3;
@@ -122,12 +114,8 @@
       transform: scale(1.02);
       transition: transform 6s ease-out;
     }
+    .market-render-wrapper:hover .market-render-image { transform: scale(1.06); }
 
-    .market-render-wrapper:hover .market-render-image {
-      transform: scale(1.06);
-    }
-
-    /* Center "Let's Navigate" Curved Rectangle Button */
     .center-cta-btn {
       position: absolute;
       z-index: 10;
@@ -138,22 +126,18 @@
       color: #ffffff;
       font-size: 19px;
       font-weight: 600;
-      letter-spacing: -0.01em;
       cursor: pointer;
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
       transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
     .center-cta-btn:hover {
       background: #ffffff;
       color: #111111;
       transform: scale(1.06);
-      box-shadow: 0 15px 40px rgba(255, 255, 255, 0.3);
     }
 
-    /* Bottom Left Corner Logo (50px by 50px) */
     .startup-logo {
       position: absolute;
       bottom: 24px;
@@ -166,14 +150,8 @@
       justify-content: center;
       filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
     }
+    .startup-logo img { width: 100%; height: 100%; object-fit: contain; }
 
-    .startup-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    /* Bottom Academic Credits Bar */
     .startup-credits-bar {
       position: absolute;
       bottom: 24px;
@@ -191,25 +169,9 @@
       -webkit-backdrop-filter: blur(20px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
     }
-
-    .credit-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #f5f5f7;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    .credit-label {
-      color: rgba(255, 255, 255, 0.55);
-      font-weight: 500;
-    }
-
-    .credit-value {
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
+    .credit-item { display: flex; align-items: center; gap: 6px; color: #f5f5f7; font-size: 13px; white-space: nowrap; }
+    .credit-label { color: rgba(255, 255, 255, 0.55); font-weight: 500; }
+    .credit-value { font-weight: 700; }
 
     /* Top Overlay Header */
     .header-bar {
@@ -226,27 +188,10 @@
       z-index: 100;
       pointer-events: auto;
     }
+    .header-title h1 { font-size: 19px; font-weight: 700; }
+    .header-title p { font-size: 12px; color: rgba(255, 255, 255, 0.75); margin-top: 2px; }
 
-    .header-title h1 { 
-      font-size: 19px; 
-      font-weight: 700; 
-      letter-spacing: -0.025em; 
-    }
-    
-    .header-title p { 
-      font-size: 12px; 
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.75); 
-      margin-top: 2px; 
-      letter-spacing: -0.01em;
-    }
-
-    .header-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .header-controls { display: flex; align-items: center; gap: 10px; }
     .audio-btn, .back-home-btn {
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.4);
@@ -255,7 +200,6 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
-      letter-spacing: -0.01em;
       cursor: pointer;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -264,13 +208,9 @@
       align-items: center;
       gap: 6px;
     }
+    .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
-    .audio-btn:hover, .back-home-btn:hover { 
-      background: #ffffff; 
-      color: #111111; 
-    }
-
-    /* Vertical Floor Elevator (Updated for 8 Levels: Site to Terrace) */
+    /* Vertical Floor Elevator: 8 Levels */
     .floor-elevator-nav {
       position: absolute;
       top: 80px;
@@ -281,34 +221,27 @@
       z-index: 100;
       max-height: calc(100vh - 200px);
       overflow-y: auto;
-      padding-right: 4px;
       scrollbar-width: none;
     }
     .floor-elevator-nav::-webkit-scrollbar { display: none; }
 
     .floor-box-btn {
-      width: 42px;
+      width: 44px;
       height: 38px;
       background: rgba(255, 255, 255, 0.85);
       border: 1px solid rgba(0, 0, 0, 0.12);
       border-radius: 9px;
       font-size: 12px;
       font-weight: 700;
-      letter-spacing: -0.02em;
       color: #1d1d1f;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: all 0.2s ease;
     }
-
-    .floor-box-btn:hover {
-      background: #ffffff;
-      transform: scale(1.06);
-    }
-
+    .floor-box-btn:hover { background: #ffffff; transform: scale(1.06); }
     .floor-box-btn.active {
       background: #0071e3;
       color: #ffffff;
@@ -316,14 +249,14 @@
       box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
     }
 
-    /* Mini-Map In Corner */
+    /* Bottom-Left Mini-Map Preview */
     .minimap-container {
       position: absolute;
       bottom: 24px;
       left: 24px;
       width: 380px;
       max-width: 45vw;
-      height: 90px;
+      height: 95px;
       background: rgba(28, 28, 30, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 12px;
@@ -335,12 +268,10 @@
       cursor: pointer;
       transition: transform 0.2s ease, border-color 0.2s ease;
     }
-
     .minimap-container:hover {
       transform: scale(1.02);
       border-color: #0071e3;
     }
-
     .minimap-header {
       position: absolute;
       top: 0;
@@ -358,12 +289,7 @@
       justify-content: space-between;
       align-items: center;
     }
-
-    .minimap-header span.expand-hint {
-      color: #0071e3;
-      font-size: 9.5px;
-      font-weight: 600;
-    }
+    .minimap-header span.expand-hint { color: #0071e3; font-size: 9.5px; font-weight: 700; }
 
     .minimap-body {
       position: relative;
@@ -372,18 +298,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-top: 14px;
+      padding-top: 16px;
     }
-
     #minimap-img {
       width: 95%;
       height: auto;
+      max-height: 70px;
       object-fit: contain;
       pointer-events: none;
-      transition: opacity 0.35s ease;
     }
 
-    /* Enlarged Map Modal */
+    /* Enlarged Blueprint Modal with Bokeh Background */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -393,13 +318,11 @@
       justify-content: center;
       transition: opacity 0.4s ease, visibility 0.4s;
     }
-
     #enlarged-map-modal.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
     .map-modal-bokeh-bg {
       position: absolute;
       inset: -30px;
@@ -407,13 +330,12 @@
       filter: blur(40px) brightness(0.4) saturate(1.3);
       z-index: 1;
     }
-
     .enlarged-map-card {
       position: relative;
       z-index: 2;
       width: 82vw;
       max-width: 1050px;
-      background: rgba(22, 22, 26, 0.88);
+      background: rgba(22, 22, 26, 0.92);
       border: 1.5px solid rgba(255, 255, 255, 0.35);
       border-radius: 20px;
       padding: 24px;
@@ -424,7 +346,6 @@
       flex-direction: column;
       gap: 16px;
     }
-
     .enlarged-map-header-bar {
       display: flex;
       justify-content: space-between;
@@ -433,18 +354,8 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       padding-bottom: 12px;
     }
-
-    .enlarged-map-title h2 {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .enlarged-map-title p {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.65);
-      margin-top: 2px;
-    }
+    .enlarged-map-title h2 { font-size: 18px; font-weight: 700; }
+    .enlarged-map-title p { font-size: 12px; color: rgba(255, 255, 255, 0.65); margin-top: 2px; }
 
     .close-map-btn {
       background: rgba(255, 255, 255, 0.15);
@@ -457,11 +368,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
     }
-
-    .close-map-btn:hover {
-      background: #ffffff;
-      color: #111111;
-    }
+    .close-map-btn:hover { background: #ffffff; color: #111111; }
 
     .enlarged-blueprint-stage {
       position: relative;
@@ -476,7 +383,6 @@
       justify-content: center;
       overflow: hidden;
     }
-
     #enlarged-blueprint-img {
       width: 96%;
       height: 90%;
@@ -485,6 +391,7 @@
       user-select: none;
     }
 
+    /* Numbered Teleportation Nodes (1, 2, 3...) */
     .map-teleport-pin {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -500,23 +407,20 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9), 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9);
       transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
       z-index: 10;
     }
-
     .map-teleport-pin:hover {
       background: #ffffff;
       color: #0071e3;
       transform: translate(-50%, -50%) scale(1.22);
       box-shadow: 0 0 24px rgba(255, 255, 255, 0.9);
     }
-
     .map-teleport-pin.active-node {
       background: #34c759;
       box-shadow: 0 0 20px rgba(52, 199, 89, 0.9);
     }
-
     .map-teleport-pin span.pin-tooltip {
       position: absolute;
       bottom: 44px;
@@ -532,29 +436,22 @@
       transition: opacity 0.2s ease;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    .map-teleport-pin:hover span.pin-tooltip { opacity: 1; }
 
-    .map-teleport-pin:hover span.pin-tooltip {
-      opacity: 1;
-    }
-
-    /* Bottom Carousel */
+    /* Bottom Carousel Strip */
     .bottom-nav-container {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
       padding: 20px;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 70%, transparent);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      justify-content: center;
       z-index: 90;
       pointer-events: none;
     }
-
     .bottom-nav-container > * { pointer-events: auto; }
-
     .thumbnail-strip {
       display: flex;
       gap: 12px;
@@ -562,7 +459,6 @@
       max-width: 50vw;
       padding-bottom: 6px;
     }
-
     .thumb-card {
       position: relative;
       flex: 0 0 auto;
@@ -572,15 +468,10 @@
       overflow: hidden;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: all 0.25s ease;
+      background: #111;
     }
-
-    .thumb-card img { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: cover; 
-    }
-
+    .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
     .thumb-card span {
       position: absolute;
       bottom: 0;
@@ -590,64 +481,43 @@
       color: #ffffff;
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: -0.01em;
       padding: 4px;
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
-    .thumb-card.active {
-      border-color: #0071e3;
-      box-shadow: 0 0 12px rgba(0, 113, 227, 0.8);
-    }
+    .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
 </head>
 <body>
 
   <!-- ==================== STARTUP LANDING OVERLAY ==================== -->
   <div id="startup-screen">
-    <!-- Outer Bokeh Frame Layer -->
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
     <div class="bokeh-light orb3"></div>
 
-    <!-- Overall Market Render Viewport -->
     <div class="market-render-wrapper">
-      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image" onerror="this.src='ground_floor.jpg'">
+      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
       <button class="center-cta-btn" onclick="startNavigationExperience()">Let's Navigate</button>
     </div>
 
-    <!-- Bottom Left Corner Logo (50px by 50px) -->
     <div class="startup-logo">
       <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
 
-    <!-- Bottom Academic Credits Bar -->
     <div class="startup-credits-bar">
-      <div class="credit-item">
-        <span class="credit-label">Name:</span>
-        <span class="credit-value">Balakrishna Darla</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Year:</span>
-        <span class="credit-value">Vth Year</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Sem:</span>
-        <span class="credit-value">IX</span>
-      </div>
-      <div class="credit-item">
-        <span class="credit-label">Roll no:</span>
-        <span class="credit-value">Vu22arch0100016</span>
-      </div>
+      <div class="credit-item"><span class="credit-label">Name:</span><span class="credit-value">Balakrishna Darla</span></div>
+      <div class="credit-item"><span class="credit-label">Year:</span><span class="credit-value">Vth Year</span></div>
+      <div class="credit-item"><span class="credit-label">Sem:</span><span class="credit-value">IX</span></div>
+      <div class="credit-item"><span class="credit-label">Roll no:</span><span class="credit-value">Vu22arch0100016</span></div>
     </div>
   </div>
 
   <!-- Ambient Audio -->
-  <audio id="ambient-audio" loop preload="auto" crossorigin="anonymous">
+  <audio id="ambient-audio" loop preload="none" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
@@ -655,20 +525,16 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Main Market Courtyard</h1>
+      <h1 id="location-title">Site Entrance</h1>
       <p id="location-subtitle">Site • Architectural 360 Panorama</p>
     </div>
     <div class="header-controls">
-      <button class="back-home-btn" onclick="returnToStartup()">
-        <span>🏠</span> <span>Home</span>
-      </button>
-      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()">
-        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
-      </button>
+      <button class="back-home-btn" onclick="returnToStartup()"><span>🏠</span> <span>Home</span></button>
+      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()"><span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span></button>
     </div>
   </div>
 
-  <!-- Vertical Floor Elevator Switcher: 8 Floors (Top to Bottom) -->
+  <!-- Vertical Elevator: 8 Floors (Top to Bottom) -->
   <div class="floor-elevator-nav">
     <button class="floor-box-btn" data-floor="7" onclick="switchFloor(7, this)" title="Terrace">TR</button>
     <button class="floor-box-btn" data-floor="6" onclick="switchFloor(6, this)" title="Third Floor">3</button>
@@ -680,18 +546,18 @@
     <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Site">S</button>
   </div>
 
-  <!-- Mini-Map in Corner (Click to Enlarge) -->
-  <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and teleport">
+  <!-- Bottom-Left Mini-Map (Click to open enlarged modal) -->
+  <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and view teleport points">
     <div class="minimap-header">
       <span id="map-header">Site Layout Plan</span>
       <span class="expand-hint">⤢ ENLARGE</span>
     </div>
     <div class="minimap-body">
-      <img id="minimap-img" src="panorama_1_plan.png" alt="Corridor Map Plan">
+      <img id="minimap-img" src="market_render.JPG" alt="Current Floor Plan">
     </div>
   </div>
 
-  <!-- Enlarged Map Modal with Bokeh and Teleport Points -->
+  <!-- Enlarged Blueprint Modal with Bokeh Background & Interactive Teleport Points -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -703,8 +569,8 @@
         <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close Map</button>
       </div>
 
-      <div class="enlarged-blueprint-stage" id="enlarged-blueprint-stage">
-        <img id="enlarged-blueprint-img" src="panorama_1_plan.png" alt="Enlarged Blueprint">
+      <div class="enlarged-blueprint-stage">
+        <img id="enlarged-blueprint-img" src="market_render.JPG" alt="Enlarged Blueprint">
         <div id="pins-container"></div>
       </div>
     </div>
@@ -723,10 +589,8 @@
           id="cursor"
           color="#FFFFFF"
           raycaster="objects: .clickable"
-          animation__click="property: scale; startEvents: click; easing: easeInCubic; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
+          animation__click="property: scale; startEvents: click; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
-
-        <!-- Seamless Black Fade Sphere Attached to Camera -->
         <a-sphere 
           id="fade-sphere" 
           radius="0.1" 
@@ -738,22 +602,18 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- 360 Sky Sphere Background -->
-    <a-sky id="sky-sphere" src="ground_floor.jpg" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="market_render.JPG" rotation="0 -90 0"></a-sky>
 
-    <!-- Navigation Seeker Hotspot -->
     <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
       <a-text 
-        value="Walk Forward" 
+        value="Explore" 
         align="center" 
         position="0 -0.8 0" 
         rotation="90 0 0" 
         scale="1.2 1.2 1.2" 
-        color="#FFFFFF" 
-        font="dejavu" 
-        letter-spacing="-0.5">
+        color="#FFFFFF">
       </a-text>
     </a-entity>
   </a-scene>
@@ -765,18 +625,14 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
-    const buildTimestamp = Date.now();
 
-    // Startup Experience Triggers
     function startNavigationExperience() {
-      const startupScreen = document.getElementById('startup-screen');
-      startupScreen.classList.add('hidden');
+      document.getElementById('startup-screen').classList.add('hidden');
       if (!isPlaying) toggleAudio();
     }
 
     function returnToStartup() {
-      const startupScreen = document.getElementById('startup-screen');
-      startupScreen.classList.remove('hidden');
+      document.getElementById('startup-screen').classList.remove('hidden');
     }
 
     function toggleAudio() {
@@ -795,214 +651,140 @@
       }
     }
 
-    document.querySelector('a-scene').addEventListener('enter-vr', () => {
-      const startupScreen = document.getElementById('startup-screen');
-      if (!startupScreen.classList.contains('hidden')) {
-        startupScreen.classList.add('hidden');
-      }
-      if (!isPlaying) toggleAudio();
-    });
-
-    // Scene Database Structured for the 8 New Floors
-    const scenes = [
-      // 1. Site (Level 0)
-      { 
-        id: 'img-site-main', 
-        name: 'Main Market Courtyard', 
-        floorName: 'Site',
-        floorCode: 'S',
-        level: 0, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'Site Layout Plan',
-        pinNum: '1',
-        pinX: 20,
-        pinY: 48,
-        nextTarget: 'img-stilt-main', 
-        nextLabel: 'Go to Stilt Floor', 
-        nextPos: '0 -1.6 -4' 
+    /* 
+      MASTER CONFIGURATION:
+      This is where we add each floor's plan and its multiple 360 teleport points (pins).
+      Update the planImg and points array as you upload files.
+    */
+    const floorPlansConfig = [
+      {
+        level: 0,
+        floorName: "Site",
+        floorCode: "S",
+        planImg: "site_plan.png", // Upload this to GitHub
+        planTitle: "Site Layout Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "site-node-1", name: "Site Entrance", pinNum: "1", pinX: 25, pinY: 55, src: "site_1.jpg", fallbackSrc: "market_render.JPG" },
+          { id: "site-node-2", name: "Central Courtyard", pinNum: "2", pinX: 50, pinY: 45, src: "site_2.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 2. Stilt Floor (Level 1)
-      { 
-        id: 'img-stilt-main', 
-        name: 'Stilt Parking & Access', 
-        floorName: 'Stilt Floor',
-        floorCode: 'ST',
-        level: 1, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'Stilt Level Plan',
-        pinNum: '1',
-        pinX: 30,
-        pinY: 48,
-        nextTarget: 'img-podium-main', 
-        nextLabel: 'Go up to Podium-1', 
-        nextPos: '0 -1.6 -4' 
+      {
+        level: 1,
+        floorName: "Stilt Floor",
+        floorCode: "ST",
+        planImg: "stilt_plan.png",
+        planTitle: "Stilt Parking & Entry Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 3. Podium-1 (Level 2)
-      { 
-        id: 'img-podium-main', 
-        name: 'Podium-1 Promenade', 
-        floorName: 'Podium-1',
-        floorCode: 'P1',
-        level: 2, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'Podium-1 Plan',
-        pinNum: '1',
-        pinX: 40,
-        pinY: 48,
-        nextTarget: 'img-ground-main', 
-        nextLabel: 'Go to Ground Floor', 
-        nextPos: '0 -1.6 -4' 
+      {
+        level: 2,
+        floorName: "Podium-1",
+        floorCode: "P1",
+        planImg: "podium_plan.png",
+        planTitle: "Podium-1 Promenade Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 4. Ground Floor (Level 3)
-      { 
-        id: 'img-ground-main', 
-        name: 'Ground Floor Market Atrium', 
-        floorName: 'Ground Floor',
-        floorCode: 'G',
-        level: 3, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'Ground Floor Plan',
-        pinNum: '1',
-        pinX: 25,
-        pinY: 48,
-        nextTarget: 'img-firstfloor-corridor', 
-        nextLabel: 'Go to First Floor', 
-        nextPos: '0 -1.6 -4' 
+      {
+        level: 3,
+        floorName: "Ground Floor",
+        floorCode: "G",
+        planImg: "ground_plan.png",
+        planTitle: "Ground Floor Market Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "ground-node-1", name: "Ground Market Hall", pinNum: "1", pinX: 35, pinY: 45, src: "ground_1.jpg", fallbackSrc: "market_render.JPG" },
+          { id: "ground-node-2", name: "Atrium Plaza", pinNum: "2", pinX: 65, pinY: 55, src: "ground_2.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 5. First Floor (Level 4)
-      { 
-        id: 'img-firstfloor-corridor', 
-        name: 'First Floor Exhibition Corridor', 
-        floorName: 'First Floor',
-        floorCode: '1',
-        level: 4, 
-        src: 'firstfloorcorridor_1.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'First Floor Plan',
-        pinNum: '1',
-        pinX: 35,
-        pinY: 48,
-        nextTarget: 'img-secondfloor-node1', 
-        nextLabel: 'Go to Second Floor', 
-        nextPos: '0 -1.6 -4' 
+      {
+        level: 4,
+        floorName: "First Floor",
+        floorCode: "1",
+        planImg: "first_plan.png",
+        planTitle: "First Floor Corridor Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 6. Second Floor - Station 1 (Level 5, Pin 1)
-      { 
-        id: 'img-secondfloor-node1', 
-        name: 'Second Floor Gallery - Station 1', 
-        floorName: 'Second Floor',
-        floorCode: '2',
-        level: 5, 
-        src: 'panorama_1.jpg', 
-        planImg: 'panorama_1_plan.png',
-        planTitle: 'Second Floor Plan: Station 1',
-        pinNum: '1',
-        pinX: 18,
-        pinY: 50,
-        nextTarget: 'img-secondfloor-node2', 
-        nextLabel: 'Walk to Station 2', 
-        nextPos: '0 -1.4 -4' 
+      {
+        level: 5,
+        floorName: "Second Floor",
+        floorCode: "2",
+        planImg: "second_plan.png",
+        planTitle: "Second Floor Gallery Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "second-node-1", name: "Station 1", pinNum: "1", pinX: 25, pinY: 50, src: "second_1.jpg", fallbackSrc: "market_render.JPG" },
+          { id: "second-node-2", name: "Station 2", pinNum: "2", pinX: 70, pinY: 50, src: "second_2.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 6. Second Floor - Station 2 (Level 5, Pin 2)
-      { 
-        id: 'img-secondfloor-node2', 
-        name: 'Second Floor Gallery - Station 2', 
-        floorName: 'Second Floor',
-        floorCode: '2',
-        level: 5, 
-        src: 'panorama_2.jpg', 
-        planImg: 'panorama_2_plan.png',
-        planTitle: 'Second Floor Plan: Station 2',
-        pinNum: '2',
-        pinX: 62,
-        pinY: 50,
-        nextTarget: 'img-secondfloor-node1', 
-        nextLabel: 'Walk back to Station 1', 
-        nextPos: '0 -1.4 4' 
+      {
+        level: 6,
+        floorName: "Third Floor",
+        floorCode: "3",
+        planImg: "third_plan.png",
+        planTitle: "Third Floor Deck Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       },
-
-      // 7. Third Floor (Level 6)
-      { 
-        id: 'img-thirdfloor-main', 
-        name: 'Third Floor Upper Deck', 
-        floorName: 'Third Floor',
-        floorCode: '3',
-        level: 6, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_2_plan.png',
-        planTitle: 'Third Floor Plan',
-        pinNum: '1',
-        pinX: 50,
-        pinY: 50,
-        nextTarget: 'img-terrace-main', 
-        nextLabel: 'Go up to Terrace', 
-        nextPos: '0 -1.6 -4' 
-      },
-
-      // 8. Terrace (Level 7)
-      { 
-        id: 'img-terrace-main', 
-        name: 'Rooftop Terrace Overlook', 
-        floorName: 'Terrace',
-        floorCode: 'TR',
-        level: 7, 
-        src: 'ground_floor.jpg', 
-        planImg: 'panorama_2_plan.png',
-        planTitle: 'Terrace Plan',
-        pinNum: '1',
-        pinX: 50,
-        pinY: 50,
-        nextTarget: 'img-secondfloor-node1', 
-        nextLabel: 'Down to Second Floor', 
-        nextPos: '0 -1.6 4' 
+      {
+        level: 7,
+        floorName: "Terrace",
+        floorCode: "TR",
+        planImg: "terrace_plan.png",
+        planTitle: "Rooftop Terrace Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.jpg", fallbackSrc: "market_render.JPG" }
+        ]
       }
     ];
 
-    let activeSceneId = 'img-site-main';
-    let currentFloor = 0;
+    let currentFloorLevel = 0;
+    let activePointId = "site-node-1";
 
-    window.onload = () => { 
-      loadScene('img-site-main', false);
+    window.onload = () => {
+      loadFloorAndPoint(0, "site-node-1", false);
     };
 
-    /* --- ENLARGED MAP MODAL ENGINE --- */
     function openEnlargedMap() {
       const modal = document.getElementById('enlarged-map-modal');
       const enlargedImg = document.getElementById('enlarged-blueprint-img');
       const modalTitle = document.getElementById('enlarged-modal-title');
       const pinsContainer = document.getElementById('pins-container');
 
-      const currentScene = scenes.find(s => s.id === activeSceneId) || scenes[0];
-      enlargedImg.src = currentScene.planImg;
-      modalTitle.innerText = `${currentScene.floorName} - ${currentScene.planTitle}`;
+      const floorConfig = floorPlansConfig.find(f => f.level === currentFloorLevel) || floorPlansConfig[0];
+      
+      // Load floor plan with automatic fallback
+      enlargedImg.src = floorConfig.planImg;
+      enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
+      modalTitle.innerText = `${floorConfig.floorName} - ${floorConfig.planTitle}`;
 
-      // Render Teleport Pins for the active floor
+      // Render Teleportation Pins
       pinsContainer.innerHTML = '';
-      const floorScenes = scenes.filter(s => s.level === currentFloor);
-
-      floorScenes.forEach((scene) => {
+      floorConfig.points.forEach((pt) => {
         const pin = document.createElement('div');
-        pin.className = `map-teleport-pin ${scene.id === activeSceneId ? 'active-node' : ''}`;
-        pin.style.left = `${scene.pinX}%`;
-        pin.style.top = `${scene.pinY}%`;
+        pin.className = `map-teleport-pin ${pt.id === activePointId ? 'active-node' : ''}`;
+        pin.style.left = `${pt.pinX}%`;
+        pin.style.top = `${pt.pinY}%`;
         pin.innerHTML = `
-          ${scene.pinNum}
-          <span class="pin-tooltip">${scene.name}</span>
+          ${pt.pinNum}
+          <span class="pin-tooltip">${pt.name}</span>
         `;
         pin.onclick = (e) => {
           e.stopPropagation();
           closeEnlargedMap();
-          loadScene(scene.id, true);
+          loadFloorAndPoint(currentFloorLevel, pt.id, true);
         };
         pinsContainer.appendChild(pin);
       });
@@ -1011,15 +793,13 @@
     }
 
     function closeEnlargedMap() {
-      const modal = document.getElementById('enlarged-map-modal');
-      modal.classList.add('hidden');
+      document.getElementById('enlarged-map-modal').classList.add('hidden');
     }
 
-    // Floor Elevator Switcher
     function switchFloor(floorNum, btnElement) {
       if (isTransitioning) return;
-      currentFloor = floorNum;
-      
+      currentFloorLevel = floorNum;
+
       document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -1028,137 +808,83 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      const firstSceneOfFloor = scenes.find(s => s.level === floorNum);
-      if (firstSceneOfFloor) {
-        loadScene(firstSceneOfFloor.id, true);
-      } else {
-        updateFloorUI(floorNum);
-      }
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
+      const firstPoint = floorConfig.points[0];
+      loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
-    function updateFloorUI(level) {
-      const thumbContainer = document.getElementById('thumb-strip');
-      thumbContainer.innerHTML = '';
-      const filteredScenes = scenes.filter(s => s.level === level);
-
-      filteredScenes.forEach(scene => {
-        const card = document.createElement('div');
-        card.className = `thumb-card ${scene.id === activeSceneId ? 'active' : ''}`;
-        card.onclick = () => loadScene(scene.id, true);
-
-        card.innerHTML = `
-          <img src="${scene.src}?v=${buildTimestamp}" alt="${scene.name}">
-          <span>${scene.name}</span>
-        `;
-        thumbContainer.appendChild(card);
-      });
-    }
-
-    // Seamless Transition Engine
-    function loadScene(sceneId, animate = true) {
+    function loadFloorAndPoint(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
-      const sceneData = scenes.find(s => s.id === sceneId);
-      if (!sceneData) return;
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
+      if (!floorConfig) return;
+
+      const pointData = floorConfig.points.find(p => p.id === pointId) || floorConfig.points[0];
+      if (!pointData) return;
+
+      activePointId = pointData.id;
+      currentFloorLevel = floorNum;
 
       const fadeSphere = document.getElementById('fade-sphere');
       const cameraRig = document.getElementById('cameraRig');
-      const hotspot = document.getElementById('hotspot-navigation');
 
       if (!animate) {
-        applySceneData(sceneData);
+        applyView(floorConfig, pointData);
         return;
       }
 
       isTransitioning = true;
       fadeSphere.setAttribute('visible', 'true');
+      fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 350, easing: 'easeInQuad' });
 
-      // Forward motion toward hotspot
-      const hotspotPos = hotspot.getAttribute('position');
-      const moveX = (hotspotPos.x || 0) * 0.35;
-      const moveZ = (hotspotPos.z || -4) * 0.35;
-
-      cameraRig.setAttribute('animation', {
-        property: 'position',
-        to: `${moveX} 0 ${moveZ}`,
-        dur: 400,
-        easing: 'easeInQuad'
-      });
-
-      fadeSphere.setAttribute('animation', {
-        property: 'material.opacity',
-        from: 0,
-        to: 1,
-        dur: 400,
-        easing: 'easeInQuad'
-      });
-
-      // Midpoint: Texture load & reset
       setTimeout(() => {
-        applySceneData(sceneData);
-        cameraRig.removeAttribute('animation');
-        cameraRig.setAttribute('position', '0 0 0');
-
-        fadeSphere.setAttribute('animation', {
-          property: 'material.opacity',
-          from: 1,
-          to: 0,
-          dur: 450,
-          easing: 'easeOutQuad'
-        });
-
+        applyView(floorConfig, pointData);
+        fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeOutQuad' });
         setTimeout(() => {
           fadeSphere.setAttribute('visible', 'false');
           fadeSphere.removeAttribute('animation');
           isTransitioning = false;
-        }, 460);
-      }, 410);
+        }, 410);
+      }, 360);
     }
 
-    function applySceneData(sceneData) {
-      activeSceneId = sceneData.id;
+    function applyView(floorConfig, pointData) {
+      // Header Updates
+      document.getElementById('location-title').innerText = pointData.name;
+      document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      if (sceneData.level !== currentFloor) {
-        currentFloor = sceneData.level;
-        document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
-        const matchingBtn = document.querySelector(`.floor-box-btn[data-floor="${sceneData.level}"]`);
-        if (matchingBtn) matchingBtn.classList.add('active');
-      }
-
-      // WebGL texture reload via THREE.TextureLoader
-      const sky = document.getElementById('sky-sphere');
-      const loader = new THREE.TextureLoader();
-      const freshUrl = `${sceneData.src}?v=${buildTimestamp}`;
-      
-      loader.load(freshUrl, function(texture) {
-        const mesh = sky.getObject3D('mesh');
-        if (mesh) {
-          mesh.material.map = texture;
-          mesh.material.needsUpdate = true;
-        }
-      });
-
-      // Update Header Text
-      document.getElementById('location-title').innerText = sceneData.name;
-      document.getElementById('location-subtitle').innerText = `${sceneData.floorName} • Architectural 360 Panorama`;
-
-      // Update Mini-Map Blueprint & Header
+      // Mini-map Updates
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
-      mapImg.src = sceneData.planImg;
-      mapHeader.innerText = sceneData.planTitle;
+      mapImg.src = floorConfig.planImg;
+      mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
+      mapHeader.innerText = floorConfig.planTitle;
 
-      // Update Navigation Hotspot
-      const hotspot = document.getElementById('hotspot-navigation');
-      if (sceneData.nextTarget) {
-        hotspot.setAttribute('visible', 'true');
-        hotspot.setAttribute('position', sceneData.nextPos);
-        hotspot.setAttribute('onclick', `loadScene('${sceneData.nextTarget}', true)`);
-        hotspot.querySelector('a-text').setAttribute('value', sceneData.nextLabel);
-      } else {
-        hotspot.setAttribute('visible', 'false');
-      }
+      // 360 Panorama Load with fallback
+      const sky = document.getElementById('sky-sphere');
+      const loader = new THREE.TextureLoader();
+      loader.load(pointData.src, function(texture) {
+        const mesh = sky.getObject3D('mesh');
+        if (mesh) { mesh.material.map = texture; mesh.material.needsUpdate = true; }
+      }, undefined, function() {
+        loader.load(pointData.fallbackSrc, function(fallbackTexture) {
+          const mesh = sky.getObject3D('mesh');
+          if (mesh) { mesh.material.map = fallbackTexture; mesh.material.needsUpdate = true; }
+        });
+      });
 
-      updateFloorUI(sceneData.level);
+      // Bottom Thumbnails Strip
+      const thumbStrip = document.getElementById('thumb-strip');
+      thumbStrip.innerHTML = '';
+      floorConfig.points.forEach(pt => {
+        const card = document.createElement('div');
+        card.className = `thumb-card ${pt.id === activePointId ? 'active' : ''}`;
+        card.onclick = () => loadFloorAndPoint(floorConfig.level, pt.id, true);
+        card.innerHTML = `
+          <img src="${pt.src}" onerror="this.src='${pt.fallbackSrc}'" alt="${pt.name}">
+          <span>Point ${pt.pinNum}: ${pt.name}</span>
+        `;
+        thumbStrip.appendChild(card);
+      });
     }
   </script>
 </body>
