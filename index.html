@@ -210,48 +210,172 @@
     }
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Vertical Floor Elevator */
-    .floor-elevator-nav {
+    /* =========================================================
+       HOVER-TRIGGERED FLOOR DROPDOWN SYSTEM
+       ========================================================= */
+    .floor-dropdown-wrapper {
       position: absolute;
       top: 80px;
       left: 24px;
+      z-index: 110;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      z-index: 100;
-      max-height: calc(100vh - 260px);
-      overflow-y: auto;
-      scrollbar-width: none;
+      align-items: flex-start;
     }
-    .floor-elevator-nav::-webkit-scrollbar { display: none; }
 
-    .floor-box-btn {
-      width: 44px;
-      height: 38px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #1d1d1f;
+    /* Primary trigger box showing the active floor code */
+    .floor-dropdown-trigger {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      color: #1d1d1f;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-      transition: all 0.2s ease;
-    }
-    .floor-box-btn:hover { background: #ffffff; transform: scale(1.06); }
-    .floor-box-btn.active {
-      background: #0071e3;
-      color: #ffffff;
-      border-color: #0077ed;
-      box-shadow: 0 0 14px rgba(0, 113, 227, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      user-select: none;
     }
 
-    /* =========================================================
-       COMPACT MINI-MAP (Red Box Dimension: ~140px x 135px)
-       ========================================================= */
+    .floor-dropdown-trigger .trigger-icon {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .floor-dropdown-trigger .trigger-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 24px;
+      padding: 0 6px;
+      background: #0071e3;
+      color: #ffffff;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .floor-dropdown-trigger .trigger-arrow {
+      font-size: 10px;
+      transition: transform 0.25s ease;
+      color: #555555;
+    }
+
+    /* Hover effect on trigger */
+    .floor-dropdown-wrapper:hover .floor-dropdown-trigger {
+      background: #ffffff;
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+      border-color: #0071e3;
+    }
+
+    .floor-dropdown-wrapper:hover .trigger-arrow {
+      transform: rotate(180deg);
+      color: #0071e3;
+    }
+
+    /* Dropdown menu list (Hidden by default, drops down on hover) */
+    .floor-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      width: 195px;
+      background: rgba(22, 22, 26, 0.94);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px) scale(0.96);
+      transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.25s;
+      pointer-events: none;
+    }
+
+    /* Revealed when mouse is over the container */
+    .floor-dropdown-wrapper:hover .floor-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Individual floor item inside dropdown */
+    .floor-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      color: #f5f5f7;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
+      width: 100%;
+    }
+
+    .floor-menu-item .menu-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      flex-shrink: 0;
+      transition: all 0.18s ease;
+    }
+
+    .floor-menu-item .menu-label {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .floor-menu-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateX(3px);
+      color: #ffffff;
+    }
+
+    .floor-menu-item:hover .menu-badge {
+      background: #0071e3;
+      border-color: #0077ed;
+    }
+
+    .floor-menu-item.active {
+      background: rgba(0, 113, 227, 0.22);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .floor-menu-item.active .menu-badge {
+      background: #0071e3;
+      border-color: #0077ed;
+      box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
+    }
+
+    /* Compact Mini-Map in Bottom-Left (140px x 135px) */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -548,19 +672,53 @@
     </div>
   </div>
 
-  <!-- Vertical Elevator: 8 Floors (Top to Bottom) -->
-  <div class="floor-elevator-nav">
-    <button class="floor-box-btn" data-floor="7" onclick="switchFloor(7, this)" title="Terrace">TR</button>
-    <button class="floor-box-btn" data-floor="6" onclick="switchFloor(6, this)" title="Third Floor">3</button>
-    <button class="floor-box-btn" data-floor="5" onclick="switchFloor(5, this)" title="Second Floor">2</button>
-    <button class="floor-box-btn" data-floor="4" onclick="switchFloor(4, this)" title="First Floor">1</button>
-    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Ground Floor">G</button>
-    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Podium-1">P1</button>
-    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Stilt Floor">ST</button>
-    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Site">S</button>
+  <!-- ==================== HOVER-ACTIVATED FLOOR DROPDOWN ==================== -->
+  <div class="floor-dropdown-wrapper">
+    <div class="floor-dropdown-trigger" title="Hover to view and switch floors">
+      <span class="trigger-icon">🏢</span>
+      <span class="trigger-code" id="active-floor-badge">S</span>
+      <span id="active-floor-name">Site</span>
+      <span class="trigger-arrow">▾</span>
+    </div>
+
+    <!-- Dropdown Menu revealed on hover -->
+    <div class="floor-dropdown-menu">
+      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this)">
+        <span class="menu-badge">TR</span>
+        <span class="menu-label">Terrace</span>
+      </button>
+      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this)">
+        <span class="menu-badge">3</span>
+        <span class="menu-label">Third Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this)">
+        <span class="menu-badge">2</span>
+        <span class="menu-label">Second Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this)">
+        <span class="menu-badge">1</span>
+        <span class="menu-label">First Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this)">
+        <span class="menu-badge">G</span>
+        <span class="menu-label">Ground Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this)">
+        <span class="menu-badge">P1</span>
+        <span class="menu-label">Podium-1</span>
+      </button>
+      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this)">
+        <span class="menu-badge">ST</span>
+        <span class="menu-label">Stilt Floor</span>
+      </button>
+      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this)">
+        <span class="menu-badge">S</span>
+        <span class="menu-label">Site</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Bottom-Left Mini-Map (Reduced to 140px x 135px) -->
+  <!-- Bottom-Left Mini-Map (Compact 140px x 135px) -->
   <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and view teleport points">
     <div class="minimap-header">
       <span id="map-header">Site Layout Plan</span>
@@ -807,16 +965,25 @@
       if (isTransitioning) return;
       currentFloorLevel = floorNum;
 
-      document.querySelectorAll('.floor-box-btn').forEach(btn => btn.classList.remove('active'));
+      // Update active state in dropdown
+      document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
       } else {
-        const matchingBtn = document.querySelector(`.floor-box-btn[data-floor="${floorNum}"]`);
+        const matchingBtn = document.querySelector(`.floor-menu-item[data-floor="${floorNum}"]`);
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
+      // Update trigger button label and badge
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
-      const firstPoint = floorConfig.points[0];
+      if (floorConfig) {
+        const badge = document.getElementById('active-floor-badge');
+        const nameLabel = document.getElementById('active-floor-name');
+        if (badge) badge.innerText = floorConfig.floorCode;
+        if (nameLabel) nameLabel.innerText = floorConfig.floorName;
+      }
+
+      const firstPoint = floorConfig ? floorConfig.points[0] : null;
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
@@ -830,6 +997,17 @@
 
       activePointId = pointData.id;
       currentFloorLevel = floorNum;
+
+      // Ensure trigger box reflects the active floor
+      const badge = document.getElementById('active-floor-badge');
+      const nameLabel = document.getElementById('active-floor-name');
+      if (badge) badge.innerText = floorConfig.floorCode;
+      if (nameLabel) nameLabel.innerText = floorConfig.floorName;
+
+      // Ensure menu item highlights correctly
+      document.querySelectorAll('.floor-menu-item').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.getAttribute('data-floor')) === floorNum);
+      });
 
       const fadeSphere = document.getElementById('fade-sphere');
       const cameraRig = document.getElementById('cameraRig');
