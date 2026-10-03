@@ -270,24 +270,29 @@
       color: #111111; 
     }
 
-    /* Vertical Floor Elevator */
+    /* Vertical Floor Elevator (Updated for 8 Levels: Site to Terrace) */
     .floor-elevator-nav {
       position: absolute;
-      top: 90px;
+      top: 80px;
       left: 24px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       z-index: 100;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: none;
     }
+    .floor-elevator-nav::-webkit-scrollbar { display: none; }
 
     .floor-box-btn {
       width: 42px;
-      height: 42px;
+      height: 38px;
       background: rgba(255, 255, 255, 0.85);
       border: 1px solid rgba(0, 0, 0, 0.12);
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 9px;
+      font-size: 12px;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: #1d1d1f;
@@ -295,7 +300,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
       transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
@@ -378,7 +383,7 @@
       transition: opacity 0.35s ease;
     }
 
-    /* --- ENLARGED MAP MODAL (Workflow from Diagram) --- */
+    /* Enlarged Map Modal */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -395,7 +400,6 @@
       pointer-events: none;
     }
 
-    /* Modal Backdrop with Bokeh Filter */
     .map-modal-bokeh-bg {
       position: absolute;
       inset: -30px;
@@ -404,7 +408,6 @@
       z-index: 1;
     }
 
-    /* Modal Card Container */
     .enlarged-map-card {
       position: relative;
       z-index: 2;
@@ -460,7 +463,6 @@
       color: #111111;
     }
 
-    /* Blueprint Stage with Clickable Teleport Pins */
     .enlarged-blueprint-stage {
       position: relative;
       width: 100%;
@@ -483,7 +485,6 @@
       user-select: none;
     }
 
-    /* Teleport Point Pins (Numbered 1, 2, 3...) */
     .map-teleport-pin {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -654,8 +655,8 @@
   <!-- Top Header UI -->
   <div class="header-bar">
     <div class="header-title">
-      <h1 id="location-title">Main Market Hall</h1>
-      <p id="location-subtitle">Ground Floor • Architectural 360 Panorama</p>
+      <h1 id="location-title">Main Market Courtyard</h1>
+      <p id="location-subtitle">Site • Architectural 360 Panorama</p>
     </div>
     <div class="header-controls">
       <button class="back-home-btn" onclick="returnToStartup()">
@@ -667,18 +668,22 @@
     </div>
   </div>
 
-  <!-- Vertical Floor Elevator Switcher -->
+  <!-- Vertical Floor Elevator Switcher: 8 Floors (Top to Bottom) -->
   <div class="floor-elevator-nav">
-    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Level 3 / Rooftop">3</button>
-    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Level 2 / Market Gallery">2</button>
-    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Level 1 / Exhibition Corridor">1</button>
-    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Ground Floor">G</button>
+    <button class="floor-box-btn" data-floor="7" onclick="switchFloor(7, this)" title="Terrace">TR</button>
+    <button class="floor-box-btn" data-floor="6" onclick="switchFloor(6, this)" title="Third Floor">3</button>
+    <button class="floor-box-btn" data-floor="5" onclick="switchFloor(5, this)" title="Second Floor">2</button>
+    <button class="floor-box-btn" data-floor="4" onclick="switchFloor(4, this)" title="First Floor">1</button>
+    <button class="floor-box-btn" data-floor="3" onclick="switchFloor(3, this)" title="Ground Floor">G</button>
+    <button class="floor-box-btn" data-floor="2" onclick="switchFloor(2, this)" title="Podium-1">P1</button>
+    <button class="floor-box-btn" data-floor="1" onclick="switchFloor(1, this)" title="Stilt Floor">ST</button>
+    <button class="floor-box-btn active" data-floor="0" onclick="switchFloor(0, this)" title="Site">S</button>
   </div>
 
-  <!-- 1. Mini-Map in Corner (Click to Enlarge) -->
+  <!-- Mini-Map in Corner (Click to Enlarge) -->
   <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and teleport">
     <div class="minimap-header">
-      <span id="map-header">Ground Floor Atrium</span>
+      <span id="map-header">Site Layout Plan</span>
       <span class="expand-hint">⤢ ENLARGE</span>
     </div>
     <div class="minimap-body">
@@ -686,7 +691,7 @@
     </div>
   </div>
 
-  <!-- 2 & 3. ENLARGED MAP OVERLAY WITH BOKEH & TELEPORT POINTS (Diagram Workflow) -->
+  <!-- Enlarged Map Modal with Bokeh and Teleport Points -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -700,7 +705,6 @@
 
       <div class="enlarged-blueprint-stage" id="enlarged-blueprint-stage">
         <img id="enlarged-blueprint-img" src="panorama_1_plan.png" alt="Enlarged Blueprint">
-        <!-- Teleport Pins are populated dynamically by JavaScript based on floor plan -->
         <div id="pins-container"></div>
       </div>
     </div>
@@ -742,7 +746,7 @@
       <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
       <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
       <a-text 
-        value="Go up to Level 1 Corridor" 
+        value="Walk Forward" 
         align="center" 
         position="0 -0.8 0" 
         rotation="90 0 0" 
@@ -799,104 +803,176 @@
       if (!isPlaying) toggleAudio();
     });
 
-    // Scene Database with Blueprint Teleport Coordinates (X%, Y% on map)
+    // Scene Database Structured for the 8 New Floors
     const scenes = [
-      // Ground Floor
+      // 1. Site (Level 0)
       { 
-        id: 'img-ground-main', 
-        name: 'Main Market Hall', 
-        floorName: 'Ground Floor',
-        floorCode: 'G',
+        id: 'img-site-main', 
+        name: 'Main Market Courtyard', 
+        floorName: 'Site',
+        floorCode: 'S',
         level: 0, 
         src: 'ground_floor.jpg', 
         planImg: 'panorama_1_plan.png',
-        planTitle: 'Ground Floor Atrium',
+        planTitle: 'Site Layout Plan',
         pinNum: '1',
         pinX: 20,
         pinY: 48,
-        nextTarget: 'img-floor1-corridor', 
-        nextLabel: 'Go up to Level 1 Corridor', 
+        nextTarget: 'img-stilt-main', 
+        nextLabel: 'Go to Stilt Floor', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 1
+      // 2. Stilt Floor (Level 1)
       { 
-        id: 'img-floor1-corridor', 
+        id: 'img-stilt-main', 
+        name: 'Stilt Parking & Access', 
+        floorName: 'Stilt Floor',
+        floorCode: 'ST',
+        level: 1, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Stilt Level Plan',
+        pinNum: '1',
+        pinX: 30,
+        pinY: 48,
+        nextTarget: 'img-podium-main', 
+        nextLabel: 'Go up to Podium-1', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // 3. Podium-1 (Level 2)
+      { 
+        id: 'img-podium-main', 
+        name: 'Podium-1 Promenade', 
+        floorName: 'Podium-1',
+        floorCode: 'P1',
+        level: 2, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Podium-1 Plan',
+        pinNum: '1',
+        pinX: 40,
+        pinY: 48,
+        nextTarget: 'img-ground-main', 
+        nextLabel: 'Go to Ground Floor', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // 4. Ground Floor (Level 3)
+      { 
+        id: 'img-ground-main', 
+        name: 'Ground Floor Market Atrium', 
+        floorName: 'Ground Floor',
+        floorCode: 'G',
+        level: 3, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_1_plan.png',
+        planTitle: 'Ground Floor Plan',
+        pinNum: '1',
+        pinX: 25,
+        pinY: 48,
+        nextTarget: 'img-firstfloor-corridor', 
+        nextLabel: 'Go to First Floor', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // 5. First Floor (Level 4)
+      { 
+        id: 'img-firstfloor-corridor', 
         name: 'First Floor Exhibition Corridor', 
         floorName: 'First Floor',
         floorCode: '1',
-        level: 1, 
+        level: 4, 
         src: 'firstfloorcorridor_1.jpg', 
         planImg: 'panorama_1_plan.png',
-        planTitle: 'Level 1 Corridor',
+        planTitle: 'First Floor Plan',
         pinNum: '1',
         pinX: 35,
         pinY: 48,
-        nextTarget: 'img-floor2-node1', 
-        nextLabel: 'Go up to 2nd Floor Gallery', 
+        nextTarget: 'img-secondfloor-node1', 
+        nextLabel: 'Go to Second Floor', 
         nextPos: '0 -1.6 -4' 
       },
 
-      // Level 2 - Station 1 (Pin 1)
+      // 6. Second Floor - Station 1 (Level 5, Pin 1)
       { 
-        id: 'img-floor2-node1', 
-        name: '2nd Floor Gallery - Station 1', 
+        id: 'img-secondfloor-node1', 
+        name: 'Second Floor Gallery - Station 1', 
         floorName: 'Second Floor',
         floorCode: '2',
-        level: 2, 
+        level: 5, 
         src: 'panorama_1.jpg', 
         planImg: 'panorama_1_plan.png',
-        planTitle: 'Level 2 Corridor: Station 1',
+        planTitle: 'Second Floor Plan: Station 1',
         pinNum: '1',
         pinX: 18,
         pinY: 50,
-        nextTarget: 'img-floor2-node2', 
-        nextLabel: 'Walk down hallway to Station 2', 
+        nextTarget: 'img-secondfloor-node2', 
+        nextLabel: 'Walk to Station 2', 
         nextPos: '0 -1.4 -4' 
       },
 
-      // Level 2 - Station 2 (Pin 2)
+      // 6. Second Floor - Station 2 (Level 5, Pin 2)
       { 
-        id: 'img-floor2-node2', 
-        name: '2nd Floor Gallery - Station 2', 
+        id: 'img-secondfloor-node2', 
+        name: 'Second Floor Gallery - Station 2', 
         floorName: 'Second Floor',
         floorCode: '2',
-        level: 2, 
+        level: 5, 
         src: 'panorama_2.jpg', 
         planImg: 'panorama_2_plan.png',
-        planTitle: 'Level 2 Corridor: Station 2',
+        planTitle: 'Second Floor Plan: Station 2',
         pinNum: '2',
         pinX: 62,
         pinY: 50,
-        nextTarget: 'img-floor2-node1', 
+        nextTarget: 'img-secondfloor-node1', 
         nextLabel: 'Walk back to Station 1', 
         nextPos: '0 -1.4 4' 
       },
 
-      // Level 3
+      // 7. Third Floor (Level 6)
       { 
-        id: 'img-floor3', 
-        name: 'Level 3 Rooftop Overlook', 
-        floorName: 'Rooftop Terrace',
+        id: 'img-thirdfloor-main', 
+        name: 'Third Floor Upper Deck', 
+        floorName: 'Third Floor',
         floorCode: '3',
-        level: 3, 
+        level: 6, 
         src: 'ground_floor.jpg', 
         planImg: 'panorama_2_plan.png',
-        planTitle: 'Level 3 Rooftop',
+        planTitle: 'Third Floor Plan',
         pinNum: '1',
         pinX: 50,
         pinY: 50,
-        nextTarget: 'img-floor2-node1', 
-        nextLabel: 'Down to Level 2', 
+        nextTarget: 'img-terrace-main', 
+        nextLabel: 'Go up to Terrace', 
+        nextPos: '0 -1.6 -4' 
+      },
+
+      // 8. Terrace (Level 7)
+      { 
+        id: 'img-terrace-main', 
+        name: 'Rooftop Terrace Overlook', 
+        floorName: 'Terrace',
+        floorCode: 'TR',
+        level: 7, 
+        src: 'ground_floor.jpg', 
+        planImg: 'panorama_2_plan.png',
+        planTitle: 'Terrace Plan',
+        pinNum: '1',
+        pinX: 50,
+        pinY: 50,
+        nextTarget: 'img-secondfloor-node1', 
+        nextLabel: 'Down to Second Floor', 
         nextPos: '0 -1.6 4' 
       }
     ];
 
-    let activeSceneId = 'img-ground-main';
+    let activeSceneId = 'img-site-main';
     let currentFloor = 0;
 
     window.onload = () => { 
-      loadScene('img-ground-main', false);
+      loadScene('img-site-main', false);
     };
 
     /* --- ENLARGED MAP MODAL ENGINE --- */
