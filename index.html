@@ -211,7 +211,7 @@
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
     /* =========================================================
-       HOVER-TO-OPEN / SELECT-TO-CLOSE FLOOR DROPDOWN
+       RELIABLE SEAMLESS FLOOR DROPDOWN MENU
        ========================================================= */
     .floor-dropdown-wrapper {
       position: absolute;
@@ -221,6 +221,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      padding-bottom: 12px; /* Safety buffer */
     }
 
     .floor-dropdown-trigger {
@@ -238,7 +239,7 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
       user-select: none;
     }
 
@@ -263,27 +264,26 @@
 
     .floor-dropdown-trigger .trigger-arrow {
       font-size: 10px;
-      transition: transform 0.25s ease;
+      transition: transform 0.2s ease;
       color: #555555;
     }
 
-    .floor-dropdown-wrapper.is-open .floor-dropdown-trigger {
-      background: #ffffff;
-      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
-      border-color: #0071e3;
-    }
-
-    .floor-dropdown-wrapper.is-open .trigger-arrow {
-      transform: rotate(180deg);
-      color: #0071e3;
+    /* Invisible hover-bridge preventing accidental close when crossing gap */
+    .floor-dropdown-menu::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 0;
+      width: 100%;
+      height: 14px;
     }
 
     .floor-dropdown-menu {
       position: absolute;
-      top: calc(100% + 6px);
+      top: calc(100% - 4px);
       left: 0;
-      width: 195px;
-      background: rgba(22, 22, 26, 0.96);
+      width: 200px;
+      background: rgba(20, 20, 24, 0.96);
       border: 1.5px solid rgba(255, 255, 255, 0.25);
       border-radius: 14px;
       backdrop-filter: blur(25px);
@@ -295,17 +295,31 @@
       gap: 3px;
       opacity: 0;
       visibility: hidden;
-      transform: translateY(-8px) scale(0.96);
-      transition: opacity 0.22s cubic-bezier(0.25, 1, 0.5, 1), transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.22s;
+      transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
       pointer-events: none;
     }
 
-    /* Menu opens when .is-open class is active */
-    .floor-dropdown-wrapper.is-open .floor-dropdown-menu {
+    /* CSS Hover rules with instant JS class control */
+    .floor-dropdown-wrapper:hover .floor-dropdown-menu,
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-menu {
       opacity: 1;
       visibility: visible;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       pointer-events: auto;
+    }
+
+    .floor-dropdown-wrapper:hover .floor-dropdown-trigger,
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-trigger {
+      background: #ffffff;
+      border-color: #0071e3;
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+    }
+
+    .floor-dropdown-wrapper:hover .trigger-arrow,
+    .floor-dropdown-wrapper.stay-open .trigger-arrow {
+      transform: rotate(180deg);
+      color: #0071e3;
     }
 
     .floor-menu-item {
@@ -321,7 +335,7 @@
       font-weight: 500;
       cursor: pointer;
       text-align: left;
-      transition: background 0.18s ease, transform 0.18s ease, color 0.18s ease;
+      transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
       width: 100%;
     }
 
@@ -338,7 +352,7 @@
       font-weight: 700;
       color: #ffffff;
       flex-shrink: 0;
-      transition: all 0.18s ease;
+      transition: all 0.15s ease;
     }
 
     .floor-menu-item .menu-label {
@@ -668,9 +682,9 @@
     </div>
   </div>
 
-  <!-- ==================== HOVER-DROPDOWN FLOOR SELECTOR ==================== -->
+  <!-- ==================== FLOOR DROPDOWN ==================== -->
   <div class="floor-dropdown-wrapper" id="floor-dropdown">
-    <div class="floor-dropdown-trigger">
+    <div class="floor-dropdown-trigger" id="floor-trigger">
       <span class="trigger-icon">🏢</span>
       <span class="trigger-code" id="active-floor-badge">S</span>
       <span id="active-floor-name">Site</span>
@@ -794,25 +808,22 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // --- Hover to Drop Down / Auto-Close Logic ---
+    // --- Dynamic dropdown controllers ---
     const dropdownWrapper = document.getElementById('floor-dropdown');
-    let hoverOpenAllowed = true;
+    const dropdownTrigger = document.getElementById('floor-trigger');
+    const dropdownMenu = document.getElementById('floor-menu');
 
-    dropdownWrapper.addEventListener('mouseenter', () => {
-      if (hoverOpenAllowed) {
-        dropdownWrapper.classList.add('is-open');
+    // Click toggle fallback for touch devices or manual clicks
+    dropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownWrapper.classList.toggle('stay-open');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
+        dropdownWrapper.classList.remove('stay-open');
       }
     });
-
-    dropdownWrapper.addEventListener('mouseleave', () => {
-      dropdownWrapper.classList.remove('is-open');
-      hoverOpenAllowed = true; // reset so next hover drops down again
-    });
-
-    function closeFloorDropdown() {
-      dropdownWrapper.classList.remove('is-open');
-      hoverOpenAllowed = false; // prevents immediate reopening while cursor is still on the item
-    }
 
     function startNavigationExperience() {
       document.getElementById('startup-screen').classList.add('hidden');
@@ -982,8 +993,10 @@
       if (isTransitioning) return;
       currentFloorLevel = floorNum;
 
-      // Automatically closes the dropdown menu immediately on click
-      closeFloorDropdown();
+      // Close menu immediately upon floor selection
+      dropdownWrapper.classList.remove('stay-open');
+      dropdownMenu.style.pointerEvents = 'none';
+      setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
 
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
