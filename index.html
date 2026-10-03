@@ -4,24 +4,239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>360 VR Market Map Interface</title>
-    <!-- A-Frame VR Framework -->
+    <!-- A-Frame VR Framework [cite: 1] -->
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* [cite: 2] SF Pro Font Embedding - Looks for file in repo, then falls back */
+        @font-face {
+            font-family: 'SF Pro Display';
+            src: url('SF-Pro-Display-Regular.otf') format('opentype');
+            font-weight: 400;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
+        }
+
+        .hidden { display: none !important; }
+
+        /* [cite: 15] 1. Startup Landing Page (State 1) */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s ease;
+        }
+
+        /* [cite: 15] Background Bokeh effect for State 1 */
+        .bokeh-background {
+            position: absolute;
+            top: -50px; left: -50px;
+            width: calc(100% + 100px);
+            height: calc(100% + 100px);
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.7);
+            z-index: 1;
+        }
+
+        /* [cite: 15] Opaque focused card for State 1 */
+        #focused-card {
+            position: relative;
+            width: 1200px;
+            height: 675px; /* 16:9 Aspect ratio */
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #focused-card .market-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 25px;
+        }
+
+        #lets-navigate-btn {
+            padding: 18px 50px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background-color: white;
+            color: black;
+            border: 2px solid #D0D0D0;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #lets-navigate-btn:hover {
+            background-color: black;
+            color: white;
+            border-color: black;
+            transform: scale(1.05);
+        }
+
+        #focused-card .description {
+            color: #8E8E93;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* Custom credits bar referencing image_12.png [cite: 1, 15] */
+        #credits-bar {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        /* [cite: 15] 2. Map Page - State 2/3 (Opaque Card on Bokeh Background) */
+        #map-page {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+        }
+
+        #enlarged-map-frame {
+            position: relative;
+            width: 1200px; /* Matching State 1 size */
+            height: 675px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        #floor-plan-container {
+            position: relative;
+            width: 80%; /* Map image within the frame */
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .floor-plan-img {
+            max-width: 100%;
+            max-height: 100%;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        /* [cite: 3] Hotspot/Teleport Points */
+        .hotspot {
+            position: absolute;
+            width: 30px; height: 30px;
+            background-color: white;
+            border: 2px solid #5AC8FA;
+            border-radius: 50%;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .hotspot:hover {
+            background-color: #5AC8FA;
+            color: white;
+            transform: scale(1.15);
+        }
+
+        .hotspot .number {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .hotspot .label {
+            position: absolute;
+            top: 35px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            color: black;
+            transition: opacity 0.2s ease;
+        }
+
+        .hotspot:hover .label { opacity: 1; }
+
+        /* Customizable hotspot positions on floor plan [cite: 3] */
+        .hotspot-1 { top: 20%; left: 15%; }
+        .hotspot-2 { top: 60%; left: 20%; }
+        .hotspot-3 { top: 30%; left: 50%; }
+        .hotspot-4 { top: 70%; left: 80%; }
+        .hotspot-5 { top: 30%; left: 85%; }
+
+        /* Active hotspot state [cite: 3] */
+        .hotspot.active {
+            background-color: black;
+            color: white;
+            border-color: black;
+        }
+
+        /* [cite: 15] 3. The Live 3D Tour View (State 3 - fullscreen) */
+        #tour-view {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 5; /* Behind the overlays */
+        }
+    </style>
 </head>
 <body>
 
-    <!-- 1. The Startup Landing Page (image_23.png - State 1) -->
+    <!-- [cite: 15] 1. The Startup Landing Page (State 1) -->
     <div id="landing-page">
-        <!-- The blurred background image taken from Panorams 1 -->
+        <!-- Background bokeh linking to Panorama 1 [cite: 15] -->
         <div class="bokeh-background" style="background-image: url('panorama_1.jpg');"></div>
         
-        <!-- The focused card containing the initial tour view (State 1) -->
-        <div id="focused-card" class="state-1">
+        <div id="focused-card">
+            <!-- Market Logo [cite: 4] -->
             <img src="logo.png" alt="Market Logo" class="market-logo" onerror="this.style.display='none'">
             <button id="lets-navigate-btn">Let's Navigate</button>
             <p class="description">Architectural 360 Panorama</p>
             
-            <!-- Academic Credits Bar (custom from reference, matching image_12.png) -->
+            <!-- [cite: 1, 15] Academic Credits Bar referencing image_12.png -->
             <div id="credits-bar">
                 <span class="credit-item">Name: Balakrishna Darla</span>
                 <span class="credit-item">Year: Vth Year</span>
@@ -31,14 +246,14 @@
         </div>
     </div>
 
-    <!-- 2. The Interactive Floor Plan Map (State 2/3) -->
+    <!-- [cite: 15] 2. The Interactive Floor Plan Map (State 2/3) -->
     <div id="map-page" class="hidden">
         <div class="bokeh-background" style="background-image: url('panorama_1.jpg');"></div>
         <div id="enlarged-map-frame">
             <div id="floor-plan-container">
                 <img src="floor_plan.png" alt="Floor Plan Blueprint" class="floor-plan-img">
                 
-                <!-- Teleport Hotspots [cite: 3] -->
+                <!-- [cite: 3] Teleport Hotspots referencing image_23.png -->
                 <div class="hotspot hotspot-1" onclick="teleportToPan(1, this)" title="Entry Station 1">
                     <span class="number">1</span>
                     <span class="label">Entry</span>
@@ -63,7 +278,7 @@
         </div>
     </div>
 
-    <!-- 3. The 3D VR Tour Environment [cite: 3] -->
+    <!-- [cite: 3] 3. The 3D VR Tour Environment -->
     <div id="tour-view" class="hidden">
         <a-scene embedded vr-mode-ui="enabled: true">
             <a-assets>
@@ -74,13 +289,42 @@
                 <img id="pan-5" src="panorama_5.jpg">
             </a-assets>
 
-            <!-- 360 Sky Background [cite: 3] -->
+            <!-- [cite: 3] 360 Sky Background linked to image sources -->
             <a-sky id="sky-sphere" src="#pan-1" rotation="0 -90 0"></a-sky>
             
             <a-entity camera look-controls position="0 1.6 0"></a-entity>
         </a-scene>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // State and transition logic
+        const landingPage = document.getElementById('landing-page');
+        const mapPage = document.getElementById('map-page');
+        const tourView = document.getElementById('tour-view');
+        const letsNavigateBtn = document.getElementById('lets-navigate-btn');
+        const skySphere = document.getElementById('sky-sphere');
+
+        // [cite: 15] Event 1: Start Tour
+        letsNavigateBtn.addEventListener('click', () => {
+            landingPage.classList.add('hidden');
+            mapPage.classList.remove('hidden');
+            tourView.classList.remove('hidden');
+        });
+
+        // [cite: 15] Event 2: Teleport and View Panorama (Hotspot clicked) [cite: 3]
+        function teleportToPan(sceneNumber, hotspotElement) {
+            
+            // Hide the opaque map overlay to reveal the full tour view
+            mapPage.classList.add('hidden');
+
+            // Change the 360 sky sphere source using A-Frame [cite: 3]
+            skySphere.setAttribute('src', `#pan-${sceneNumber}`);
+            skySphere.setAttribute('rotation', '0 -90 0'); // Optional: reset camera to face forward [cite: 3]
+
+            // Visual active state update on the map
+            document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+            hotspotElement.classList.add('active');
+        }
+    </script>
 </body>
 </html>
