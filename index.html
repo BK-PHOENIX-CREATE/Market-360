@@ -177,7 +177,7 @@
     .credit-value { font-weight: 700; }
 
     /* =========================================================
-       PAGE 2: REDEVELOPMENT OF POORNA MARKET (FULL BRIEFING DASHBOARD)
+       PAGE 2: REDEVELOPMENT OF POORNA MARKET (MATCHING REFERENCE)
        ========================================================= */
     #project-details-screen {
       position: fixed;
@@ -276,45 +276,59 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Upper Main Hero Card */
+    /* Upper Main Hero Card - Tailored to Reference Image */
     .hero-presentation-card {
       position: relative;
       width: 100%;
-      flex: 1.15;
-      min-height: 260px;
+      flex: 1.25;
+      min-height: 280px;
       border-radius: 18px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: #0d0e12;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 26px 30px;
+      padding: 28px 32px;
     }
 
+    /* Crisp Architectural Perspective Render */
     .hero-render-bg {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center right;
+      object-position: right center;
       z-index: 1;
-      filter: brightness(0.92);
-      transform: scale(1.01);
-      transition: transform 8s ease-out;
+      filter: contrast(1.05) saturate(1.08);
+      transform: scale(1.005);
+      transition: transform 7s ease-out;
     }
     .hero-presentation-card:hover .hero-render-bg {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
 
-    /* Gradient vignette so text on the left stays ultra legible */
+    /* Directional gradient: solid dark backing for left text, completely clear over the building render */
     .hero-vignette {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to right, rgba(10, 11, 15, 0.95) 0%, rgba(10, 11, 15, 0.82) 40%, rgba(10, 11, 15, 0.25) 75%, transparent 100%),
-                  linear-gradient(to top, rgba(10, 11, 15, 0.85) 0%, transparent 40%);
+      background: linear-gradient(
+        to right,
+        rgba(13, 14, 18, 0.98) 0%,
+        rgba(13, 14, 18, 0.92) 28%,
+        rgba(13, 14, 18, 0.55) 42%,
+        rgba(13, 14, 18, 0.1) 58%,
+        transparent 75%
+      ),
+      linear-gradient(
+        to top,
+        rgba(13, 14, 18, 0.85) 0%,
+        rgba(13, 14, 18, 0.2) 25%,
+        transparent 50%
+      );
       z-index: 2;
+      pointer-events: none;
     }
 
     .hero-text-content {
@@ -324,7 +338,7 @@
     }
 
     .hero-title-group h1 {
-      font-size: 34px;
+      font-size: 36px;
       line-height: 1.08;
       font-weight: 700;
       letter-spacing: -0.03em;
@@ -337,7 +351,7 @@
 
     .hero-loc-subtitle {
       font-size: 10.5px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.7);
       margin-top: 8px;
@@ -346,18 +360,18 @@
 
     .hero-tags {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.55);
+      color: rgba(255, 255, 255, 0.5);
       margin-top: 3px;
     }
 
     .hero-description-p {
       font-size: 12px;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.85);
       margin-top: 14px;
     }
 
-    /* Bottom row inside hero: 4 Metadata Pills + Watch Video Button */
+    /* Bottom row: Metadata Pills + Watch Video Button */
     .hero-bottom-bar {
       position: relative;
       z-index: 3;
@@ -374,21 +388,21 @@
     }
 
     .meta-pill-card {
-      background: rgba(24, 25, 30, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(20, 21, 26, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 12px;
       padding: 8px 14px;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .pill-icon-box {
-      font-size: 16px;
-      opacity: 0.85;
+      font-size: 15px;
       color: #f08a5d;
+      opacity: 0.9;
     }
 
     .pill-text-col {
@@ -405,7 +419,7 @@
     }
 
     .pill-val-strong {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #ffffff;
     }
@@ -416,15 +430,15 @@
     }
 
     .watch-video-btn {
-      background: rgba(24, 25, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(20, 21, 26, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.32);
       border-radius: 40px;
       padding: 7px 18px 7px 10px;
       display: flex;
       align-items: center;
       gap: 10px;
       cursor: pointer;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
@@ -432,7 +446,7 @@
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.12);
       border: 1.5px solid #ffffff;
       display: flex;
       align-items: center;
@@ -458,7 +472,7 @@
 
     .watch-video-btn .btn-text-col span:last-child {
       font-size: 8px;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.55);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -517,7 +531,7 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* Module 1: Context & Intent Content */
+    /* Module 1: Context & Intent */
     .context-split-row {
       display: grid;
       grid-template-columns: 1fr 100px;
@@ -613,7 +627,7 @@
       color: rgba(255, 255, 255, 0.55);
     }
 
-    /* Module 3: Experience The Market Interactive Card */
+    /* Module 3: Experience The Market */
     .experience-card-bg {
       position: absolute;
       inset: 0;
@@ -621,7 +635,7 @@
       height: 100%;
       object-fit: cover;
       z-index: 1;
-      filter: brightness(0.65);
+      filter: brightness(0.7);
       transition: transform 6s ease;
     }
     .dash-module-card:hover .experience-card-bg { transform: scale(1.05); }
@@ -629,7 +643,7 @@
     .experience-card-scrim {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.4) 65%, rgba(12, 13, 18, 0.7) 100%);
+      background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.35) 65%, rgba(12, 13, 18, 0.7) 100%);
       z-index: 2;
     }
 
@@ -949,7 +963,7 @@
       box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
     }
 
-    /* Bottom-Left Mini-Map */
+    /* Mini-Map in Bottom-Left */
     .minimap-container {
       position: absolute;
       bottom: 24px;
@@ -1270,9 +1284,10 @@
         </div>
       </div>
 
-      <!-- Upper Presentation Card -->
+      <!-- Upper Presentation Card (Hero Building Render) -->
       <div class="hero-presentation-card">
-        <img src="project_hero_render.jpg" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Redevelopment Render">
+        <!-- Main Render: Points to project_hero_render.jpg, with automatic fallback -->
+        <img src="project_hero_render.jpg" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Redevelopment Perspective Render">
         <div class="hero-vignette"></div>
 
         <div class="hero-text-content">
@@ -1353,7 +1368,7 @@
               Poorna Market is one of Visakhapatnam's oldest and most vibrant commercial markets. Over decades of organic growth, density and congestion have challenged its infrastructure and user experience. This project aims to organise, upgrade and reimagine the market as a modern, climate-responsive and inclusive community market, without losing its character and local identity.
             </p>
             <div class="context-photo-box">
-              <img src="poorna_market_context.jpg" onerror="this.src='site_plan.png'" alt="Poorna Market Historic Street">
+              <img src="poorna_market_context.jpg" onerror="this.src='site_plan.png'" alt="Poorna Market Street View">
             </div>
           </div>
           <button class="module-card-action">→ Explore Context</button>
@@ -1593,7 +1608,7 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // --- PAGE FLOW NAVIGATION ---
+    // --- Page Navigation Controls ---
     function goToProjectDetails() {
       document.getElementById('startup-screen').classList.add('hidden');
       document.getElementById('project-details-screen').classList.remove('hidden');
