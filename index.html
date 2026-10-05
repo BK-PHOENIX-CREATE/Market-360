@@ -177,7 +177,7 @@
     .credit-value { font-weight: 700; }
 
     /* =========================================================
-       PAGE 2: REDEVELOPMENT OF POORNA MARKET (MATCHING REFERENCE)
+       PAGE 2: REDEVELOPMENT OF POORNA MARKET DASHBOARD
        ========================================================= */
     #project-details-screen {
       position: fixed;
@@ -276,7 +276,7 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Upper Main Hero Card - Tailored to Reference Image */
+    /* Upper Main Hero Card */
     .hero-presentation-card {
       position: relative;
       width: 100%;
@@ -309,7 +309,6 @@
       transform: scale(1.03);
     }
 
-    /* Directional gradient: solid dark backing for left text, completely clear over the building render */
     .hero-vignette {
       position: absolute;
       inset: 0;
@@ -1286,8 +1285,8 @@
 
       <!-- Upper Presentation Card (Hero Building Render) -->
       <div class="hero-presentation-card">
-        <!-- Main Render: Points to project_hero_render.jpg, with automatic fallback -->
-        <img src="project_hero_render.jpg" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Redevelopment Perspective Render">
+        <!-- Main Render: Points directly to project_hero_render.png as uploaded -->
+        <img src="project_hero_render.png" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Redevelopment Perspective Render">
         <div class="hero-vignette"></div>
 
         <div class="hero-text-content">
@@ -1325,7 +1324,7 @@
 
             <!-- Scale -->
             <div class="meta-pill-card">
-              <span class="pill-icon-box">🏛️</span>
+              <span class="pill-icon-box">🏛️️</span>
               <div class="pill-text-col">
                 <span class="pill-header">Scale</span>
                 <span class="pill-val-strong">8 Levels</span>
@@ -1456,7 +1455,7 @@
         <h4>Poorna Market Redevelopment - Architectural Walkthrough</h4>
         <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
       </div>
-      <video id="project-video-player" controls style="width: 100%; display: block;" poster="project_hero_render.jpg">
+      <video id="project-video-player" controls style="width: 100%; display: block;" poster="project_hero_render.png">
         <source src="project_video.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
