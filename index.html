@@ -485,7 +485,6 @@
       color: #111111;
     }
 
-    /* Lower Section: 3-Column Architectural Cards */
     .dashboard-lower-grid {
       display: grid;
       grid-template-columns: 1.05fr 1.05fr 0.95fr;
@@ -526,7 +525,6 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* Module 1: Context & Intent */
     .context-split-row {
       display: grid;
       grid-template-columns: 1fr 100px;
@@ -576,7 +574,6 @@
       transform: translateX(3px);
     }
 
-    /* Module 2: Design Approach Pillars */
     .approach-pillars-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -622,7 +619,6 @@
       color: rgba(255, 255, 255, 0.55);
     }
 
-    /* Module 3: Experience The Market */
     .experience-card-bg {
       position: absolute;
       inset: 0;
@@ -716,7 +712,6 @@
       box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
     }
 
-    /* Modal for Project Video */
     #project-video-modal {
       position: fixed;
       inset: 0;
@@ -1297,6 +1292,37 @@
     }
     .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
+
+  <!-- Register A-Frame Component for Robust VR Teleportation -->
+  <script>
+    AFRAME.registerComponent('teleport-hotspot', {
+      schema: {
+        target: { type: 'string' }
+      },
+      init: function () {
+        const el = this.el;
+        const targetId = this.data.target;
+
+        const triggerTeleport = () => {
+          if (window.loadFloorAndPoint) {
+            window.loadFloorAndPoint(window.currentFloorLevel, targetId, true);
+          }
+        };
+
+        // Handles mouse clicks, gaze cursor clicks, and VR laser controller triggers
+        el.addEventListener('click', triggerTeleport);
+        el.addEventListener('triggerdown', triggerTeleport);
+
+        // Visual hover pulse
+        el.addEventListener('mouseenter', () => {
+          el.setAttribute('scale', '1.18 1.18 1.18');
+        });
+        el.addEventListener('mouseleave', () => {
+          el.setAttribute('scale', '1 1 1');
+        });
+      }
+    });
+  </script>
 </head>
 <body>
 
@@ -1624,11 +1650,12 @@
   <!-- A-Frame VR Canvas -->
   <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
     <a-entity id="cameraRig" position="0 0 0">
+      <!-- Camera with gaze reticle cursor -->
       <a-camera id="camera" look-controls wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
-          color="#FFFFFF"
-          raycaster="objects: .clickable"
+          color="#0071E3"
+          raycaster="objects: .clickable; far: 25"
           animation__click="property: scale; startEvents: click; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
         <a-sphere 
@@ -1639,7 +1666,10 @@
           visible="false">
         </a-sphere>
       </a-camera>
-      <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
+
+      <!-- VR Laser Controllers for Both Hands -->
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.8"></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.8"></a-entity>
     </a-entity>
 
     <!-- IN-VR 3D Back to Overview Button (Inside 3D Headset Space) -->
@@ -1766,8 +1796,8 @@
 
     /* 
       MASTER CONFIGURATION:
-      - 2D Blueprint pin coordinates (pinX, pinY)
-      - 3D VR World Space Coordinates (vrCoords relative to current point)
+      - 2D Blueprint Coordinates
+      - Precise 3D VR positions corresponding to real street perspective views
     */
     const floorPlansConfig = [
       {
@@ -1786,10 +1816,9 @@
             pinY: 21, 
             src: "site_1.png", 
             fallbackSrc: "market_render.JPG",
-            // Spatial 3D positions of other nodes visible from Point 1[cite: 23]
             peers: [
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.8 0.4 -4.5", rot: "0 28 0" },
-              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.4 -3.8", rot: "0 -45 0" }
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.6 0.2 -4.8", rot: "0 28 0" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.3 -3.6", rot: "0 -48 0" }
             ]
           },
           { 
@@ -1801,7 +1830,7 @@
             src: "site_2.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.3 5.0", rot: "0 180 0" },
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.2 5.0", rot: "0 180 0" },
               { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "-4.5 0.3 -2.2", rot: "0 60 0" }
             ]
           },
@@ -1815,7 +1844,7 @@
             fallbackSrc: "market_render.JPG",
             peers: [
               { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5", rot: "0 140 0" },
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "4.8 0.3 2.0", rot: "0 -110 0" }
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "0.2 0.1 -4.8", rot: "0 0 0" }
             ]
           }
         ]
@@ -1945,7 +1974,7 @@
       }
     ];
 
-    let currentFloorLevel = 0;
+    window.currentFloorLevel = 0;
     let activePointId = "site-node-1";
 
     window.onload = () => {
@@ -1958,7 +1987,7 @@
       const modalTitle = document.getElementById('enlarged-modal-title');
       const pinsContainer = document.getElementById('pins-container');
 
-      const floorConfig = floorPlansConfig.find(f => f.level === currentFloorLevel) || floorPlansConfig[0];
+      const floorConfig = floorPlansConfig.find(f => f.level === window.currentFloorLevel) || floorPlansConfig[0];
       
       enlargedImg.src = floorConfig.planImg;
       enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
@@ -1977,7 +2006,7 @@
         pin.onclick = (e) => {
           e.stopPropagation();
           closeEnlargedMap();
-          loadFloorAndPoint(currentFloorLevel, pt.id, true);
+          loadFloorAndPoint(window.currentFloorLevel, pt.id, true);
         };
         pinsContainer.appendChild(pin);
       });
@@ -1992,7 +2021,7 @@
     function switchFloor(floorNum, btnElement, e) {
       if (e) e.stopPropagation();
       if (isTransitioning) return;
-      currentFloorLevel = floorNum;
+      window.currentFloorLevel = floorNum;
 
       dropdownWrapper.classList.remove('stay-open');
       dropdownMenu.style.pointerEvents = 'none';
@@ -2018,7 +2047,7 @@
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
-    function loadFloorAndPoint(floorNum, pointId, animate = true) {
+    window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
       if (!floorConfig) return;
@@ -2027,7 +2056,7 @@
       if (!pointData) return;
 
       activePointId = pointData.id;
-      currentFloorLevel = floorNum;
+      window.currentFloorLevel = floorNum;
 
       const badge = document.getElementById('active-floor-badge');
       const nameLabel = document.getElementById('active-floor-name');
@@ -2058,7 +2087,7 @@
           isTransitioning = false;
         }, 410);
       }, 360);
-    }
+    };
 
     function applyView(floorConfig, pointData) {
       document.getElementById('location-title').innerText = pointData.name;
@@ -2082,7 +2111,7 @@
         });
       });
 
-      // Update 2D Thumbnail Carousel
+      // Update 2D Thumbnails
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2096,17 +2125,15 @@
         thumbStrip.appendChild(card);
       });
 
-      // Update In-Scene 3D VR Teleport Pins[cite: 23]
+      // Render Stylized 3D VR In-Scene Teleport Pins
       renderInSceneTeleportPins(floorConfig, pointData);
     }
 
-    /* Renders interactive 3D pins for all peer vantage points inside the WebXR scene[cite: 23] */
     function renderInSceneTeleportPins(floorConfig, currentPoint) {
       const pinsContainer = document.getElementById('in-scene-teleport-pins');
       pinsContainer.innerHTML = '';
 
       if (!currentPoint.peers || currentPoint.peers.length === 0) {
-        // Fallback: auto-generate peers if not manually specified
         const otherPoints = floorConfig.points.filter(p => p.id !== currentPoint.id);
         otherPoints.forEach((peerPoint, idx) => {
           const angle = (idx / otherPoints.length) * Math.PI * 2 - Math.PI / 2;
@@ -2122,34 +2149,31 @@
       });
     }
 
+    /* Stylized Glass-morphic 3D VR Teleport Marker with Pill Tooltip */
     function createVRMarker(parentEl, targetId, pinNum, name, position, rotation) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('class', 'clickable');
       markerEntity.setAttribute('position', position);
       markerEntity.setAttribute('rotation', rotation || '0 0 0');
+      markerEntity.setAttribute('teleport-hotspot', `target: ${targetId}`);
 
-      // Glowing outer ring and circle base
       markerEntity.innerHTML = `
-        <a-ring radius-inner="0.32" radius-outer="0.45" color="#0071E3" opacity="0.9" material="shader: flat; side: double"></a-ring>
-        <a-circle radius="0.32" color="#111111" opacity="0.75" material="shader: flat; side: double"></a-circle>
+        <!-- Outer Glowing Accent Ring -->
+        <a-ring radius-inner="0.36" radius-outer="0.44" color="#0071E3" opacity="0.9" material="shader: flat; side: double"></a-ring>
+        <!-- Translucent Core Disc -->
+        <a-circle radius="0.36" color="#0a0a0c" opacity="0.82" material="shader: flat; side: double"></a-circle>
+        <!-- Inner Accent Ring -->
+        <a-ring radius-inner="0.26" radius-outer="0.28" color="#64b5f6" opacity="0.75" material="shader: flat; side: double"></a-ring>
+        <!-- Number Text -->
         <a-text value="${pinNum}" align="center" position="0 0 0.02" scale="1.4 1.4 1.4" color="#FFFFFF" font="sourcecodepro"></a-text>
-        <a-plane position="0 0.65 0" width="1.6" height="0.32" color="#000000" opacity="0.8" material="shader: flat; side: double">
-          <a-text value="${name}" align="center" color="#FFFFFF" scale="0.7 0.7 0.7"></a-text>
-        </a-plane>
+        
+        <!-- Overhead Pill Tooltip -->
+        <a-entity position="0 0.65 0">
+          <a-plane width="1.6" height="0.34" color="#111116" opacity="0.88" material="shader: flat; side: double" border="0.02" border-color="#0071E3"></a-plane>
+          <a-triangle vertex-a="0 -0.17 0" vertex-b="-0.1 -0.27 0" vertex-c="0.1 -0.27 0" color="#111116" material="shader: flat; side: double"></a-triangle>
+          <a-text value="${name}" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65"></a-text>
+        </a-entity>
       `;
-
-      // Hover animation
-      markerEntity.addEventListener('mouseenter', () => {
-        markerEntity.setAttribute('scale', '1.18 1.18 1.18');
-      });
-      markerEntity.addEventListener('mouseleave', () => {
-        markerEntity.setAttribute('scale', '1 1 1');
-      });
-
-      // Click / Gaze teleport handler
-      markerEntity.addEventListener('click', () => {
-        loadFloorAndPoint(currentFloorLevel, targetId, true);
-      });
 
       parentEl.appendChild(markerEntity);
     }
