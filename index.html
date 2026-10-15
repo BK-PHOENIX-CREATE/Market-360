@@ -1621,7 +1621,7 @@
     <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
-  <!-- A-Frame VR Canvas (vr-mode-ui managed cleanly) -->
+  <!-- A-Frame VR Canvas -->
   <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
     <a-entity id="cameraRig" position="0 0 0">
       <a-camera id="camera" look-controls wasd-controls="enabled: false">
@@ -1642,27 +1642,17 @@
       <a-entity laser-controls="hand: right" raycaster="objects: .clickable"></a-entity>
     </a-entity>
 
-    <!-- IN-VR 3D Back to Home Button (Visible in 3D WebXR Headset Space) -->
+    <!-- IN-VR 3D Back to Overview Button (Inside 3D Headset Space) -->
     <a-entity id="vr-in-headset-back" class="clickable" position="-1.8 1.6 -3" rotation="0 25 0" onclick="exitVRToOverview()">
       <a-plane width="1.1" height="0.38" color="#1c1c1e" opacity="0.92" material="shader: flat">
         <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.9 0.9 0.9"></a-text>
       </a-plane>
     </a-entity>
 
-    <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
+    <!-- Dynamic Container for 3D In-VR Teleport Hotspots -->
+    <a-entity id="in-scene-teleport-pins"></a-entity>
 
-    <a-entity id="hotspot-navigation" class="clickable" position="0 -1.6 -4" rotation="-90 0 0">
-      <a-ring radius-inner="0.3" radius-outer="0.45" color="#FFFFFF" opacity="0.85"></a-ring>
-      <a-circle radius="0.3" color="#0071E3" opacity="0.65"></a-circle>
-      <a-text 
-        value="Explore" 
-        align="center" 
-        position="0 -0.8 0" 
-        rotation="90 0 0" 
-        scale="1.2 1.2 1.2" 
-        color="#FFFFFF">
-      </a-text>
-    </a-entity>
+    <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
   </a-scene>
 
   <script>
@@ -1774,6 +1764,11 @@
       }
     });
 
+    /* 
+      MASTER CONFIGURATION:
+      - 2D Blueprint pin coordinates (pinX, pinY)
+      - 3D VR World Space Coordinates (vrCoords relative to current point)
+    */
     const floorPlansConfig = [
       {
         level: 0,
@@ -1783,9 +1778,46 @@
         planTitle: "Site Layout Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "site-node-1", name: "Upper Junction", pinNum: "1", pinX: 62.5, pinY: 21, src: "site_1.png", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-2", name: "Lower Right Avenue", pinNum: "2", pinX: 69, pinY: 69, src: "site_2.png", fallbackSrc: "market_render.JPG" },
-          { id: "site-node-3", name: "West Entrance Street", pinNum: "3", pinX: 14.5, pinY: 55, src: "site_3.png", fallbackSrc: "market_render.JPG" }
+          { 
+            id: "site-node-1", 
+            name: "Upper Junction", 
+            pinNum: "1", 
+            pinX: 62.5, 
+            pinY: 21, 
+            src: "site_1.png", 
+            fallbackSrc: "market_render.JPG",
+            // Spatial 3D positions of other nodes visible from Point 1[cite: 23]
+            peers: [
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.8 0.4 -4.5", rot: "0 28 0" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.4 -3.8", rot: "0 -45 0" }
+            ]
+          },
+          { 
+            id: "site-node-2", 
+            name: "Lower Right Avenue", 
+            pinNum: "2", 
+            pinX: 69, 
+            pinY: 69, 
+            src: "site_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.3 5.0", rot: "0 180 0" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "-4.5 0.3 -2.2", rot: "0 60 0" }
+            ]
+          },
+          { 
+            id: "site-node-3", 
+            name: "West Entrance Street", 
+            pinNum: "3", 
+            pinX: 14.5, 
+            pinY: 55, 
+            src: "site_3.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5", rot: "0 140 0" },
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "4.8 0.3 2.0", rot: "0 -110 0" }
+            ]
+          }
         ]
       },
       {
@@ -1796,7 +1828,7 @@
         planTitle: "Stilt Parking & Entry Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.png", fallbackSrc: "market_render.JPG" }
+          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.png", fallbackSrc: "market_render.JPG", peers: [] }
         ]
       },
       {
@@ -1807,7 +1839,7 @@
         planTitle: "Podium-1 Promenade Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.png", fallbackSrc: "market_render.JPG" }
+          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.png", fallbackSrc: "market_render.JPG", peers: [] }
         ]
       },
       {
@@ -1818,8 +1850,30 @@
         planTitle: "Ground Floor Market Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "ground-node-1", name: "Ground Market Hall", pinNum: "1", pinX: 35, pinY: 45, src: "ground_1.png", fallbackSrc: "market_render.JPG" },
-          { id: "ground-node-2", name: "Atrium Plaza", pinNum: "2", pinX: 65, pinY: 55, src: "ground_2.png", fallbackSrc: "market_render.JPG" }
+          { 
+            id: "ground-node-1", 
+            name: "Ground Market Hall", 
+            pinNum: "1", 
+            pinX: 35, 
+            pinY: 45, 
+            src: "ground_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "ground-node-2", pinNum: "2", name: "Atrium Plaza", pos: "0 0 -5", rot: "0 0 0" }
+            ]
+          },
+          { 
+            id: "ground-node-2", 
+            name: "Atrium Plaza", 
+            pinNum: "2", 
+            pinX: 65, 
+            pinY: 55, 
+            src: "ground_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "ground-node-1", pinNum: "1", name: "Ground Market Hall", pos: "0 0 5", rot: "0 180 0" }
+            ]
+          }
         ]
       },
       {
@@ -1830,7 +1884,7 @@
         planTitle: "First Floor Corridor Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.png", fallbackSrc: "market_render.JPG" }
+          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.png", fallbackSrc: "market_render.JPG", peers: [] }
         ]
       },
       {
@@ -1841,8 +1895,30 @@
         planTitle: "Second Floor Gallery Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "second-node-1", name: "Station 1", pinNum: "1", pinX: 25, pinY: 50, src: "second_1.png", fallbackSrc: "market_render.JPG" },
-          { id: "second-node-2", name: "Station 2", pinNum: "2", pinX: 70, pinY: 50, src: "second_2.png", fallbackSrc: "market_render.JPG" }
+          { 
+            id: "second-node-1", 
+            name: "Station 1", 
+            pinNum: "1", 
+            pinX: 25, 
+            pinY: 50, 
+            src: "second_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "second-node-2", pinNum: "2", name: "Station 2", pos: "4 0 -3", rot: "0 -40 0" }
+            ]
+          },
+          { 
+            id: "second-node-2", 
+            name: "Station 2", 
+            pinNum: "2", 
+            pinX: 70, 
+            pinY: 50, 
+            src: "second_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "second-node-1", pinNum: "1", name: "Station 1", pos: "-4 0 3", rot: "0 140 0" }
+            ]
+          }
         ]
       },
       {
@@ -1853,7 +1929,7 @@
         planTitle: "Third Floor Deck Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG" }
+          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG", peers: [] }
         ]
       },
       {
@@ -1864,7 +1940,7 @@
         planTitle: "Rooftop Terrace Plan",
         fallbackImg: "market_render.JPG",
         points: [
-          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG" }
+          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG", peers: [] }
         ]
       }
     ];
@@ -1963,7 +2039,6 @@
       });
 
       const fadeSphere = document.getElementById('fade-sphere');
-      const cameraRig = document.getElementById('cameraRig');
 
       if (!animate) {
         applyView(floorConfig, pointData);
@@ -2007,6 +2082,7 @@
         });
       });
 
+      // Update 2D Thumbnail Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2019,6 +2095,63 @@
         `;
         thumbStrip.appendChild(card);
       });
+
+      // Update In-Scene 3D VR Teleport Pins[cite: 23]
+      renderInSceneTeleportPins(floorConfig, pointData);
+    }
+
+    /* Renders interactive 3D pins for all peer vantage points inside the WebXR scene[cite: 23] */
+    function renderInSceneTeleportPins(floorConfig, currentPoint) {
+      const pinsContainer = document.getElementById('in-scene-teleport-pins');
+      pinsContainer.innerHTML = '';
+
+      if (!currentPoint.peers || currentPoint.peers.length === 0) {
+        // Fallback: auto-generate peers if not manually specified
+        const otherPoints = floorConfig.points.filter(p => p.id !== currentPoint.id);
+        otherPoints.forEach((peerPoint, idx) => {
+          const angle = (idx / otherPoints.length) * Math.PI * 2 - Math.PI / 2;
+          const x = (Math.cos(angle) * 4).toFixed(2);
+          const z = (Math.sin(angle) * 4).toFixed(2);
+          createVRMarker(pinsContainer, peerPoint.id, peerPoint.pinNum, peerPoint.name, `${x} 0.2 ${z}`, `0 ${(-angle * 180 / Math.PI).toFixed(0)} 0`);
+        });
+        return;
+      }
+
+      currentPoint.peers.forEach(peer => {
+        createVRMarker(pinsContainer, peer.targetId, peer.pinNum, peer.name, peer.pos, peer.rot);
+      });
+    }
+
+    function createVRMarker(parentEl, targetId, pinNum, name, position, rotation) {
+      const markerEntity = document.createElement('a-entity');
+      markerEntity.setAttribute('class', 'clickable');
+      markerEntity.setAttribute('position', position);
+      markerEntity.setAttribute('rotation', rotation || '0 0 0');
+
+      // Glowing outer ring and circle base
+      markerEntity.innerHTML = `
+        <a-ring radius-inner="0.32" radius-outer="0.45" color="#0071E3" opacity="0.9" material="shader: flat; side: double"></a-ring>
+        <a-circle radius="0.32" color="#111111" opacity="0.75" material="shader: flat; side: double"></a-circle>
+        <a-text value="${pinNum}" align="center" position="0 0 0.02" scale="1.4 1.4 1.4" color="#FFFFFF" font="sourcecodepro"></a-text>
+        <a-plane position="0 0.65 0" width="1.6" height="0.32" color="#000000" opacity="0.8" material="shader: flat; side: double">
+          <a-text value="${name}" align="center" color="#FFFFFF" scale="0.7 0.7 0.7"></a-text>
+        </a-plane>
+      `;
+
+      // Hover animation
+      markerEntity.addEventListener('mouseenter', () => {
+        markerEntity.setAttribute('scale', '1.18 1.18 1.18');
+      });
+      markerEntity.addEventListener('mouseleave', () => {
+        markerEntity.setAttribute('scale', '1 1 1');
+      });
+
+      // Click / Gaze teleport handler
+      markerEntity.addEventListener('click', () => {
+        loadFloorAndPoint(currentFloorLevel, targetId, true);
+      });
+
+      parentEl.appendChild(markerEntity);
     }
   </script>
 </body>
