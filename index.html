@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market 360 - Redevelopment of Poorna Market</title>
-  <!-- Updated A-Frame version for Meta Quest 3 & WebXR Touch Plus controller support -->
-  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <!-- Stable A-Frame release with Meta Quest 3 & WebXR Touch Plus controller support -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
   <style>
     @font-face {
@@ -1337,25 +1337,16 @@
         const executeTeleport = (evt) => {
           if (evt) evt.stopPropagation();
           const now = Date.now();
-          // Debounce to prevent double trigger clicks from Quest 3 controllers
           if (now - lastTriggerTime < 500) return;
           lastTriggerTime = now;
-
-          // Haptic feedback pulse on Quest 3 controllers if available
-          if (evt && evt.detail && evt.detail.cursorEl) {
-            const controller = evt.detail.cursorEl.components['haptics'];
-            if (controller) controller.pulse(0.6, 60);
-          }
 
           if (window.loadFloorAndPoint) {
             window.loadFloorAndPoint(window.currentFloorLevel, targetId, true);
           }
         };
 
-        // Listen for standard clicks, controller laser clicks, and WebXR trigger selections
         el.addEventListener('click', executeTeleport);
         el.addEventListener('triggerdown', executeTeleport);
-        el.addEventListener('select', executeTeleport);
 
         el.addEventListener('mouseenter', () => {
           el.setAttribute('scale', '1.18 1.18 1.18');
@@ -1365,7 +1356,6 @@
         });
       },
       tick: function () {
-        // Billboard rotation: keep the teleport pin and tooltip facing the Quest 3 headset
         const camera = document.querySelector('#camera');
         if (camera && this.el) {
           const camPos = camera.object3D.position;
@@ -1703,16 +1693,19 @@
   </div>
 
   <!-- =========================================================
-       A-FRAME VR CANVAS (OPTIMIZED FOR META QUEST 3 & 6DOF)
+       A-FRAME VR CANVAS (ROBUST COMPATIBLE 3D PIPELINE)
        ========================================================= -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true" renderer="antialias: true; colorManagement: true; highRefreshRate: true;">
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
+    <a-assets timeout="10000">
+      <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
+    </a-assets>
+
     <a-entity id="cameraRig" position="0 0 0">
-      <!-- Headset Camera with Gaze Reticle -->
       <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
           color="#0071E3"
-          raycaster="objects: .clickable; far: 25"
+          raycaster="objects: .clickable; far: 30"
           animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
         <a-sphere 
@@ -1724,22 +1717,21 @@
         </a-sphere>
       </a-camera>
 
-      <!-- Meta Quest 3 Right Hand Controller (Touch Plus) -->
+      <!-- Laser controllers supporting both Meta Quest and WebXR Generic -->
       <a-entity id="rightHand"
-        oculus-touch-controls="hand: right; model: true"
+        oculus-touch-controls="hand: right"
         laser-controls="hand: right"
-        raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.85">
+        raycaster="objects: .clickable; far: 30; lineColor: #0071E3; lineOpacity: 0.85">
       </a-entity>
 
-      <!-- Meta Quest 3 Left Hand Controller (Touch Plus) -->
       <a-entity id="leftHand"
-        oculus-touch-controls="hand: left; model: true"
+        oculus-touch-controls="hand: left"
         laser-controls="hand: left"
-        raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.85">
+        raycaster="objects: .clickable; far: 30; lineColor: #0071E3; lineOpacity: 0.85">
       </a-entity>
     </a-entity>
 
-    <!-- IN-VR 3D Back to Overview Button (Inside 3D Headset Space) -->
+    <!-- In-VR 3D Back to Overview Button -->
     <a-entity id="vr-in-headset-back" class="clickable" position="-1.8 1.6 -3" rotation="0 25 0" onclick="exitVRToOverview()">
       <a-plane width="1.2" height="0.4" color="#18181c" opacity="0.94" material="shader: flat">
         <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.95 0.95 0.95"></a-text>
@@ -1750,7 +1742,7 @@
     <a-entity id="in-scene-teleport-pins"></a-entity>
 
     <!-- 360 Panorama Sky Sphere -->
-    <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
+    <a-sky id="sky-sphere" src="#primary-sky-tex" rotation="0 -90 0"></a-sky>
   </a-scene>
 
   <script>
@@ -1761,7 +1753,7 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // --- IMMERSIVE VR LAUNCHER (Meta Quest 3 WebXR Session) ---
+    // --- IMMERSIVE VR LAUNCHER ---
     function enterImmersiveVR() {
       const scene = document.querySelector('a-scene');
       if (scene) {
@@ -2179,17 +2171,20 @@
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       mapHeader.innerText = floorConfig.planTitle;
 
+      // Clean asset texture assignment without THREE.js silent failure
       const sky = document.getElementById('sky-sphere');
-      const loader = new THREE.TextureLoader();
-      loader.load(pointData.src, function(texture) {
-        const mesh = sky.getObject3D('mesh');
-        if (mesh) { mesh.material.map = texture; mesh.material.needsUpdate = true; }
-      }, undefined, function() {
-        loader.load(pointData.fallbackSrc, function(fallbackTexture) {
-          const mesh = sky.getObject3D('mesh');
-          if (mesh) { mesh.material.map = fallbackTexture; mesh.material.needsUpdate = true; }
-        });
-      });
+      const targetSrc = pointData.src;
+
+      // Test image availability before setting to prevent blue screen drops
+      const imgTester = new Image();
+      imgTester.onload = function() {
+        sky.setAttribute('src', targetSrc);
+      };
+      imgTester.onerror = function() {
+        console.warn('Could not load:', targetSrc, 'Using fallback:', pointData.fallbackSrc);
+        sky.setAttribute('src', pointData.fallbackSrc);
+      };
+      imgTester.src = targetSrc;
 
       // Update 2D Thumbnails
       const thumbStrip = document.getElementById('thumb-strip');
@@ -2236,16 +2231,11 @@
       markerEntity.setAttribute('teleport-hotspot', `target: ${targetId}`);
 
       markerEntity.innerHTML = `
-        <!-- Outer Glowing Accent Ring -->
         <a-ring radius-inner="0.36" radius-outer="0.44" color="#0071E3" opacity="0.9" material="shader: flat; side: double"></a-ring>
-        <!-- Translucent Core Disc -->
         <a-circle radius="0.36" color="#0a0a0c" opacity="0.82" material="shader: flat; side: double"></a-circle>
-        <!-- Inner Accent Ring -->
         <a-ring radius-inner="0.26" radius-outer="0.28" color="#64b5f6" opacity="0.75" material="shader: flat; side: double"></a-ring>
-        <!-- Number Text -->
         <a-text value="${pinNum}" align="center" position="0 0 0.02" scale="1.4 1.4 1.4" color="#FFFFFF" font="sourcecodepro"></a-text>
         
-        <!-- Overhead Pill Tooltip -->
         <a-entity position="0 0.65 0">
           <a-plane width="1.6" height="0.34" color="#111116" opacity="0.88" material="shader: flat; side: double"></a-plane>
           <a-triangle vertex-a="0 -0.17 0" vertex-b="-0.1 -0.27 0" vertex-c="0.1 -0.27 0" color="#111116" material="shader: flat; side: double"></a-triangle>
