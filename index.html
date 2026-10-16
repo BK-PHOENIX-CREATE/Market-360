@@ -851,6 +851,39 @@
       fill: currentColor;
     }
 
+    /* Dedicated WebXR VR Mode Launcher Button */
+    .custom-vr-control {
+      position: absolute;
+      bottom: 24px;
+      right: 76px;
+      z-index: 100;
+      width: 44px;
+      height: 44px;
+      background: rgba(24, 24, 28, 0.88);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .custom-vr-control:hover {
+      background: #0071e3;
+      border-color: #0077ed;
+      color: #ffffff;
+      transform: scale(1.08);
+    }
+    .custom-vr-control svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
     /* Floor Dropdown */
     .floor-dropdown-wrapper {
       position: absolute;
@@ -1293,7 +1326,7 @@
     .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
 
-  <!-- Register A-Frame Component for Robust VR Teleportation -->
+  <!-- Register A-Frame Component for Teleportation -->
   <script>
     AFRAME.registerComponent('teleport-hotspot', {
       schema: {
@@ -1309,11 +1342,9 @@
           }
         };
 
-        // Handles mouse clicks, gaze cursor clicks, and VR laser controller triggers
         el.addEventListener('click', triggerTeleport);
         el.addEventListener('triggerdown', triggerTeleport);
 
-        // Visual hover pulse
         el.addEventListener('mouseenter', () => {
           el.setAttribute('scale', '1.18 1.18 1.18');
         });
@@ -1614,6 +1645,13 @@
     </div>
   </div>
 
+  <!-- Dedicated WebXR VR Mode Launcher Button -->
+  <div class="custom-vr-control" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter Immersive VR Mode">
+    <svg viewBox="0 0 24 24">
+      <path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+    </svg>
+  </div>
+
   <!-- Custom Fullscreen Toggle in Bottom-Right Corner -->
   <div class="custom-fullscreen-control" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Toggle Fullscreen Mode">
     <svg id="fs-icon" viewBox="0 0 24 24">
@@ -1647,10 +1685,10 @@
     <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
-  <!-- A-Frame VR Canvas -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
+  <!-- A-Frame VR Canvas: vr-mode-ui enabled so WebXR detects headsets properly -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
     <a-entity id="cameraRig" position="0 0 0">
-      <!-- Camera with gaze reticle cursor -->
+      <!-- Camera with gaze cursor -->
       <a-camera id="camera" look-controls wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
@@ -1692,6 +1730,18 @@
     const soundIcon = document.getElementById('sound-icon');
     let isPlaying = false;
     let isTransitioning = false;
+
+    // --- IMMERSIVE VR LAUNCHER ---
+    function enterImmersiveVR() {
+      const scene = document.querySelector('a-scene');
+      if (scene) {
+        if (scene.is('vr-mode')) {
+          scene.exitVR();
+        } else {
+          scene.enterVR();
+        }
+      }
+    }
 
     // --- FULLSCREEN CONTROLLER ---
     function toggleFullScreen() {
@@ -1797,7 +1847,7 @@
     /* 
       MASTER CONFIGURATION:
       - 2D Blueprint Coordinates
-      - Precise 3D VR positions corresponding to real street perspective views
+      - 3D VR World Space Coordinates for In-Scene Hotspots
     */
     const floorPlansConfig = [
       {
@@ -2149,7 +2199,6 @@
       });
     }
 
-    /* Stylized Glass-morphic 3D VR Teleport Marker with Pill Tooltip */
     function createVRMarker(parentEl, targetId, pinNum, name, position, rotation) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('class', 'clickable');
@@ -2169,7 +2218,7 @@
         
         <!-- Overhead Pill Tooltip -->
         <a-entity position="0 0.65 0">
-          <a-plane width="1.6" height="0.34" color="#111116" opacity="0.88" material="shader: flat; side: double" border="0.02" border-color="#0071E3"></a-plane>
+          <a-plane width="1.6" height="0.34" color="#111116" opacity="0.88" material="shader: flat; side: double"></a-plane>
           <a-triangle vertex-a="0 -0.17 0" vertex-b="-0.1 -0.27 0" vertex-c="0.1 -0.27 0" color="#111116" material="shader: flat; side: double"></a-triangle>
           <a-text value="${name}" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65"></a-text>
         </a-entity>
