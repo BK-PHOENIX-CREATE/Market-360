@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market 360 - Redevelopment of Poorna Market</title>
-  <!-- A-Frame WebXR Framework -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- Updated A-Frame version for Meta Quest 3 & WebXR Touch Plus controller support -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
   <style>
     @font-face {
@@ -787,7 +787,6 @@
     }
     .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
 
-    /* Persistent Fullscreen Floating Back Button */
     #fullscreen-back-btn {
       position: absolute;
       top: 16px;
@@ -818,7 +817,6 @@
       display: flex;
     }
 
-    /* Bottom-Right Custom Fullscreen Toggle Button */
     .custom-fullscreen-control {
       position: absolute;
       bottom: 24px;
@@ -851,7 +849,7 @@
       fill: currentColor;
     }
 
-    /* Dedicated WebXR VR Mode Launcher Button */
+    /* Meta Quest VR Mode Trigger Button */
     .custom-vr-control {
       position: absolute;
       bottom: 24px;
@@ -884,7 +882,6 @@
       fill: currentColor;
     }
 
-    /* Floor Dropdown */
     .floor-dropdown-wrapper {
       position: absolute;
       top: 80px;
@@ -1326,7 +1323,7 @@
     .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
 
-  <!-- Register A-Frame Component for Teleportation -->
+  <!-- Meta Quest 3 WebXR Teleport & Billboard Component -->
   <script>
     AFRAME.registerComponent('teleport-hotspot', {
       schema: {
@@ -1335,15 +1332,30 @@
       init: function () {
         const el = this.el;
         const targetId = this.data.target;
+        let lastTriggerTime = 0;
 
-        const triggerTeleport = () => {
+        const executeTeleport = (evt) => {
+          if (evt) evt.stopPropagation();
+          const now = Date.now();
+          // Debounce to prevent double trigger clicks from Quest 3 controllers
+          if (now - lastTriggerTime < 500) return;
+          lastTriggerTime = now;
+
+          // Haptic feedback pulse on Quest 3 controllers if available
+          if (evt && evt.detail && evt.detail.cursorEl) {
+            const controller = evt.detail.cursorEl.components['haptics'];
+            if (controller) controller.pulse(0.6, 60);
+          }
+
           if (window.loadFloorAndPoint) {
             window.loadFloorAndPoint(window.currentFloorLevel, targetId, true);
           }
         };
 
-        el.addEventListener('click', triggerTeleport);
-        el.addEventListener('triggerdown', triggerTeleport);
+        // Listen for standard clicks, controller laser clicks, and WebXR trigger selections
+        el.addEventListener('click', executeTeleport);
+        el.addEventListener('triggerdown', executeTeleport);
+        el.addEventListener('select', executeTeleport);
 
         el.addEventListener('mouseenter', () => {
           el.setAttribute('scale', '1.18 1.18 1.18');
@@ -1351,6 +1363,14 @@
         el.addEventListener('mouseleave', () => {
           el.setAttribute('scale', '1 1 1');
         });
+      },
+      tick: function () {
+        // Billboard rotation: keep the teleport pin and tooltip facing the Quest 3 headset
+        const camera = document.querySelector('#camera');
+        if (camera && this.el) {
+          const camPos = camera.object3D.position;
+          this.el.object3D.lookAt(camPos.x, this.el.object3D.position.y, camPos.z);
+        }
       }
     });
   </script>
@@ -1399,7 +1419,6 @@
         </div>
       </div>
 
-      <!-- Upper Presentation Card -->
       <div class="hero-presentation-card">
         <img src="project_hero_render.png" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Redevelopment Perspective Render">
         <div class="hero-vignette"></div>
@@ -1461,7 +1480,6 @@
         </div>
       </div>
 
-      <!-- Lower 3-Module Grid -->
       <div class="dashboard-lower-grid">
         <div class="dash-module-card">
           <div class="card-title-bar">
@@ -1597,7 +1615,6 @@
       <span class="trigger-arrow">▾</span>
     </div>
 
-    <!-- Dropdown Menu -->
     <div class="floor-dropdown-menu" id="floor-menu">
       <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
         <span class="menu-badge">TR</span>
@@ -1646,7 +1663,7 @@
   </div>
 
   <!-- Dedicated WebXR VR Mode Launcher Button -->
-  <div class="custom-vr-control" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter Immersive VR Mode">
+  <div class="custom-vr-control" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter Immersive Meta Quest VR Mode">
     <svg viewBox="0 0 24 24">
       <path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
     </svg>
@@ -1685,16 +1702,18 @@
     <div class="thumbnail-strip" id="thumb-strip"></div>
   </div>
 
-  <!-- A-Frame VR Canvas: vr-mode-ui enabled so WebXR detects headsets properly -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
+  <!-- =========================================================
+       A-FRAME VR CANVAS (OPTIMIZED FOR META QUEST 3 & 6DOF)
+       ========================================================= -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true" renderer="antialias: true; colorManagement: true; highRefreshRate: true;">
     <a-entity id="cameraRig" position="0 0 0">
-      <!-- Camera with gaze cursor -->
-      <a-camera id="camera" look-controls wasd-controls="enabled: false">
+      <!-- Headset Camera with Gaze Reticle -->
+      <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
           color="#0071E3"
           raycaster="objects: .clickable; far: 25"
-          animation__click="property: scale; startEvents: click; dur: 150; from: 0.1 0.1 0.1; to: 1 1 1">
+          animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
         <a-sphere 
           id="fade-sphere" 
@@ -1705,21 +1724,32 @@
         </a-sphere>
       </a-camera>
 
-      <!-- VR Laser Controllers for Both Hands -->
-      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.8"></a-entity>
-      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.8"></a-entity>
+      <!-- Meta Quest 3 Right Hand Controller (Touch Plus) -->
+      <a-entity id="rightHand"
+        oculus-touch-controls="hand: right; model: true"
+        laser-controls="hand: right"
+        raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.85">
+      </a-entity>
+
+      <!-- Meta Quest 3 Left Hand Controller (Touch Plus) -->
+      <a-entity id="leftHand"
+        oculus-touch-controls="hand: left; model: true"
+        laser-controls="hand: left"
+        raycaster="objects: .clickable; far: 25; lineColor: #0071E3; lineOpacity: 0.85">
+      </a-entity>
     </a-entity>
 
     <!-- IN-VR 3D Back to Overview Button (Inside 3D Headset Space) -->
     <a-entity id="vr-in-headset-back" class="clickable" position="-1.8 1.6 -3" rotation="0 25 0" onclick="exitVRToOverview()">
-      <a-plane width="1.1" height="0.38" color="#1c1c1e" opacity="0.92" material="shader: flat">
-        <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.9 0.9 0.9"></a-text>
+      <a-plane width="1.2" height="0.4" color="#18181c" opacity="0.94" material="shader: flat">
+        <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.95 0.95 0.95"></a-text>
       </a-plane>
     </a-entity>
 
     <!-- Dynamic Container for 3D In-VR Teleport Hotspots -->
     <a-entity id="in-scene-teleport-pins"></a-entity>
 
+    <!-- 360 Panorama Sky Sphere -->
     <a-sky id="sky-sphere" src="site_1.png" rotation="0 -90 0"></a-sky>
   </a-scene>
 
@@ -1731,7 +1761,7 @@
     let isPlaying = false;
     let isTransitioning = false;
 
-    // --- IMMERSIVE VR LAUNCHER ---
+    // --- IMMERSIVE VR LAUNCHER (Meta Quest 3 WebXR Session) ---
     function enterImmersiveVR() {
       const scene = document.querySelector('a-scene');
       if (scene) {
@@ -1867,8 +1897,8 @@
             src: "site_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.6 0.2 -4.8", rot: "0 28 0" },
-              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.3 -3.6", rot: "0 -48 0" }
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.6 0.2 -4.8" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.3 -3.6" }
             ]
           },
           { 
@@ -1880,8 +1910,8 @@
             src: "site_2.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.2 5.0", rot: "0 180 0" },
-              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "-4.5 0.3 -2.2", rot: "0 60 0" }
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.2 5.0" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "-4.5 0.3 -2.2" }
             ]
           },
           { 
@@ -1893,8 +1923,8 @@
             src: "site_3.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5", rot: "0 140 0" },
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "0.2 0.1 -4.8", rot: "0 0 0" }
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5" },
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "0.2 0.1 -4.8" }
             ]
           }
         ]
@@ -1938,7 +1968,7 @@
             src: "ground_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "ground-node-2", pinNum: "2", name: "Atrium Plaza", pos: "0 0 -5", rot: "0 0 0" }
+              { targetId: "ground-node-2", pinNum: "2", name: "Atrium Plaza", pos: "0 0 -5" }
             ]
           },
           { 
@@ -1950,7 +1980,7 @@
             src: "ground_2.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "ground-node-1", pinNum: "1", name: "Ground Market Hall", pos: "0 0 5", rot: "0 180 0" }
+              { targetId: "ground-node-1", pinNum: "1", name: "Ground Market Hall", pos: "0 0 5" }
             ]
           }
         ]
@@ -1983,7 +2013,7 @@
             src: "second_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "second-node-2", pinNum: "2", name: "Station 2", pos: "4 0 -3", rot: "0 -40 0" }
+              { targetId: "second-node-2", pinNum: "2", name: "Station 2", pos: "4 0 -3" }
             ]
           },
           { 
@@ -1995,7 +2025,7 @@
             src: "second_2.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "second-node-1", pinNum: "1", name: "Station 1", pos: "-4 0 3", rot: "0 140 0" }
+              { targetId: "second-node-1", pinNum: "1", name: "Station 1", pos: "-4 0 3" }
             ]
           }
         ]
@@ -2175,7 +2205,7 @@
         thumbStrip.appendChild(card);
       });
 
-      // Render Stylized 3D VR In-Scene Teleport Pins
+      // Render Stylized 3D VR In-Scene Teleport Pins for Meta Quest 3
       renderInSceneTeleportPins(floorConfig, pointData);
     }
 
@@ -2189,21 +2219,20 @@
           const angle = (idx / otherPoints.length) * Math.PI * 2 - Math.PI / 2;
           const x = (Math.cos(angle) * 4).toFixed(2);
           const z = (Math.sin(angle) * 4).toFixed(2);
-          createVRMarker(pinsContainer, peerPoint.id, peerPoint.pinNum, peerPoint.name, `${x} 0.2 ${z}`, `0 ${(-angle * 180 / Math.PI).toFixed(0)} 0`);
+          createVRMarker(pinsContainer, peerPoint.id, peerPoint.pinNum, peerPoint.name, `${x} 0.2 ${z}`);
         });
         return;
       }
 
       currentPoint.peers.forEach(peer => {
-        createVRMarker(pinsContainer, peer.targetId, peer.pinNum, peer.name, peer.pos, peer.rot);
+        createVRMarker(pinsContainer, peer.targetId, peer.pinNum, peer.name, peer.pos);
       });
     }
 
-    function createVRMarker(parentEl, targetId, pinNum, name, position, rotation) {
+    function createVRMarker(parentEl, targetId, pinNum, name, position) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('class', 'clickable');
       markerEntity.setAttribute('position', position);
-      markerEntity.setAttribute('rotation', rotation || '0 0 0');
       markerEntity.setAttribute('teleport-hotspot', `target: ${targetId}`);
 
       markerEntity.innerHTML = `
