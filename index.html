@@ -247,9 +247,7 @@
       transition: color 0.2s ease;
     }
 
-    .dash-nav-item.active, .dash-nav-item:hover {
-      color: #ffffff;
-    }
+    .dash-nav-item.active, .dash-nav-item:hover { color: #ffffff; }
 
     .dash-nav-item.active::after {
       content: '';
@@ -302,27 +300,13 @@
       transform: scale(1.005);
       transition: transform 7s ease-out;
     }
-    .hero-presentation-card:hover .hero-render-bg {
-      transform: scale(1.03);
-    }
+    .hero-presentation-card:hover .hero-render-bg { transform: scale(1.03); }
 
     .hero-vignette {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to right,
-        rgba(13, 14, 18, 0.98) 0%,
-        rgba(13, 14, 18, 0.92) 28%,
-        rgba(13, 14, 18, 0.55) 42%,
-        rgba(13, 14, 18, 0.1) 58%,
-        transparent 75%
-      ),
-      linear-gradient(
-        to top,
-        rgba(13, 14, 18, 0.85) 0%,
-        rgba(13, 14, 18, 0.2) 25%,
-        transparent 50%
-      );
+      background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.55) 42%, rgba(13, 14, 18, 0.1) 58%, transparent 75%),
+                  linear-gradient(to top, rgba(13, 14, 18, 0.85) 0%, rgba(13, 14, 18, 0.2) 25%, transparent 50%);
       z-index: 2;
       pointer-events: none;
     }
@@ -340,10 +324,7 @@
       letter-spacing: -0.03em;
       color: #ffffff;
     }
-
-    .hero-title-group h1 span.highlight-orange {
-      color: #f08a5d;
-    }
+    .hero-title-group h1 span.highlight-orange { color: #f08a5d; }
 
     .hero-loc-subtitle {
       font-size: 10.5px;
@@ -354,18 +335,8 @@
       font-weight: 600;
     }
 
-    .hero-tags {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.5);
-      margin-top: 3px;
-    }
-
-    .hero-description-p {
-      font-size: 12px;
-      line-height: 1.55;
-      color: rgba(255, 255, 255, 0.85);
-      margin-top: 14px;
-    }
+    .hero-tags { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-top: 3px; }
+    .hero-description-p { font-size: 12px; line-height: 1.55; color: rgba(255, 255, 255, 0.85); margin-top: 14px; }
 
     .hero-bottom-bar {
       position: relative;
@@ -376,12 +347,7 @@
       width: 100%;
     }
 
-    .meta-pills-cluster {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .meta-pills-cluster { display: flex; gap: 10px; flex-wrap: wrap; }
     .meta-pill-card {
       background: rgba(20, 21, 26, 0.78);
       border: 1px solid rgba(255, 255, 255, 0.16);
@@ -394,35 +360,11 @@
       gap: 10px;
     }
 
-    .pill-icon-box {
-      font-size: 15px;
-      color: #f08a5d;
-      opacity: 0.9;
-    }
-
-    .pill-text-col {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .pill-header {
-      font-size: 8.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 700;
-    }
-
-    .pill-val-strong {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .pill-val-sub {
-      font-size: 9.5px;
-      color: rgba(255, 255, 255, 0.65);
-    }
+    .pill-icon-box { font-size: 15px; color: #f08a5d; opacity: 0.9; }
+    .pill-text-col { display: flex; flex-direction: column; }
+    .pill-header { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
+    .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
+    .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
 
     .watch-video-btn {
       background: rgba(20, 21, 26, 0.82);
@@ -436,7 +378,6 @@
       backdrop-filter: blur(18px);
       transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
     .watch-video-btn .play-circle {
       width: 32px;
       height: 32px;
@@ -450,40 +391,12 @@
       color: #ffffff;
       transition: transform 0.2s ease, background 0.2s ease;
     }
-
-    .watch-video-btn .btn-text-col {
-      display: flex;
-      flex-direction: column;
-      text-align: left;
-    }
-
-    .watch-video-btn .btn-text-col span:first-child {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .watch-video-btn .btn-text-col span:last-child {
-      font-size: 8px;
-      color: rgba(255, 255, 255, 0.55);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .watch-video-btn:hover {
-      background: #ffffff;
-      border-color: #ffffff;
-    }
-    .watch-video-btn:hover .play-circle {
-      background: #f08a5d;
-      border-color: #f08a5d;
-      transform: scale(1.08);
-    }
-    .watch-video-btn:hover .btn-text-col span {
-      color: #111111;
-    }
+    .watch-video-btn .btn-text-col { display: flex; flex-direction: column; text-align: left; }
+    .watch-video-btn .btn-text-col span:first-child { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: #ffffff; }
+    .watch-video-btn .btn-text-col span:last-child { font-size: 8px; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; letter-spacing: 0.05em; }
+    .watch-video-btn:hover { background: #ffffff; border-color: #ffffff; }
+    .watch-video-btn:hover .play-circle { background: #f08a5d; border-color: #f08a5d; transform: scale(1.08); }
+    .watch-video-btn:hover .btn-text-col span { color: #111111; }
 
     .dashboard-lower-grid {
       display: grid;
@@ -505,54 +418,14 @@
       overflow: hidden;
     }
 
-    .card-title-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .card-title-bar { display: flex; align-items: center; gap: 8px; }
+    .card-title-bar h3 { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); font-weight: 700; }
+    .card-title-bar .title-decor-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.1); }
 
-    .card-title-bar h3 {
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.7);
-      font-weight: 700;
-    }
-
-    .card-title-bar .title-decor-line {
-      flex: 1;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .context-split-row {
-      display: grid;
-      grid-template-columns: 1fr 100px;
-      gap: 12px;
-      align-items: center;
-      margin: 8px 0;
-    }
-
-    .context-split-row p {
-      font-size: 10.5px;
-      line-height: 1.48;
-      color: rgba(255, 255, 255, 0.78);
-    }
-
-    .context-photo-box {
-      width: 100%;
-      height: 85px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .context-photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(80%) contrast(1.1);
-    }
+    .context-split-row { display: grid; grid-template-columns: 1fr 100px; gap: 12px; align-items: center; margin: 8px 0; }
+    .context-split-row p { font-size: 10.5px; line-height: 1.48; color: rgba(255, 255, 255, 0.78); }
+    .context-photo-box { width: 100%; height: 85px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); }
+    .context-photo-box img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) contrast(1.1); }
 
     .module-card-action {
       display: inline-flex;
@@ -569,26 +442,10 @@
       border: none;
       padding: 0;
     }
-    .module-card-action:hover {
-      color: #f08a5d;
-      transform: translateX(3px);
-    }
+    .module-card-action:hover { color: #f08a5d; transform: translateX(3px); }
 
-    .approach-pillars-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin: 8px 0;
-      text-align: center;
-    }
-
-    .approach-pillar {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-    }
-
+    .approach-pillars-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0; text-align: center; }
+    .approach-pillar { display: flex; flex-direction: column; align-items: center; gap: 5px; }
     .pillar-visual {
       width: 44px;
       height: 44px;
@@ -599,54 +456,14 @@
       align-items: center;
       justify-content: center;
     }
+    .pillar-visual svg { width: 22px; height: 22px; }
+    .approach-pillar .pillar-name { font-size: 9.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.04em; }
+    .approach-pillar .pillar-desc { font-size: 8.5px; line-height: 1.35; color: rgba(255, 255, 255, 0.55); }
 
-    .pillar-visual svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .approach-pillar .pillar-name {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: #ffffff;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .approach-pillar .pillar-desc {
-      font-size: 8.5px;
-      line-height: 1.35;
-      color: rgba(255, 255, 255, 0.55);
-    }
-
-    .experience-card-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 1;
-      filter: brightness(0.7);
-      transition: transform 6s ease;
-    }
+    .experience-card-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.7); transition: transform 6s ease; }
     .dash-module-card:hover .experience-card-bg { transform: scale(1.05); }
-
-    .experience-card-scrim {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.35) 65%, rgba(12, 13, 18, 0.7) 100%);
-      z-index: 2;
-    }
-
-    .experience-content-wrap {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-    }
-
+    .experience-card-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.35) 65%, rgba(12, 13, 18, 0.7) 100%); z-index: 2; }
+    .experience-content-wrap { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
     .experience-360-badge {
       display: flex;
       align-items: center;
@@ -658,7 +475,6 @@
       width: fit-content;
       margin: 0 auto;
     }
-
     .badge-360-icon {
       font-size: 11px;
       font-weight: 700;
@@ -671,21 +487,9 @@
       align-items: center;
       justify-content: center;
     }
-
-    .badge-360-text {
-      display: flex;
-      flex-direction: column;
-    }
-    .badge-360-text span:first-child {
-      font-size: 8.5px;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 0.05em;
-    }
-    .badge-360-text span:last-child {
-      font-size: 7.5px;
-      color: rgba(255, 255, 255, 0.6);
-    }
+    .badge-360-text { display: flex; flex-direction: column; }
+    .badge-360-text span:first-child { font-size: 8.5px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em; }
+    .badge-360-text span:last-child { font-size: 7.5px; color: rgba(255, 255, 255, 0.6); }
 
     .explore-market-cta-btn {
       width: 100%;
@@ -744,49 +548,75 @@
       background: #1a1a1f;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-
     .video-modal-header h4 { font-size: 13px; font-weight: 600; }
     .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
 
     /* =========================================================
-       PAGE 3: 360 VR TOUR & UI SYSTEM
+       PAGE 3: 360 VR TOUR & REFINED REFERENCE UI SYSTEM
        ========================================================= */
     .header-bar {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      padding: 16px 24px;
+      padding: 18px 24px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent);
+      align-items: flex-start;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
       color: #ffffff;
       z-index: 100;
       pointer-events: auto;
     }
-    .header-title h1 { font-size: 19px; font-weight: 700; }
-    .header-title p { font-size: 12px; color: rgba(255, 255, 255, 0.75); margin-top: 2px; }
 
-    .header-controls { display: flex; align-items: center; gap: 10px; }
-    .audio-btn, .back-home-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 20px;
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .header-title p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    /* Reference Style Unified Top-Right Action Capsule */
+    .top-action-capsule {
+      display: flex;
+      align-items: center;
+      background: rgba(20, 22, 28, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      padding: 4px 10px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .capsule-btn {
+      background: transparent;
+      border: none;
+      color: #f5f5f7;
+      padding: 6px 12px;
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: color 0.18s ease, opacity 0.18s ease;
     }
-    .audio-btn:hover, .back-home-btn:hover { background: #ffffff; color: #111111; }
+    .capsule-btn:hover { color: #0071e3; }
+    .capsule-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.22);
+      margin: 0 2px;
+    }
 
+    /* Fullscreen Exit Indicator Button */
     #fullscreen-back-btn {
       position: absolute;
       top: 16px;
@@ -808,82 +638,16 @@
       gap: 8px;
       transition: all 0.2s ease;
     }
-    #fullscreen-back-btn:hover {
-      background: #ffffff;
-      color: #111111;
-      transform: scale(1.05);
-    }
-    body.is-fullscreen #fullscreen-back-btn {
-      display: flex;
-    }
+    #fullscreen-back-btn:hover { background: #ffffff; color: #111111; transform: scale(1.05); }
+    body.is-fullscreen #fullscreen-back-btn { display: flex; }
 
-    .custom-fullscreen-control {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      z-index: 100;
-      width: 44px;
-      height: 44px;
-      background: rgba(24, 24, 28, 0.88);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    .custom-fullscreen-control:hover {
-      background: #ffffff;
-      color: #111111;
-      transform: scale(1.08);
-      border-color: #0071e3;
-    }
-    .custom-fullscreen-control svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    .custom-vr-control {
-      position: absolute;
-      bottom: 24px;
-      right: 76px;
-      z-index: 100;
-      width: 44px;
-      height: 44px;
-      background: rgba(24, 24, 28, 0.88);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    .custom-vr-control:hover {
-      background: #0071e3;
-      border-color: #0077ed;
-      color: #ffffff;
-      transform: scale(1.08);
-    }
-    .custom-vr-control svg {
-      width: 22px;
-      height: 22px;
-      fill: currentColor;
-    }
-
+    /* =========================================================
+       RETAINED FUNCTION & ARRANGEMENT: DROPDOWN TRIGGER + MENU
+       STYLED WITH DARK GLASSMORPHIC & ACCENT GLOW
+       ========================================================= */
     .floor-dropdown-wrapper {
       position: absolute;
-      top: 80px;
+      top: 86px;
       left: 24px;
       z-index: 110;
       display: flex;
@@ -895,22 +659,23 @@
       top: 68px;
     }
 
+    /* Trigger Button Styled after Reference */
     .floor-dropdown-trigger {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: rgba(255, 255, 255, 0.88);
-      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      gap: 10px;
+      padding: 7px 14px 7px 8px;
+      background: rgba(18, 20, 26, 0.82);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
       border-radius: 12px;
-      color: #1d1d1f;
+      color: #ffffff;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s ease;
       user-select: none;
     }
 
@@ -918,22 +683,24 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 26px;
-      height: 24px;
+      min-width: 28px;
+      height: 26px;
       padding: 0 6px;
       background: #0071e3;
       color: #ffffff;
-      border-radius: 6px;
+      border-radius: 7px;
       font-size: 11.5px;
       font-weight: 700;
+      box-shadow: 0 0 12px rgba(0, 113, 227, 0.65);
     }
 
     .floor-dropdown-trigger .trigger-arrow {
       font-size: 10px;
       transition: transform 0.2s ease;
-      color: #555555;
+      color: rgba(255, 255, 255, 0.65);
     }
 
+    /* Invisible hover buffer */
     .floor-dropdown-menu::before {
       content: '';
       position: absolute;
@@ -943,18 +710,19 @@
       height: 14px;
     }
 
+    /* Menu retaining exact sequential arrangement: Terrace down to Site */
     .floor-dropdown-menu {
       position: absolute;
-      top: calc(100% - 4px);
+      top: calc(100% - 2px);
       left: 0;
-      width: 200px;
-      background: rgba(20, 20, 24, 0.96);
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
-      border-radius: 14px;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
-      padding: 6px;
+      width: 220px;
+      background: rgba(16, 18, 24, 0.86);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 10px;
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
       display: flex;
       flex-direction: column;
       gap: 3px;
@@ -965,20 +733,23 @@
       pointer-events: none;
     }
 
-    .floor-dropdown-wrapper.stay-open .floor-dropdown-menu {
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-menu,
+    .floor-dropdown-wrapper:hover .floor-dropdown-menu {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
       pointer-events: auto;
     }
 
-    .floor-dropdown-wrapper.stay-open .floor-dropdown-trigger {
-      background: #ffffff;
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-trigger,
+    .floor-dropdown-wrapper:hover .floor-dropdown-trigger {
+      background: rgba(24, 28, 36, 0.95);
       border-color: #0071e3;
-      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.45);
     }
 
-    .floor-dropdown-wrapper.stay-open .trigger-arrow {
+    .floor-dropdown-wrapper.stay-open .trigger-arrow,
+    .floor-dropdown-wrapper:hover .trigger-arrow {
       transform: rotate(180deg);
       color: #0071e3;
     }
@@ -986,17 +757,17 @@
     .floor-menu-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       padding: 7px 10px;
       background: transparent;
       border: none;
-      border-radius: 8px;
-      color: #f5f5f7;
-      font-size: 12px;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 12.5px;
       font-weight: 500;
       cursor: pointer;
       text-align: left;
-      transition: background 0.15s ease, transform 0.15s ease, color 0.15s ease;
+      transition: background 0.16s ease, color 0.16s ease;
       width: 100%;
     }
 
@@ -1005,15 +776,15 @@
       align-items: center;
       justify-content: center;
       width: 28px;
-      height: 24px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      height: 26px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 6px;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #ffffff;
       flex-shrink: 0;
-      transition: all 0.15s ease;
+      transition: all 0.16s ease;
     }
 
     .floor-menu-item .menu-label {
@@ -1024,18 +795,12 @@
     }
 
     .floor-menu-item:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateX(3px);
+      background: rgba(255, 255, 255, 0.08);
       color: #ffffff;
     }
 
-    .floor-menu-item:hover .menu-badge {
-      background: #0071e3;
-      border-color: #0077ed;
-    }
-
     .floor-menu-item.active {
-      background: rgba(0, 113, 227, 0.22);
+      background: linear-gradient(90deg, rgba(0, 113, 227, 0.35) 0%, rgba(0, 113, 227, 0.12) 100%);
       color: #ffffff;
       font-weight: 700;
     }
@@ -1043,78 +808,222 @@
     .floor-menu-item.active .menu-badge {
       background: #0071e3;
       border-color: #0077ed;
-      box-shadow: 0 0 10px rgba(0, 113, 227, 0.6);
+      box-shadow: 0 0 10px rgba(0, 113, 227, 0.65);
     }
 
-    /* Bottom-Left Mini-Map */
-    .minimap-container {
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM-LEFT MINI-MAP
+       ========================================================= */
+    .minimap-panel {
       position: absolute;
       bottom: 24px;
       left: 24px;
-      width: 140px;
-      height: 135px;
-      background: rgba(24, 24, 28, 0.92);
-      border: 1.5px solid rgba(255, 255, 255, 0.28);
-      border-radius: 12px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+      width: 172px;
+      background: rgba(16, 18, 24, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 10px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
       z-index: 100;
-      overflow: hidden;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+      gap: 8px;
+      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.2s ease;
     }
-    .minimap-container:hover {
-      transform: translateY(-2px) scale(1.03);
+    .minimap-panel:hover {
+      transform: translateY(-2px);
       border-color: #0071e3;
-      box-shadow: 0 10px 28px rgba(0, 113, 227, 0.4);
-    }
-    .minimap-header {
-      width: 100%;
-      padding: 5px 8px;
-      background: rgba(0, 0, 0, 0.75);
-      color: #f5f5f7;
-      font-size: 9.5px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .minimap-header span#map-header {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 80px;
-    }
-    .minimap-header span.expand-hint {
-      color: #0071e3;
-      font-size: 8.5px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
     }
 
-    .minimap-body {
-      position: relative;
-      width: 100%;
-      flex: 1;
+    .minimap-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .minimap-top-row span.map-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+    .minimap-expand-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      background: rgba(0, 113, 227, 0.22);
+      border: 1px solid #0071e3;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent 70%);
+      color: #0071e3;
+      font-size: 11px;
+    }
+
+    .minimap-img-frame {
+      position: relative;
+      width: 100%;
+      height: 96px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     #minimap-img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       pointer-events: none;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    }
+    .minimap-fov-cone {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #0071e3;
+      background: rgba(0, 113, 227, 0.35);
+      box-shadow: 0 0 10px #0071e3;
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM CAROUSEL STRIP
+       ========================================================= */
+    .bottom-carousel-wrapper {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: auto;
+    }
+
+    .carousel-arrow-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(16, 18, 24, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .carousel-arrow-btn:hover {
+      background: #0071e3;
+      border-color: #0077ed;
+      transform: scale(1.08);
+    }
+
+    .carousel-cards-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      max-width: 58vw;
+      padding: 4px;
+      scrollbar-width: none;
+    }
+    .carousel-cards-strip::-webkit-scrollbar { display: none; }
+
+    .carousel-card {
+      position: relative;
+      flex: 0 0 156px;
+      height: 92px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: #111116;
+      transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .carousel-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.85);
+      transition: filter 0.2s ease;
+    }
+    .carousel-card span {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.45) 80%, transparent 100%);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 10px 8px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .carousel-card:hover img { filter: brightness(1); }
+    .carousel-card.active {
+      border-color: #0071e3;
+      box-shadow: 0 0 18px rgba(0, 113, 227, 0.85);
+      transform: scale(1.02);
+    }
+    .carousel-card.active span {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK
+       ========================================================= */
+    .bottom-right-action-dock {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 18, 24, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 6px 8px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+    }
+
+    .dock-action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .dock-action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #0071e3;
+      transform: scale(1.06);
+    }
+    .dock-action-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
 
     /* Enlarged Blueprint Modal */
@@ -1269,64 +1178,10 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .map-teleport-pin:hover span.pin-tooltip { opacity: 1; }
-
-    /* Bottom Carousel Strip */
-    .bottom-nav-container {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
-      display: flex;
-      justify-content: center;
-      z-index: 90;
-      pointer-events: none;
-    }
-    .bottom-nav-container > * { pointer-events: auto; }
-    .thumbnail-strip {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      max-width: 50vw;
-      padding-bottom: 6px;
-    }
-    .thumb-card {
-      position: relative;
-      flex: 0 0 auto;
-      width: 110px;
-      height: 65px;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.25s ease;
-      background: #111;
-    }
-    .thumb-card img { width: 100%; height: 100%; object-fit: cover; }
-    .thumb-card span {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.65);
-      color: #ffffff;
-      font-size: 10px;
-      font-weight: 500;
-      padding: 4px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .thumb-card.active { border-color: #0071e3; box-shadow: 0 0 12px rgba(0, 113, 227, 0.8); }
   </style>
 
-  <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS FOR DIRECT CONTROLLER INTERACTION
-       ========================================================= -->
+  <!-- Custom A-Frame Components for Direct VR Controller Interaction -->
   <script>
-    // Component attached directly to the clickable 3D teleport collider
     AFRAME.registerComponent('teleport-hotspot', {
       schema: {
         target: { type: 'string' }
@@ -1342,7 +1197,6 @@
           if (now - lastTriggerTime < 500) return;
           lastTriggerTime = now;
 
-          // Pulse haptics on Quest 3 controllers if available
           const cursorEl = evt && evt.detail && evt.detail.cursorEl;
           if (cursorEl && cursorEl.components && cursorEl.components['haptics']) {
             cursorEl.components['haptics'].pulse(0.8, 80);
@@ -1353,13 +1207,11 @@
           }
         };
 
-        // Listen for all WebXR controller raycast click and triggerdown variants
         el.addEventListener('click', triggerTeleport);
         el.addEventListener('triggerdown', triggerTeleport);
         el.addEventListener('gripdown', triggerTeleport);
         el.addEventListener('select', triggerTeleport);
 
-        // Visual hover response
         el.addEventListener('mouseenter', () => {
           const parent = el.parentElement;
           if (parent) parent.setAttribute('scale', '1.18 1.18 1.18');
@@ -1371,7 +1223,6 @@
       }
     });
 
-    // In-VR Back Button Component
     AFRAME.registerComponent('vr-exit-action', {
       init: function () {
         const el = this.el;
@@ -1393,7 +1244,6 @@
       }
     });
 
-    // Billboard component to keep markers facing the VR camera
     AFRAME.registerComponent('look-at-camera', {
       tick: function () {
         const camera = document.querySelector('#camera');
@@ -1626,9 +1476,16 @@
       <h1 id="location-title">Upper Junction</h1>
       <p id="location-subtitle">Site • Architectural 360 Panorama</p>
     </div>
-    <div class="header-controls">
-      <button class="back-home-btn" onclick="returnToStartup()"><span>🏠</span> <span>Home</span></button>
-      <button id="sound-btn" class="audio-btn" onclick="toggleAudio()"><span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span></button>
+
+    <!-- Reference Style Unified Capsule Action Bar -->
+    <div class="top-action-capsule">
+      <button class="capsule-btn" onclick="returnToStartup()">
+        <span>🏠</span> <span>Home</span>
+      </button>
+      <div class="capsule-divider"></div>
+      <button id="sound-btn" class="capsule-btn" onclick="toggleAudio()">
+        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
+      </button>
     </div>
   </div>
 
@@ -1637,7 +1494,7 @@
     <span>←</span> <span>Back to Overview</span>
   </button>
 
-  <!-- Floor Dropdown -->
+  <!-- ==================== RETAINED SEQUENTIAL LEVEL DROPDOWN ==================== -->
   <div class="floor-dropdown-wrapper" id="floor-dropdown">
     <div class="floor-dropdown-trigger" id="floor-trigger">
       <span class="trigger-code" id="active-floor-badge">S</span>
@@ -1645,6 +1502,7 @@
       <span class="trigger-arrow">▾</span>
     </div>
 
+    <!-- Dropdown Menu retaining exact top-down vertical sequence -->
     <div class="floor-dropdown-menu" id="floor-menu">
       <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
         <span class="menu-badge">TR</span>
@@ -1681,29 +1539,45 @@
     </div>
   </div>
 
-  <!-- Bottom-Left Mini-Map -->
-  <div class="minimap-container" onclick="openEnlargedMap()" title="Click to enlarge floor plan and view teleport points">
-    <div class="minimap-header">
-      <span id="map-header">Site Layout Plan</span>
-      <span class="expand-hint">⤢ ENLARGE</span>
+  <!-- ==================== REFERENCE STYLE: BOTTOM-LEFT MINI-MAP ==================== -->
+  <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
+    <div class="minimap-top-row">
+      <span class="map-title" id="map-header">Site Layout</span>
+      <div class="minimap-expand-btn">⤢</div>
     </div>
-    <div class="minimap-body">
-      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Current Floor Plan">
+    <div class="minimap-img-frame">
+      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Floor Layout">
+      <div class="minimap-fov-cone"></div>
     </div>
   </div>
 
-  <!-- Dedicated WebXR VR Mode Launcher Button -->
-  <div class="custom-vr-control" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter Immersive Meta Quest VR Mode">
-    <svg viewBox="0 0 24 24">
-      <path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
-    </svg>
+  <!-- ==================== REFERENCE STYLE: BOTTOM CAROUSEL WITH ARROWS ==================== -->
+  <div class="bottom-carousel-wrapper">
+    <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
+    <div class="carousel-cards-strip" id="thumb-strip"></div>
+    <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
   </div>
 
-  <!-- Custom Fullscreen Toggle in Bottom-Right Corner -->
-  <div class="custom-fullscreen-control" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Toggle Fullscreen Mode">
-    <svg id="fs-icon" viewBox="0 0 24 24">
-      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-    </svg>
+  <!-- ==================== REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK ==================== -->
+  <div class="bottom-right-action-dock">
+    <!-- VR Mode -->
+    <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
+      <svg viewBox="0 0 24 24">
+        <path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
+      </svg>
+    </button>
+    <!-- Fullscreen -->
+    <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
+      <svg id="fs-icon" viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+    </button>
+    <!-- Compass / Orientation / Direction Action -->
+    <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
+      </svg>
+    </button>
   </div>
 
   <!-- Enlarged Blueprint Modal -->
@@ -1727,13 +1601,8 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation Carousel -->
-  <div class="bottom-nav-container">
-    <div class="thumbnail-strip" id="thumb-strip"></div>
-  </div>
-
   <!-- =========================================================
-       A-FRAME VR CANVAS (OPTIMIZED COLLIDER & CONTROLLER RIG)
+       A-FRAME VR CANVAS
        ========================================================= -->
   <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
     <a-assets timeout="10000">
@@ -1741,7 +1610,6 @@
     </a-assets>
 
     <a-entity id="cameraRig" position="0 0 0">
-      <!-- Headset Camera with Gaze Reticle -->
       <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false">
         <a-cursor 
           id="cursor"
@@ -1758,14 +1626,12 @@
         </a-sphere>
       </a-camera>
 
-      <!-- Right Controller: configured with native laser raycaster & collider targeting -->
       <a-entity id="rightHand"
         laser-controls="hand: right"
         oculus-touch-controls="hand: right"
         raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true">
       </a-entity>
 
-      <!-- Left Controller: configured with native laser raycaster & collider targeting -->
       <a-entity id="leftHand"
         laser-controls="hand: left"
         oculus-touch-controls="hand: left"
@@ -1773,7 +1639,7 @@
       </a-entity>
     </a-entity>
 
-    <!-- In-VR 3D Back to Overview Button with verified clickable plane geometry -->
+    <!-- In-VR 3D Back to Overview Button -->
     <a-entity id="vr-in-headset-back" position="-1.8 1.6 -3" rotation="0 25 0">
       <a-plane class="clickable" vr-exit-action width="1.4" height="0.45" color="#18181c" opacity="0.94" material="shader: flat">
         <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.95 0.95 0.95"></a-text>
@@ -1835,6 +1701,13 @@
       returnToStartup();
     }
 
+    function resetCameraOrientation() {
+      const cam = document.getElementById('camera');
+      if (cam) {
+        cam.setAttribute('rotation', '0 0 0');
+      }
+    }
+
     document.addEventListener('fullscreenchange', () => {
       const isFs = !!document.fullscreenElement;
       document.body.classList.toggle('is-fullscreen', isFs);
@@ -1892,7 +1765,14 @@
       }
     }
 
-    // Dropdown interactions
+    function scrollThumbnails(direction) {
+      const strip = document.getElementById('thumb-strip');
+      if (strip) {
+        strip.scrollBy({ left: direction * 160, behavior: 'smooth' });
+      }
+    }
+
+    // Dropdown interactions: Toggle on click, close on outside click
     const dropdownWrapper = document.getElementById('floor-dropdown');
     const dropdownTrigger = document.getElementById('floor-trigger');
     const dropdownMenu = document.getElementById('floor-menu');
@@ -1919,7 +1799,7 @@
         floorName: "Site",
         floorCode: "S",
         planImg: "site_plan.png",
-        planTitle: "Site Layout Plan",
+        planTitle: "Site Layout",
         fallbackImg: "market_render.JPG",
         points: [
           { 
@@ -1931,13 +1811,13 @@
             src: "site_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "-2.6 0.2 -4.8" },
-              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "4.2 0.3 -3.6" }
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right", pos: "-2.6 0.2 -4.8" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance", pos: "4.2 0.3 -3.6" }
             ]
           },
           { 
             id: "site-node-2", 
-            name: "Lower Right Avenue", 
+            name: "Lower Right", 
             pinNum: "2", 
             pinX: 69, 
             pinY: 69, 
@@ -1945,12 +1825,12 @@
             fallbackSrc: "market_render.JPG",
             peers: [
               { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.2 5.0" },
-              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance Street", pos: "-4.5 0.3 -2.2" }
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance", pos: "-4.5 0.3 -2.2" }
             ]
           },
           { 
             id: "site-node-3", 
-            name: "West Entrance Street", 
+            name: "West Entrance", 
             pinNum: "3", 
             pinX: 14.5, 
             pinY: 55, 
@@ -1958,7 +1838,7 @@
             fallbackSrc: "market_render.JPG",
             peers: [
               { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5" },
-              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right Avenue", pos: "0.2 0.1 -4.8" }
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right", pos: "0.2 0.1 -4.8" }
             ]
           }
         ]
@@ -2137,10 +2017,12 @@
       if (isTransitioning) return;
       window.currentFloorLevel = floorNum;
 
+      // Close dropdown menu upon selection
       dropdownWrapper.classList.remove('stay-open');
       dropdownMenu.style.pointerEvents = 'none';
       setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
 
+      // Update active highlight in dropdown
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -2149,6 +2031,7 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
+      // Update header trigger badge & label
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
       if (floorConfig) {
         const badge = document.getElementById('active-floor-badge');
@@ -2226,12 +2109,12 @@
       };
       imgTester.src = targetSrc;
 
-      // Update 2D Thumbnails
+      // Update Bottom Carousel Strip with reference active styling
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
         const card = document.createElement('div');
-        card.className = `thumb-card ${pt.id === activePointId ? 'active' : ''}`;
+        card.className = `carousel-card ${pt.id === activePointId ? 'active' : ''}`;
         card.onclick = () => loadFloorAndPoint(floorConfig.level, pt.id, true);
         card.innerHTML = `
           <img src="${pt.src}" onerror="this.src='${pt.fallbackSrc}'" alt="${pt.name}">
@@ -2240,7 +2123,7 @@
         thumbStrip.appendChild(card);
       });
 
-      // Render 3D In-Scene Teleport Pins with explicit hitboxes
+      // Render Reference Style 3D Target Ring & Pill Tooltip in Scene
       renderInSceneTeleportPins(floorConfig, pointData);
     }
 
@@ -2265,8 +2148,7 @@
     }
 
     /* 
-      Creates an interactive hotspot with an explicit invisible sphere hitbox (radius 0.6m)
-      so the Meta Quest 3 controller laser can intersect and fire triggers reliably.
+      Creates the reference style target ring + attached dark side pill tooltip
     */
     function createVRMarker(parentEl, targetId, pinNum, name, position) {
       const markerEntity = document.createElement('a-entity');
@@ -2274,19 +2156,16 @@
       markerEntity.setAttribute('look-at-camera', '');
 
       markerEntity.innerHTML = `
-        <!-- Invisible Expanded Bounding Sphere Hitbox for Controller Raycaster -->
-        <a-sphere class="clickable" teleport-hotspot="target: ${targetId}" radius="0.6" material="opacity: 0.001; transparent: true"></a-sphere>
+        <!-- Invisible Bounding Sphere for Quest 3 Laser Raycaster Hitbox -->
+        <a-sphere class="clickable" teleport-hotspot="target: ${targetId}" radius="0.55" material="opacity: 0.001; transparent: true"></a-sphere>
 
-        <!-- Visual Disc and Ring Graphic -->
-        <a-ring radius-inner="0.36" radius-outer="0.46" color="#0071E3" opacity="0.9" material="shader: flat; side: double"></a-ring>
-        <a-circle radius="0.36" color="#0a0a0c" opacity="0.82" material="shader: flat; side: double"></a-circle>
-        <a-ring radius-inner="0.26" radius-outer="0.28" color="#64b5f6" opacity="0.8" material="shader: flat; side: double"></a-ring>
-        <a-text value="${pinNum}" align="center" position="0 0 0.02" scale="1.4 1.4 1.4" color="#FFFFFF" font="sourcecodepro"></a-text>
+        <!-- Reference Style Target Marker: Outer Blue Ring + Inner White Center -->
+        <a-ring radius-inner="0.22" radius-outer="0.32" color="#0071E3" material="shader: flat; side: double"></a-ring>
+        <a-circle radius="0.13" color="#FFFFFF" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
         
-        <!-- Overhead Label Pill -->
-        <a-entity position="0 0.7 0">
-          <a-plane width="1.6" height="0.34" color="#111116" opacity="0.88" material="shader: flat; side: double"></a-plane>
-          <a-triangle vertex-a="0 -0.17 0" vertex-b="-0.1 -0.27 0" vertex-c="0.1 -0.27 0" color="#111116" material="shader: flat; side: double"></a-triangle>
+        <!-- Reference Style Dark Side Pill Tooltip -->
+        <a-entity position="1.18 0 0">
+          <a-plane width="1.6" height="0.32" color="#111116" opacity="0.9" material="shader: flat; side: double"></a-plane>
           <a-text value="${name}" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65"></a-text>
         </a-entity>
       `;
