@@ -1,3 +1,5 @@
+<!-- BUILD ITERATION: #02 -->
+<!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,6 +46,11 @@
       overflow: hidden; 
       background-color: #000000;
       color: #ffffff;
+    }
+
+    /* Suppress A-Frame default injected corner buttons */
+    .a-enter-vr, .a-enter-ar {
+      display: none !important;
     }
 
     /* =========================================================
@@ -582,7 +589,6 @@
       letter-spacing: 0.01em;
     }
 
-    /* Reference Style Unified Top-Right Action Capsule */
     .top-action-capsule {
       display: flex;
       align-items: center;
@@ -616,7 +622,6 @@
       margin: 0 2px;
     }
 
-    /* Fullscreen Exit Indicator Button */
     #fullscreen-back-btn {
       position: absolute;
       top: 16px;
@@ -659,7 +664,6 @@
       top: 68px;
     }
 
-    /* Trigger Button Styled after Reference */
     .floor-dropdown-trigger {
       display: flex;
       align-items: center;
@@ -700,7 +704,6 @@
       color: rgba(255, 255, 255, 0.65);
     }
 
-    /* Invisible hover buffer */
     .floor-dropdown-menu::before {
       content: '';
       position: absolute;
@@ -710,7 +713,6 @@
       height: 14px;
     }
 
-    /* Menu retaining exact sequential arrangement: Terrace down to Site */
     .floor-dropdown-menu {
       position: absolute;
       top: calc(100% - 2px);
@@ -983,7 +985,7 @@
     }
 
     /* =========================================================
-       REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK
+       REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK (NO DUPLICATE BUTTON)
        ========================================================= */
     .bottom-right-action-dock {
       position: absolute;
@@ -1602,9 +1604,9 @@
   </div>
 
   <!-- =========================================================
-       A-FRAME VR CANVAS
+       A-FRAME VR CANVAS (Cleaned Default VR-UI to Remove Duplicate Button)
        ========================================================= -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
     <a-assets timeout="10000">
       <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
     </a-assets>
@@ -2017,12 +2019,10 @@
       if (isTransitioning) return;
       window.currentFloorLevel = floorNum;
 
-      // Close dropdown menu upon selection
       dropdownWrapper.classList.remove('stay-open');
       dropdownMenu.style.pointerEvents = 'none';
       setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
 
-      // Update active highlight in dropdown
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -2031,7 +2031,6 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
-      // Update header trigger badge & label
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
       if (floorConfig) {
         const badge = document.getElementById('active-floor-badge');
