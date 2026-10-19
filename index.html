@@ -1,5 +1,3 @@
-<!-- BUILD ITERATION: #03 -->
-<!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,11 +44,6 @@
       overflow: hidden; 
       background-color: #000000;
       color: #ffffff;
-    }
-
-    /* Suppress A-Frame default injected corner buttons */
-    .a-enter-vr, .a-enter-ar {
-      display: none !important;
     }
 
     /* =========================================================
@@ -559,7 +552,7 @@
     .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
 
     /* =========================================================
-       PAGE 3: 2D SCREEN OVERLAYS (DESKTOP / MOBILE BROWSER)
+       PAGE 3: 360 VR TOUR & REFINED REFERENCE UI SYSTEM
        ========================================================= */
     .header-bar {
       position: absolute;
@@ -589,6 +582,7 @@
       letter-spacing: 0.01em;
     }
 
+    /* Reference Style Unified Top-Right Action Capsule */
     .top-action-capsule {
       display: flex;
       align-items: center;
@@ -622,6 +616,7 @@
       margin: 0 2px;
     }
 
+    /* Fullscreen Exit Indicator Button */
     #fullscreen-back-btn {
       position: absolute;
       top: 16px;
@@ -646,7 +641,10 @@
     #fullscreen-back-btn:hover { background: #ffffff; color: #111111; transform: scale(1.05); }
     body.is-fullscreen #fullscreen-back-btn { display: flex; }
 
-    /* Floor Dropdown in 2D View */
+    /* =========================================================
+       RETAINED FUNCTION & ARRANGEMENT: DROPDOWN TRIGGER + MENU
+       STYLED WITH DARK GLASSMORPHIC & ACCENT GLOW
+       ========================================================= */
     .floor-dropdown-wrapper {
       position: absolute;
       top: 86px;
@@ -657,8 +655,11 @@
       align-items: flex-start;
       padding-bottom: 12px;
     }
-    body.is-fullscreen .floor-dropdown-wrapper { top: 68px; }
+    body.is-fullscreen .floor-dropdown-wrapper {
+      top: 68px;
+    }
 
+    /* Trigger Button Styled after Reference */
     .floor-dropdown-trigger {
       display: flex;
       align-items: center;
@@ -699,6 +700,7 @@
       color: rgba(255, 255, 255, 0.65);
     }
 
+    /* Invisible hover buffer */
     .floor-dropdown-menu::before {
       content: '';
       position: absolute;
@@ -708,6 +710,7 @@
       height: 14px;
     }
 
+    /* Menu retaining exact sequential arrangement: Terrace down to Site */
     .floor-dropdown-menu {
       position: absolute;
       top: calc(100% - 2px);
@@ -808,7 +811,9 @@
       box-shadow: 0 0 10px rgba(0, 113, 227, 0.65);
     }
 
-    /* 2D Mini-Map Panel */
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM-LEFT MINI-MAP
+       ========================================================= */
     .minimap-panel {
       position: absolute;
       bottom: 24px;
@@ -886,7 +891,9 @@
       pointer-events: none;
     }
 
-    /* 2D Bottom Carousel Strip */
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM CAROUSEL STRIP
+       ========================================================= */
     .bottom-carousel-wrapper {
       position: absolute;
       bottom: 24px;
@@ -970,9 +977,14 @@
       box-shadow: 0 0 18px rgba(0, 113, 227, 0.85);
       transform: scale(1.02);
     }
-    .carousel-card.active span { color: #ffffff; font-weight: 700; }
+    .carousel-card.active span {
+      color: #ffffff;
+      font-weight: 700;
+    }
 
-    /* Bottom-Right Action Dock */
+    /* =========================================================
+       REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK
+       ========================================================= */
     .bottom-right-action-dock {
       position: absolute;
       bottom: 24px;
@@ -1008,9 +1020,13 @@
       color: #0071e3;
       transform: scale(1.06);
     }
-    .dock-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
+    .dock-action-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
 
-    /* 2D Modal Blueprint Screen */
+    /* Enlarged Blueprint Modal */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -1164,13 +1180,12 @@
     .map-teleport-pin:hover span.pin-tooltip { opacity: 1; }
   </style>
 
-  <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS FOR IN-VR INTERACTION
-       ========================================================= -->
+  <!-- Custom A-Frame Components for Direct VR Controller Interaction -->
   <script>
-    // Raycast click teleport handler for 3D station pins
     AFRAME.registerComponent('teleport-hotspot', {
-      schema: { target: { type: 'string' } },
+      schema: {
+        target: { type: 'string' }
+      },
       init: function () {
         const el = this.el;
         const targetId = this.data.target;
@@ -1208,7 +1223,6 @@
       }
     });
 
-    // In-VR Back to Overview Button
     AFRAME.registerComponent('vr-exit-action', {
       init: function () {
         const el = this.el;
@@ -1220,48 +1234,16 @@
         el.addEventListener('click', triggerBack);
         el.addEventListener('triggerdown', triggerBack);
         el.addEventListener('select', triggerBack);
-        el.addEventListener('mouseenter', () => el.setAttribute('scale', '1.08 1.08 1.08'));
-        el.addEventListener('mouseleave', () => el.setAttribute('scale', '1 1 1'));
+
+        el.addEventListener('mouseenter', () => {
+          el.setAttribute('scale', '1.08 1.08 1.08');
+        });
+        el.addEventListener('mouseleave', () => {
+          el.setAttribute('scale', '1 1 1');
+        });
       }
     });
 
-    // In-VR Floor Selection Component
-    AFRAME.registerComponent('vr-floor-switch', {
-      schema: { floor: { type: 'int' } },
-      init: function () {
-        const el = this.el;
-        const floorNum = this.data.floor;
-        const doSwitch = (evt) => {
-          if (evt) evt.stopPropagation();
-          switchFloor(floorNum);
-        };
-        el.addEventListener('click', doSwitch);
-        el.addEventListener('triggerdown', doSwitch);
-        el.addEventListener('select', doSwitch);
-        el.addEventListener('mouseenter', () => el.setAttribute('opacity', '1'));
-        el.addEventListener('mouseleave', () => el.setAttribute('opacity', '0.78'));
-      }
-    });
-
-    // In-VR Mini-Map Toggle Component
-    AFRAME.registerComponent('vr-map-toggle', {
-      init: function () {
-        const el = this.el;
-        const toggleMap = (evt) => {
-          if (evt) evt.stopPropagation();
-          const bigMap = document.getElementById('vr-enlarged-blueprint-group');
-          if (bigMap) {
-            const isVis = bigMap.getAttribute('visible');
-            bigMap.setAttribute('visible', !isVis);
-          }
-        };
-        el.addEventListener('click', toggleMap);
-        el.addEventListener('triggerdown', toggleMap);
-        el.addEventListener('select', toggleMap);
-      }
-    });
-
-    // Billboard component ensuring UI faces the VR headset camera
     AFRAME.registerComponent('look-at-camera', {
       tick: function () {
         const camera = document.querySelector('#camera');
@@ -1488,13 +1470,14 @@
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
 
-  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS ==================== -->
+  <!-- ==================== PAGE 3: TOP HEADER UI ==================== -->
   <div class="header-bar">
     <div class="header-title">
       <h1 id="location-title">Upper Junction</h1>
       <p id="location-subtitle">Site • Architectural 360 Panorama</p>
     </div>
 
+    <!-- Reference Style Unified Capsule Action Bar -->
     <div class="top-action-capsule">
       <button class="capsule-btn" onclick="returnToStartup()">
         <span>🏠</span> <span>Home</span>
@@ -1511,7 +1494,7 @@
     <span>←</span> <span>Back to Overview</span>
   </button>
 
-  <!-- 2D Floor Dropdown Menu -->
+  <!-- ==================== RETAINED SEQUENTIAL LEVEL DROPDOWN ==================== -->
   <div class="floor-dropdown-wrapper" id="floor-dropdown">
     <div class="floor-dropdown-trigger" id="floor-trigger">
       <span class="trigger-code" id="active-floor-badge">S</span>
@@ -1519,6 +1502,7 @@
       <span class="trigger-arrow">▾</span>
     </div>
 
+    <!-- Dropdown Menu retaining exact top-down vertical sequence -->
     <div class="floor-dropdown-menu" id="floor-menu">
       <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
         <span class="menu-badge">TR</span>
@@ -1555,7 +1539,7 @@
     </div>
   </div>
 
-  <!-- 2D Bottom-Left Mini-Map -->
+  <!-- ==================== REFERENCE STYLE: BOTTOM-LEFT MINI-MAP ==================== -->
   <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
     <div class="minimap-top-row">
       <span class="map-title" id="map-header">Site Layout</span>
@@ -1567,25 +1551,28 @@
     </div>
   </div>
 
-  <!-- 2D Bottom Carousel Strip -->
+  <!-- ==================== REFERENCE STYLE: BOTTOM CAROUSEL WITH ARROWS ==================== -->
   <div class="bottom-carousel-wrapper">
     <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
     <div class="carousel-cards-strip" id="thumb-strip"></div>
     <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
   </div>
 
-  <!-- 2D Bottom-Right Action Dock -->
+  <!-- ==================== REFERENCE STYLE: BOTTOM-RIGHT ACTION DOCK ==================== -->
   <div class="bottom-right-action-dock">
+    <!-- VR Mode -->
     <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
       <svg viewBox="0 0 24 24">
         <path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/>
       </svg>
     </button>
+    <!-- Fullscreen -->
     <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
       <svg id="fs-icon" viewBox="0 0 24 24">
         <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
       </svg>
     </button>
+    <!-- Compass / Orientation / Direction Action -->
     <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
       <svg viewBox="0 0 24 24">
         <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
@@ -1593,7 +1580,7 @@
     </button>
   </div>
 
-  <!-- 2D Enlarged Blueprint Modal -->
+  <!-- Enlarged Blueprint Modal -->
   <div id="enlarged-map-modal" class="hidden">
     <div class="map-modal-bokeh-bg" onclick="closeEnlargedMap()"></div>
     <div class="enlarged-map-card">
@@ -1615,12 +1602,11 @@
   </div>
 
   <!-- =========================================================
-       A-FRAME VR CANVAS (WITH IN-VR 3D SPATIAL CONTROLS)
+       A-FRAME VR CANVAS
        ========================================================= -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: true">
     <a-assets timeout="10000">
       <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
-      <img id="vr-map-tex" src="site_plan.png" crossorigin="anonymous">
     </a-assets>
 
     <a-entity id="cameraRig" position="0 0 0">
@@ -1653,69 +1639,10 @@
       </a-entity>
     </a-entity>
 
-    <!-- IN-VR 3D HUD INTERFACE (PHYSICALLY LOCATED IN 3D SPACE FOR VR HEADSETS) -->
-    
-    <!-- 1. Back to Overview 3D Button -->
-    <a-entity id="vr-in-headset-back" position="-1.8 1.8 -3.2" rotation="0 25 0">
-      <a-plane class="clickable" vr-exit-action width="1.4" height="0.4" color="#16181f" opacity="0.9" material="shader: flat">
+    <!-- In-VR 3D Back to Overview Button -->
+    <a-entity id="vr-in-headset-back" position="-1.8 1.6 -3" rotation="0 25 0">
+      <a-plane class="clickable" vr-exit-action width="1.4" height="0.45" color="#18181c" opacity="0.94" material="shader: flat">
         <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.95 0.95 0.95"></a-text>
-      </a-plane>
-    </a-entity>
-
-    <!-- 2. Floating In-VR Floor Selector Sidebar -->
-    <a-entity id="vr-floors-sidebar" position="-2.4 0.2 -3.2" rotation="0 32 0">
-      <!-- Background Backing Plate -->
-      <a-plane width="1.1" height="2.8" color="#0e1017" opacity="0.88" material="shader: flat"></a-plane>
-      <a-text value="LEVEL SELECT" align="center" position="0 1.25 0.02" scale="0.65 0.65 0.65" color="#0071E3"></a-text>
-
-      <!-- 8 Levels Stacked Top-Down -->
-      <a-plane class="clickable" vr-floor-switch="floor: 7" position="0 0.95 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="TR  Terrace" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 6" position="0 0.65 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="3   Third Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 5" position="0 0.35 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="2   Second Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 4" position="0 0.05 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="1   First Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 3" position="0 -0.25 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="G   Ground Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 2" position="0 -0.55 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="P1  Podium-1" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-floor-switch="floor: 1" position="0 -0.85 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
-        <a-text value="ST  Stilt Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane id="vr-btn-site" class="clickable" vr-floor-switch="floor: 0" position="0 -1.15 0.02" width="0.95" height="0.26" color="#0071e3" opacity="0.9" material="shader: flat">
-        <a-text value="S   Site" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-      </a-plane>
-    </a-entity>
-
-    <!-- 3. Floating In-VR Mini-Map Card -->
-    <a-entity id="vr-in-headset-minimap" position="-1.5 -1.1 -2.8" rotation="-22 28 0">
-      <a-plane class="clickable" vr-map-toggle width="1.3" height="1.0" color="#11131a" opacity="0.92" material="shader: flat">
-        <a-text id="vr-minimap-label" value="Site Layout Plan [Click to Enlarge]" align="center" position="0 0.38 0.02" scale="0.5 0.5 0.5" color="#FFFFFF"></a-text>
-        <a-plane id="vr-mini-plane-img" width="1.15" height="0.65" position="0 -0.06 0.02" material="src: #vr-map-tex; shader: flat"></a-plane>
-      </a-plane>
-    </a-entity>
-
-    <!-- 4. Floating In-VR Enlarged Blueprint Modal with 3D Teleportation Station Pins -->
-    <a-entity id="vr-enlarged-blueprint-group" position="0 0.4 -2.5" visible="false">
-      <a-plane width="2.4" height="1.8" color="#11131a" opacity="0.95" material="shader: flat">
-        <a-text id="vr-enlarged-title" value="Interactive Blueprint - Select a station to teleport" align="center" position="0 0.78 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
-        <a-plane id="vr-enlarged-img" width="2.1" height="1.25" position="0 -0.06 0.02" material="src: #vr-map-tex; shader: flat"></a-plane>
-        
-        <!-- Close Button -->
-        <a-plane class="clickable" vr-map-toggle position="0.95 0.78 0.03" width="0.28" height="0.18" color="#0071e3" material="shader: flat">
-          <a-text value="CLOSE" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
-        </a-plane>
-        
-        <!-- Dynamic Station Pins on Blueprint -->
-        <a-entity id="vr-enlarged-pins-container" position="0 -0.06 0.04"></a-entity>
       </a-plane>
     </a-entity>
 
@@ -1845,7 +1772,7 @@
       }
     }
 
-    // 2D Dropdown interactions
+    // Dropdown interactions: Toggle on click, close on outside click
     const dropdownWrapper = document.getElementById('floor-dropdown');
     const dropdownTrigger = document.getElementById('floor-trigger');
     const dropdownMenu = document.getElementById('floor-menu');
@@ -2090,10 +2017,12 @@
       if (isTransitioning) return;
       window.currentFloorLevel = floorNum;
 
+      // Close dropdown menu upon selection
       dropdownWrapper.classList.remove('stay-open');
       dropdownMenu.style.pointerEvents = 'none';
       setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
 
+      // Update active highlight in dropdown
       document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
       if (btnElement) {
         btnElement.classList.add('active');
@@ -2102,6 +2031,7 @@
         if (matchingBtn) matchingBtn.classList.add('active');
       }
 
+      // Update header trigger badge & label
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
       if (floorConfig) {
         const badge = document.getElementById('active-floor-badge');
@@ -2109,18 +2039,6 @@
         if (badge) badge.innerText = floorConfig.floorCode;
         if (nameLabel) nameLabel.innerText = floorConfig.floorName;
       }
-
-      // Update In-VR Sidebar Active Highlights
-      document.querySelectorAll('[vr-floor-switch]').forEach(plane => {
-        const fl = parseInt(plane.getAttribute('vr-floor-switch').split(':')[1]);
-        if (fl === floorNum) {
-          plane.setAttribute('color', '#0071e3');
-          plane.setAttribute('opacity', '0.9');
-        } else {
-          plane.setAttribute('color', '#181a24');
-          plane.setAttribute('opacity', '0.78');
-        }
-      });
 
       const firstPoint = floorConfig ? floorConfig.points[0] : null;
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
@@ -2172,26 +2090,11 @@
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       const mapHeader = document.getElementById('map-header');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       mapHeader.innerText = floorConfig.planTitle;
-
-      // Update In-VR 3D Floating Minimap & Blueprint Textures
-      const vrMapLabel = document.getElementById('vr-minimap-label');
-      if (vrMapLabel) vrMapLabel.setAttribute('value', `${floorConfig.floorName} Plan [Click to Enlarge]`);
-      const vrEnlargedTitle = document.getElementById('vr-enlarged-title');
-      if (vrEnlargedTitle) vrEnlargedTitle.setAttribute('value', `${floorConfig.floorName} Blueprint - Select a station`);
-
-      const vrMiniPlane = document.getElementById('vr-mini-plane-img');
-      const vrEnlargedPlane = document.getElementById('vr-enlarged-img');
-      if (vrMiniPlane) vrMiniPlane.setAttribute('material', `src: ${floorConfig.planImg}; shader: flat`);
-      if (vrEnlargedPlane) vrEnlargedPlane.setAttribute('material', `src: ${floorConfig.planImg}; shader: flat`);
-
-      // Render 3D Station Pins on the Enlarged VR Blueprint
-      renderVREnlargedBlueprintPins(floorConfig);
 
       const sky = document.getElementById('sky-sphere');
       const targetSrc = pointData.src;
@@ -2206,7 +2109,7 @@
       };
       imgTester.src = targetSrc;
 
-      // Update Bottom Carousel Strip
+      // Update Bottom Carousel Strip with reference active styling
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2220,30 +2123,8 @@
         thumbStrip.appendChild(card);
       });
 
-      // Render 3D In-Scene Teleport Hotspots
+      // Render Reference Style 3D Target Ring & Pill Tooltip in Scene
       renderInSceneTeleportPins(floorConfig, pointData);
-    }
-
-    /* Renders interactive teleport pins directly onto the 3D VR Blueprint plane */
-    function renderVREnlargedBlueprintPins(floorConfig) {
-      const container = document.getElementById('vr-enlarged-pins-container');
-      if (!container) return;
-      container.innerHTML = '';
-
-      floorConfig.points.forEach(pt => {
-        // Map 0-100% coordinates to the 2.1m x 1.25m plane
-        const xPos = ((pt.pinX / 100) * 2.1 - 1.05).toFixed(3);
-        const yPos = (-(pt.pinY / 100) * 1.25 + 0.625).toFixed(3);
-
-        const pinEntity = document.createElement('a-entity');
-        pinEntity.setAttribute('position', `${xPos} ${yPos} 0.02`);
-        pinEntity.innerHTML = `
-          <a-circle class="clickable" teleport-hotspot="target: ${pt.id}" radius="0.065" color="${pt.id === activePointId ? '#34c759' : '#0071e3'}" material="shader: flat">
-            <a-text value="${pt.pinNum}" align="center" position="0 0 0.01" scale="0.32 0.32 0.32" color="#FFFFFF"></a-text>
-          </a-circle>
-        `;
-        container.appendChild(pinEntity);
-      });
     }
 
     function renderInSceneTeleportPins(floorConfig, currentPoint) {
@@ -2266,7 +2147,9 @@
       });
     }
 
-    /* Creates in-scene target ring with attached dark side pill tooltip */
+    /* 
+      Creates the reference style target ring + attached dark side pill tooltip
+    */
     function createVRMarker(parentEl, targetId, pinNum, name, position) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
