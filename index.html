@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #07 -->
+<!-- BUILD ITERATION: #04 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -59,20 +59,19 @@
     #startup-screen {
       position: fixed;
       inset: 0;
-      z-index: 9999999;
+      z-index: 99999;
       background-color: #09090b;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      pointer-events: auto;
-      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
     }
 
     #startup-screen.hidden {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .bokeh-background {
@@ -82,7 +81,6 @@
       filter: blur(35px) brightness(0.6) saturate(1.4);
       transform: scale(1.1);
       z-index: 1;
-      pointer-events: none;
     }
 
     .bokeh-light {
@@ -93,7 +91,6 @@
       mix-blend-mode: screen;
       animation: floatBokeh 10s infinite alternate ease-in-out;
       z-index: 2;
-      pointer-events: none;
     }
     .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
     .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
@@ -106,7 +103,7 @@
 
     .market-render-wrapper {
       position: relative;
-      z-index: 10;
+      z-index: 3;
       width: 82vw;
       height: 72vh;
       max-width: 1200px;
@@ -118,7 +115,6 @@
       align-items: center;
       justify-content: center;
       background: #000000;
-      pointer-events: auto;
     }
 
     .market-render-image {
@@ -127,36 +123,29 @@
       object-fit: cover;
       transform: scale(1.02);
       transition: transform 6s ease-out;
-      pointer-events: none;
     }
     .market-render-wrapper:hover .market-render-image { transform: scale(1.06); }
 
     .center-cta-btn {
       position: absolute;
-      z-index: 100;
+      z-index: 10;
       padding: 16px 42px;
-      background: rgba(255, 255, 255, 0.25);
-      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.18);
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
       border-radius: 40px;
       color: #ffffff;
       font-size: 19px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-      user-select: none;
-      -webkit-user-select: none;
-      pointer-events: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .center-cta-btn:hover {
       background: #ffffff;
       color: #111111;
       transform: scale(1.06);
-    }
-    .center-cta-btn:active {
-      transform: scale(0.98);
     }
 
     .startup-logo {
@@ -200,21 +189,20 @@
     #project-details-screen {
       position: fixed;
       inset: 0;
-      z-index: 9999990;
+      z-index: 99995;
       background-color: #0b0c10;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       padding: 16px;
-      pointer-events: auto;
       transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
     }
 
     #project-details-screen.hidden {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .dashboard-frame {
@@ -234,7 +222,6 @@
       flex-direction: column;
       gap: 14px;
       overflow: hidden;
-      pointer-events: auto;
     }
 
     .dashboard-header {
@@ -539,7 +526,7 @@
     #project-video-modal {
       position: fixed;
       inset: 0;
-      z-index: 9999998;
+      z-index: 99998;
       background: rgba(0, 0, 0, 0.88);
       display: flex;
       align-items: center;
@@ -1177,8 +1164,11 @@
     .map-teleport-pin:hover span.pin-tooltip { opacity: 1; }
   </style>
 
-  <!-- Custom A-Frame Components for In-VR Interaction -->
+  <!-- =========================================================
+       CUSTOM A-FRAME COMPONENTS FOR IN-VR INTERACTION
+       ========================================================= -->
   <script>
+    // Raycast click teleport handler for 3D station pins
     AFRAME.registerComponent('teleport-hotspot', {
       schema: { target: { type: 'string' } },
       init: function () {
@@ -1209,7 +1199,7 @@
 
         el.addEventListener('mouseenter', () => {
           const parent = el.parentElement;
-          if (parent) parent.setAttribute('scale', '1.15 1.15 1.15');
+          if (parent) parent.setAttribute('scale', '1.18 1.18 1.18');
         });
         el.addEventListener('mouseleave', () => {
           const parent = el.parentElement;
@@ -1218,6 +1208,7 @@
       }
     });
 
+    // In-VR Back to Overview Button
     AFRAME.registerComponent('vr-exit-action', {
       init: function () {
         const el = this.el;
@@ -1234,36 +1225,7 @@
       }
     });
 
-    // In-VR Level Selector Hover & Visibility
-    AFRAME.registerComponent('vr-sidebar-controller', {
-      init: function () {
-        const el = this.el;
-        let isExpanded = false;
-
-        const setOpacity = (val) => {
-          el.querySelectorAll('[vr-sub-elem]').forEach(node => {
-            node.setAttribute('opacity', val);
-          });
-        };
-
-        el.addEventListener('mouseenter', () => {
-          setOpacity('0.92');
-          el.setAttribute('scale', '1.04 1.04 1.04');
-        });
-        el.addEventListener('mouseleave', () => {
-          if (!isExpanded) {
-            setOpacity('0.15');
-            el.setAttribute('scale', '1 1 1');
-          }
-        });
-        el.addEventListener('click', () => {
-          isExpanded = !isExpanded;
-          setOpacity(isExpanded ? '0.94' : '0.15');
-        });
-      }
-    });
-
-    // In-VR Floor Switch Component
+    // In-VR Floor Selection Component
     AFRAME.registerComponent('vr-floor-switch', {
       schema: { floor: { type: 'int' } },
       init: function () {
@@ -1276,26 +1238,26 @@
         el.addEventListener('click', doSwitch);
         el.addEventListener('triggerdown', doSwitch);
         el.addEventListener('select', doSwitch);
+        el.addEventListener('mouseenter', () => el.setAttribute('opacity', '1'));
+        el.addEventListener('mouseleave', () => el.setAttribute('opacity', '0.78'));
       }
     });
 
-    // In-VR Info Beacon Component
-    AFRAME.registerComponent('vr-info-beacon', {
+    // In-VR Mini-Map Toggle Component
+    AFRAME.registerComponent('vr-map-toggle', {
       init: function () {
         const el = this.el;
-        const card = document.getElementById('vr-info-panel');
-
-        const toggleInfo = (evt) => {
+        const toggleMap = (evt) => {
           if (evt) evt.stopPropagation();
-          if (card) {
-            const isVis = card.getAttribute('visible');
-            card.setAttribute('visible', !isVis);
+          const bigMap = document.getElementById('vr-enlarged-blueprint-group');
+          if (bigMap) {
+            const isVis = bigMap.getAttribute('visible');
+            bigMap.setAttribute('visible', !isVis);
           }
         };
-
-        el.addEventListener('click', toggleInfo);
-        el.addEventListener('triggerdown', toggleInfo);
-        el.addEventListener('select', toggleInfo);
+        el.addEventListener('click', toggleMap);
+        el.addEventListener('triggerdown', toggleMap);
+        el.addEventListener('select', toggleMap);
       }
     });
 
@@ -1322,7 +1284,7 @@
 
     <div class="market-render-wrapper">
       <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
-      <button id="main-navigate-btn" class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
+      <button class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
     </div>
 
     <div class="startup-logo">
@@ -1497,7 +1459,7 @@
               </div>
             </div>
 
-            <button id="explore-market-btn" class="explore-market-cta-btn" onclick="startVirtualTour()">
+            <button class="explore-market-cta-btn" onclick="startVirtualTour()">
               <span>Explore The Market</span> <span>→</span>
             </button>
           </div>
@@ -1612,7 +1574,7 @@
     <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
   </div>
 
-  <!-- 2D Bottom-Right Action Dock -->
+  <!-- 2D Bottom-Right Action Dock (Without Duplicate VR Button) -->
   <div class="bottom-right-action-dock">
     <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
       <svg viewBox="0 0 24 24">
@@ -1640,4 +1602,711 @@
           <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
           <p>Select any numbered station point to teleport directly to that 360 view</p>
         </div>
-        <button class="close-map-btn" onclick="closeEnlargedMap
+        <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close Map</button>
+      </div>
+
+      <div class="enlarged-blueprint-stage">
+        <div class="blueprint-image-wrapper">
+          <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
+          <div id="pins-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       A-FRAME VR CANVAS (WITH IN-VR 3D SPATIAL CONTROLS)
+       ========================================================= -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
+    <a-assets timeout="10000">
+      <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
+      <img id="vr-map-tex" src="site_plan.png" crossorigin="anonymous">
+    </a-assets>
+
+    <a-entity id="cameraRig" position="0 0 0">
+      <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false">
+        <a-cursor 
+          id="cursor"
+          color="#0071E3"
+          raycaster="objects: .clickable; far: 40"
+          animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
+        </a-cursor>
+        <a-sphere 
+          id="fade-sphere" 
+          radius="0.1" 
+          position="0 0 -0.05"
+          material="color: #000000; side: back; shader: flat; transparent: true; opacity: 0"
+          visible="false">
+        </a-sphere>
+      </a-camera>
+
+      <a-entity id="rightHand"
+        laser-controls="hand: right"
+        oculus-touch-controls="hand: right"
+        raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true">
+      </a-entity>
+
+      <a-entity id="leftHand"
+        laser-controls="hand: left"
+        oculus-touch-controls="hand: left"
+        raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true">
+      </a-entity>
+    </a-entity>
+
+    <!-- IN-VR 3D HUD INTERFACE (FLOATING CONTROLS FOR VR HEADSETS) -->
+    
+    <!-- 1. Back to Overview 3D Button -->
+    <a-entity id="vr-in-headset-back" position="-1.8 1.8 -3.2" rotation="0 25 0">
+      <a-plane class="clickable" vr-exit-action width="1.4" height="0.4" color="#16181f" opacity="0.9" material="shader: flat">
+        <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.95 0.95 0.95"></a-text>
+      </a-plane>
+    </a-entity>
+
+    <!-- 2. Floating In-VR Floor Selector Sidebar -->
+    <a-entity id="vr-floors-sidebar" position="-2.4 0.2 -3.2" rotation="0 32 0">
+      <a-plane width="1.1" height="2.8" color="#0e1017" opacity="0.88" material="shader: flat"></a-plane>
+      <a-text value="LEVEL SELECT" align="center" position="0 1.25 0.02" scale="0.65 0.65 0.65" color="#0071E3"></a-text>
+
+      <a-plane class="clickable" vr-floor-switch="floor: 7" position="0 0.95 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="TR  Terrace" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 6" position="0 0.65 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="3   Third Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 5" position="0 0.35 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="2   Second Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 4" position="0 0.05 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="1   First Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 3" position="0 -0.25 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="G   Ground Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 2" position="0 -0.55 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="P1  Podium-1" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-floor-switch="floor: 1" position="0 -0.85 0.02" width="0.95" height="0.26" color="#181a24" opacity="0.78" material="shader: flat">
+        <a-text value="ST  Stilt Floor" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane id="vr-btn-site" class="clickable" vr-floor-switch="floor: 0" position="0 -1.15 0.02" width="0.95" height="0.26" color="#0071e3" opacity="0.9" material="shader: flat">
+        <a-text value="S   Site" align="left" position="-0.42 0 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+      </a-plane>
+    </a-entity>
+
+    <!-- 3. Floating In-VR Mini-Map Card -->
+    <a-entity id="vr-in-headset-minimap" position="-1.5 -1.1 -2.8" rotation="-22 28 0">
+      <a-plane class="clickable" vr-map-toggle width="1.3" height="1.0" color="#11131a" opacity="0.92" material="shader: flat">
+        <a-text id="vr-minimap-label" value="Site Layout Plan [Click to Enlarge]" align="center" position="0 0.38 0.02" scale="0.5 0.5 0.5" color="#FFFFFF"></a-text>
+        <a-plane id="vr-mini-plane-img" width="1.15" height="0.65" position="0 -0.06 0.02" material="src: #vr-map-tex; shader: flat"></a-plane>
+      </a-plane>
+    </a-entity>
+
+    <!-- 4. Floating In-VR Enlarged Blueprint Modal with 3D Teleportation Pins -->
+    <a-entity id="vr-enlarged-blueprint-group" position="0 0.4 -2.5" visible="false">
+      <a-plane width="2.4" height="1.8" color="#11131a" opacity="0.95" material="shader: flat">
+        <a-text id="vr-enlarged-title" value="Interactive Blueprint - Select a station to teleport" align="center" position="0 0.78 0.02" scale="0.65 0.65 0.65" color="#FFFFFF"></a-text>
+        <a-plane id="vr-enlarged-img" width="2.1" height="1.25" position="0 -0.06 0.02" material="src: #vr-map-tex; shader: flat"></a-plane>
+        
+        <!-- Close Button -->
+        <a-plane class="clickable" vr-map-toggle position="0.95 0.78 0.03" width="0.28" height="0.18" color="#0071e3" material="shader: flat">
+          <a-text value="CLOSE" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+        </a-plane>
+        
+        <!-- Dynamic Station Pins on Blueprint -->
+        <a-entity id="vr-enlarged-pins-container" position="0 -0.06 0.04"></a-entity>
+      </a-plane>
+    </a-entity>
+
+    <!-- Dynamic Container for 3D In-VR Teleport Hotspots -->
+    <a-entity id="in-scene-teleport-pins"></a-entity>
+
+    <!-- 360 Panorama Sky Sphere -->
+    <a-sky id="sky-sphere" src="#primary-sky-tex" rotation="0 -90 0"></a-sky>
+  </a-scene>
+
+  <script>
+    const audio = document.getElementById('ambient-audio');
+    const soundBtn = document.getElementById('sound-btn');
+    const soundLabel = document.getElementById('sound-label');
+    const soundIcon = document.getElementById('sound-icon');
+    let isPlaying = false;
+    let isTransitioning = false;
+
+    // --- IMMERSIVE VR LAUNCHER ---
+    function enterImmersiveVR() {
+      const scene = document.querySelector('a-scene');
+      if (scene) {
+        if (scene.is('vr-mode')) {
+          scene.exitVR();
+        } else {
+          scene.enterVR();
+        }
+      }
+    }
+
+    // --- FULLSCREEN CONTROLLER ---
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.warn('Fullscreen request failed:', err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function exitFullscreenToOverview() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+      returnToStartup();
+    }
+
+    function exitVRToOverview() {
+      const scene = document.querySelector('a-scene');
+      if (scene && scene.is('vr-mode')) {
+        scene.exitVR();
+      }
+      returnToStartup();
+    }
+
+    function resetCameraOrientation() {
+      const cam = document.getElementById('camera');
+      if (cam) {
+        cam.setAttribute('rotation', '0 0 0');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const isFs = !!document.fullscreenElement;
+      document.body.classList.toggle('is-fullscreen', isFs);
+      const fsIcon = document.getElementById('fs-icon');
+      if (fsIcon) {
+        fsIcon.innerHTML = isFs 
+          ? '<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>'
+          : '<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>';
+      }
+    });
+
+    // --- PAGE FLOW NAVIGATION ---
+    function goToProjectDetails() {
+      document.getElementById('startup-screen').classList.add('hidden');
+      document.getElementById('project-details-screen').classList.remove('hidden');
+    }
+
+    function returnToStartup() {
+      document.getElementById('project-details-screen').classList.add('hidden');
+      document.getElementById('startup-screen').classList.remove('hidden');
+    }
+
+    function startVirtualTour() {
+      document.getElementById('project-details-screen').classList.add('hidden');
+      if (!isPlaying) toggleAudio();
+    }
+
+    function openVideoModal() {
+      const modal = document.getElementById('project-video-modal');
+      const player = document.getElementById('project-video-player');
+      modal.classList.remove('hidden');
+      player.play().catch(e => console.log('Autoplay deferred'));
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('project-video-modal');
+      const player = document.getElementById('project-video-player');
+      modal.classList.add('hidden');
+      player.pause();
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        soundLabel.innerText = "Enable Ambience";
+        soundIcon.innerText = "🔈";
+        isPlaying = false;
+      } else {
+        audio.volume = 0.4;
+        audio.play().then(() => {
+          soundLabel.innerText = "Mute Ambience";
+          soundIcon.innerText = "🔊";
+          isPlaying = true;
+        }).catch(err => console.warn(err));
+      }
+    }
+
+    function scrollThumbnails(direction) {
+      const strip = document.getElementById('thumb-strip');
+      if (strip) {
+        strip.scrollBy({ left: direction * 160, behavior: 'smooth' });
+      }
+    }
+
+    // 2D Dropdown interactions
+    const dropdownWrapper = document.getElementById('floor-dropdown');
+    const dropdownTrigger = document.getElementById('floor-trigger');
+    const dropdownMenu = document.getElementById('floor-menu');
+
+    dropdownTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownWrapper.classList.toggle('stay-open');
+    });
+
+    window.addEventListener('click', (e) => {
+      if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
+        dropdownWrapper.classList.remove('stay-open');
+      }
+    });
+
+    /* 
+      MASTER CONFIGURATION:
+      - 2D Blueprint Coordinates
+      - 3D VR World Space Coordinates for In-Scene Hotspots
+    */
+    const floorPlansConfig = [
+      {
+        level: 0,
+        floorName: "Site",
+        floorCode: "S",
+        planImg: "site_plan.png",
+        planTitle: "Site Layout",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { 
+            id: "site-node-1", 
+            name: "Upper Junction", 
+            pinNum: "1", 
+            pinX: 62.5, 
+            pinY: 21, 
+            src: "site_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right", pos: "-2.6 0.2 -4.8" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance", pos: "4.2 0.3 -3.6" }
+            ]
+          },
+          { 
+            id: "site-node-2", 
+            name: "Lower Right", 
+            pinNum: "2", 
+            pinX: 69, 
+            pinY: 69, 
+            src: "site_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "1.2 0.2 5.0" },
+              { targetId: "site-node-3", pinNum: "3", name: "Point 3: West Entrance", pos: "-4.5 0.3 -2.2" }
+            ]
+          },
+          { 
+            id: "site-node-3", 
+            name: "West Entrance", 
+            pinNum: "3", 
+            pinX: 14.5, 
+            pinY: 55, 
+            src: "site_3.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", pinNum: "1", name: "Point 1: Upper Junction", pos: "-3.8 0.3 3.5" },
+              { targetId: "site-node-2", pinNum: "2", name: "Point 2: Lower Right", pos: "0.2 0.1 -4.8" }
+            ]
+          }
+        ]
+      },
+      {
+        level: 1,
+        floorName: "Stilt Floor",
+        floorCode: "ST",
+        planImg: "stilt_plan.png",
+        planTitle: "Stilt Parking & Entry Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "stilt-node-1", name: "Stilt Access", pinNum: "1", pinX: 30, pinY: 50, src: "stilt_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 2,
+        floorName: "Podium-1",
+        floorCode: "P1",
+        planImg: "podium_plan.png",
+        planTitle: "Podium-1 Promenade Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "podium-node-1", name: "Podium Walkway", pinNum: "1", pinX: 50, pinY: 50, src: "podium_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 3,
+        floorName: "Ground Floor",
+        floorCode: "G",
+        planImg: "ground_plan.png",
+        planTitle: "Ground Floor Market Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { 
+            id: "ground-node-1", 
+            name: "Ground Market Hall", 
+            pinNum: "1", 
+            pinX: 35, 
+            pinY: 45, 
+            src: "ground_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "ground-node-2", pinNum: "2", name: "Atrium Plaza", pos: "0 0 -5" }
+            ]
+          },
+          { 
+            id: "ground-node-2", 
+            name: "Atrium Plaza", 
+            pinNum: "2", 
+            pinX: 65, 
+            pinY: 55, 
+            src: "ground_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "ground-node-1", pinNum: "1", name: "Ground Market Hall", pos: "0 0 5" }
+            ]
+          }
+        ]
+      },
+      {
+        level: 4,
+        floorName: "First Floor",
+        floorCode: "1",
+        planImg: "first_plan.png",
+        planTitle: "First Floor Corridor Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "first-node-1", name: "First Floor Corridor", pinNum: "1", pinX: 40, pinY: 50, src: "first_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 5,
+        floorName: "Second Floor",
+        floorCode: "2",
+        planImg: "second_plan.png",
+        planTitle: "Second Floor Gallery Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { 
+            id: "second-node-1", 
+            name: "Station 1", 
+            pinNum: "1", 
+            pinX: 25, 
+            pinY: 50, 
+            src: "second_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "second-node-2", pinNum: "2", name: "Station 2", pos: "4 0 -3" }
+            ]
+          },
+          { 
+            id: "second-node-2", 
+            name: "Station 2", 
+            pinNum: "2", 
+            pinX: 70, 
+            pinY: 50, 
+            src: "second_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "second-node-1", pinNum: "1", name: "Station 1", pos: "-4 0 3" }
+            ]
+          }
+        ]
+      },
+      {
+        level: 6,
+        floorName: "Third Floor",
+        floorCode: "3",
+        planImg: "third_plan.png",
+        planTitle: "Third Floor Deck Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 7,
+        floorName: "Terrace",
+        floorCode: "TR",
+        planImg: "terrace_plan.png",
+        planTitle: "Rooftop Terrace Plan",
+        fallbackImg: "market_render.JPG",
+        points: [
+          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      }
+    ];
+
+    window.currentFloorLevel = 0;
+    let activePointId = "site-node-1";
+
+    window.onload = () => {
+      loadFloorAndPoint(0, "site-node-1", false);
+    };
+
+    function openEnlargedMap() {
+      const modal = document.getElementById('enlarged-map-modal');
+      const enlargedImg = document.getElementById('enlarged-blueprint-img');
+      const modalTitle = document.getElementById('enlarged-modal-title');
+      const pinsContainer = document.getElementById('pins-container');
+
+      const floorConfig = floorPlansConfig.find(f => f.level === window.currentFloorLevel) || floorPlansConfig[0];
+      
+      enlargedImg.src = floorConfig.planImg;
+      enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
+      modalTitle.innerText = `${floorConfig.floorName} - ${floorConfig.planTitle}`;
+
+      pinsContainer.innerHTML = '';
+      floorConfig.points.forEach((pt) => {
+        const pin = document.createElement('div');
+        pin.className = `map-teleport-pin ${pt.id === activePointId ? 'active-node' : ''}`;
+        pin.style.left = `${pt.pinX}%`;
+        pin.style.top = `${pt.pinY}%`;
+        pin.innerHTML = `
+          ${pt.pinNum}
+          <span class="pin-tooltip">${pt.name}</span>
+        `;
+        pin.onclick = (e) => {
+          e.stopPropagation();
+          closeEnlargedMap();
+          loadFloorAndPoint(window.currentFloorLevel, pt.id, true);
+        };
+        pinsContainer.appendChild(pin);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEnlargedMap() {
+      document.getElementById('enlarged-map-modal').classList.add('hidden');
+    }
+
+    function switchFloor(floorNum, btnElement, e) {
+      if (e) e.stopPropagation();
+      if (isTransitioning) return;
+      window.currentFloorLevel = floorNum;
+
+      dropdownWrapper.classList.remove('stay-open');
+      dropdownMenu.style.pointerEvents = 'none';
+      setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
+
+      document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        const matchingBtn = document.querySelector(`.floor-menu-item[data-floor="${floorNum}"]`);
+        if (matchingBtn) matchingBtn.classList.add('active');
+      }
+
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
+      if (floorConfig) {
+        const badge = document.getElementById('active-floor-badge');
+        const nameLabel = document.getElementById('active-floor-name');
+        if (badge) badge.innerText = floorConfig.floorCode;
+        if (nameLabel) nameLabel.innerText = floorConfig.floorName;
+      }
+
+      // Update In-VR Sidebar Active Highlights
+      document.querySelectorAll('[vr-floor-switch]').forEach(plane => {
+        const fl = parseInt(plane.getAttribute('vr-floor-switch').split(':')[1]);
+        if (fl === floorNum) {
+          plane.setAttribute('color', '#0071e3');
+          plane.setAttribute('opacity', '0.9');
+        } else {
+          plane.setAttribute('color', '#181a24');
+          plane.setAttribute('opacity', '0.78');
+        }
+      });
+
+      const firstPoint = floorConfig ? floorConfig.points[0] : null;
+      loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
+    }
+
+    window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
+      if (isTransitioning && animate) return;
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
+      if (!floorConfig) return;
+
+      const pointData = floorConfig.points.find(p => p.id === pointId) || floorConfig.points[0];
+      if (!pointData) return;
+
+      activePointId = pointData.id;
+      window.currentFloorLevel = floorNum;
+
+      const badge = document.getElementById('active-floor-badge');
+      const nameLabel = document.getElementById('active-floor-name');
+      if (badge) badge.innerText = floorConfig.floorCode;
+      if (nameLabel) nameLabel.innerText = floorConfig.floorName;
+
+      document.querySelectorAll('.floor-menu-item').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.getAttribute('data-floor')) === floorNum);
+      });
+
+      const fadeSphere = document.getElementById('fade-sphere');
+
+      if (!animate) {
+        applyView(floorConfig, pointData);
+        return;
+      }
+
+      isTransitioning = true;
+      fadeSphere.setAttribute('visible', 'true');
+      fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 350, easing: 'easeInQuad' });
+
+      setTimeout(() => {
+        applyView(floorConfig, pointData);
+        fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeOutQuad' });
+        setTimeout(() => {
+          fadeSphere.setAttribute('visible', 'false');
+          fadeSphere.removeAttribute('animation');
+          isTransitioning = false;
+        }, 410);
+      }, 360);
+    };
+
+    function applyView(floorConfig, pointData) {
+      document.getElementById('location-title').innerText = pointData.name;
+      document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
+
+      // Update 2D Minimap
+      const mapImg = document.getElementById('minimap-img');
+      const mapHeader = document.getElementById('map-header');
+      mapImg.src = floorConfig.planImg;
+      mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
+      mapHeader.innerText = floorConfig.planTitle;
+
+      // Update In-VR 3D Floating Minimap & Blueprint Textures
+      const vrMapLabel = document.getElementById('vr-minimap-label');
+      if (vrMapLabel) vrMapLabel.setAttribute('value', `${floorConfig.floorName} Plan [Click to Enlarge]`);
+      const vrEnlargedTitle = document.getElementById('vr-enlarged-title');
+      if (vrEnlargedTitle) vrEnlargedTitle.setAttribute('value', `${floorConfig.floorName} Blueprint - Select a station`);
+
+      const vrMiniPlane = document.getElementById('vr-mini-plane-img');
+      const vrEnlargedPlane = document.getElementById('vr-enlarged-img');
+      if (vrMiniPlane) vrMiniPlane.setAttribute('material', `src: ${floorConfig.planImg}; shader: flat`);
+      if (vrEnlargedPlane) vrEnlargedPlane.setAttribute('material', `src: ${floorConfig.planImg}; shader: flat`);
+
+      // Render 3D Station Pins on the Enlarged VR Blueprint
+      renderVREnlargedBlueprintPins(floorConfig);
+
+      const sky = document.getElementById('sky-sphere');
+      const targetSrc = pointData.src;
+
+      const imgTester = new Image();
+      imgTester.onload = function() {
+        sky.setAttribute('src', targetSrc);
+      };
+      imgTester.onerror = function() {
+        console.warn('Could not load:', targetSrc, 'Using fallback:', pointData.fallbackSrc);
+        sky.setAttribute('src', pointData.fallbackSrc);
+      };
+      imgTester.src = targetSrc;
+
+      // Update Bottom Carousel Strip
+      const thumbStrip = document.getElementById('thumb-strip');
+      thumbStrip.innerHTML = '';
+      floorConfig.points.forEach(pt => {
+        const card = document.createElement('div');
+        card.className = `carousel-card ${pt.id === activePointId ? 'active' : ''}`;
+        card.onclick = () => loadFloorAndPoint(floorConfig.level, pt.id, true);
+        card.innerHTML = `
+          <img src="${pt.src}" onerror="this.src='${pt.fallbackSrc}'" alt="${pt.name}">
+          <span>Point ${pt.pinNum}: ${pt.name}</span>
+        `;
+        thumbStrip.appendChild(card);
+      });
+
+      // Render 3D In-Scene Teleport Hotspots (Portal Preview Style)
+      renderInSceneTeleportPins(floorConfig, pointData);
+    }
+
+    /* Renders interactive teleport pins directly onto the 3D VR Blueprint plane */
+    function renderVREnlargedBlueprintPins(floorConfig) {
+      const container = document.getElementById('vr-enlarged-pins-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      floorConfig.points.forEach(pt => {
+        const xPos = ((pt.pinX / 100) * 2.1 - 1.05).toFixed(3);
+        const yPos = (-(pt.pinY / 100) * 1.25 + 0.625).toFixed(3);
+
+        const pinEntity = document.createElement('a-entity');
+        pinEntity.setAttribute('position', `${xPos} ${yPos} 0.02`);
+        pinEntity.innerHTML = `
+          <a-circle class="clickable" teleport-hotspot="target: ${pt.id}" radius="0.065" color="${pt.id === activePointId ? '#34c759' : '#0071e3'}" material="shader: flat">
+            <a-text value="${pt.pinNum}" align="center" position="0 0 0.01" scale="0.32 0.32 0.32" color="#FFFFFF"></a-text>
+          </a-circle>
+        `;
+        container.appendChild(pinEntity);
+      });
+    }
+
+    function renderInSceneTeleportPins(floorConfig, currentPoint) {
+      const pinsContainer = document.getElementById('in-scene-teleport-pins');
+      pinsContainer.innerHTML = '';
+
+      if (!currentPoint.peers || currentPoint.peers.length === 0) {
+        const otherPoints = floorConfig.points.filter(p => p.id !== currentPoint.id);
+        otherPoints.forEach((peerPoint, idx) => {
+          const angle = (idx / otherPoints.length) * Math.PI * 2 - Math.PI / 2;
+          const x = (Math.cos(angle) * 4.2).toFixed(2);
+          const z = (Math.sin(angle) * 4.2).toFixed(2);
+          createVRMarker(pinsContainer, peerPoint.id, peerPoint.name, `${x} 0.2 ${z}`, peerPoint.src, peerPoint.fallbackSrc);
+        });
+        return;
+      }
+
+      currentPoint.peers.forEach(peer => {
+        const targetNode = floorConfig.points.find(p => p.id === peer.targetId);
+        const previewImg = targetNode ? targetNode.src : 'market_render.JPG';
+        const fallbackImg = targetNode ? targetNode.fallbackSrc : 'market_render.JPG';
+        createVRMarker(pinsContainer, peer.targetId, peer.name, peer.pos, previewImg, fallbackImg);
+      });
+    }
+
+    /* 
+      Creates the reference style Waypoint Portal:
+      - Glowing circular portal with destination photo preview
+      - Translucent dark glass pill label directly underneath
+      - Vertical tether stem and glowing ground anchor sphere
+    */
+    function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc) {
+      const markerEntity = document.createElement('a-entity');
+      markerEntity.setAttribute('position', position);
+      markerEntity.setAttribute('look-at-camera', '');
+
+      // Clean label string removing "Point X:" prefix if present
+      const cleanName = name.replace(/^Point\s*\d+:\s*/i, '');
+
+      markerEntity.innerHTML = `
+        <!-- Invisible Bounding Sphere Hitbox for Controller Raycaster -->
+        <a-sphere class="clickable" teleport-hotspot="target: ${targetId}" radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
+
+        <!-- 1. Glowing Portal Ring (Outer perimeter) -->
+        <a-ring radius-inner="0.41" radius-outer="0.45" color="#FFFFFF" opacity="0.95" material="shader: flat; side: double"></a-ring>
+        <a-ring radius-inner="0.45" radius-outer="0.5" color="#ffaa55" opacity="0.45" material="shader: flat; side: double"></a-ring>
+
+        <!-- 2. Circular Destination Image Thumbnail -->
+        <a-circle radius="0.41" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
+
+        <!-- 3. Floating Glass Capsule Label with Chevron -->
+        <a-entity position="0 -0.62 0.02">
+          <a-plane width="1.45" height="0.28" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
+          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65"></a-text>
+        </a-entity>
+
+        <!-- 4. Vertical Glow Line Stem to Ground Anchor -->
+        <a-cylinder height="0.45" radius="0.008" color="#FFFFFF" opacity="0.75" position="0 -1.0 0.01" material="shader: flat"></a-cylinder>
+
+        <!-- 5. Ground Anchor Orb -->
+        <a-sphere radius="0.08" color="#FFFFFF" opacity="0.9" position="0 -1.25 0.01" material="shader: flat"></a-sphere>
+        <a-ring radius-inner="0.09" radius-outer="0.14" color="#ffaa55" opacity="0.5" position="0 -1.25 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
+      `;
+
+      parentEl.appendChild(markerEntity);
+    }
+  </script>
+</body>
+</html>
