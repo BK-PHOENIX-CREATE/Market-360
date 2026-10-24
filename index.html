@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #19 -->
+<!-- BUILD ITERATION: #20 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -289,6 +289,7 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
+    /* HERO CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO & CONTROLS DOCK */
     .hero-presentation-card {
       position: relative;
       width: 100%;
@@ -320,7 +321,7 @@
       position: absolute;
       inset: 0;
       background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.45) 48%, rgba(13, 14, 18, 0.12) 65%, transparent 80%),
-                  linear-gradient(to top, rgba(13, 14, 18, 0.9) 0%, rgba(13, 14, 18, 0.25) 25%, transparent 50%);
+                  linear-gradient(to top, rgba(13, 14, 18, 0.92) 0%, rgba(13, 14, 18, 0.3) 25%, transparent 50%);
       z-index: 2;
       pointer-events: none;
     }
@@ -356,9 +357,10 @@
       position: relative;
       z-index: 3;
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: flex-end;
       width: 100%;
+      gap: 16px;
     }
 
     .meta-pills-cluster { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -380,6 +382,87 @@
     .pill-header { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
     .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
     .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
+
+    /* VIDEO INTERACTIVE CONTROLS DOCK (PLAY/PAUSE, SCRUBBER, MUTE) */
+    .video-controls-dock {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(18, 20, 26, 0.88);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 40px;
+      padding: 6px 14px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+      user-select: none;
+    }
+
+    .video-ctrl-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .video-ctrl-btn:hover {
+      background: #f08a5d;
+      border-color: #f08a5d;
+      transform: scale(1.08);
+    }
+
+    .video-time-label {
+      font-size: 9.5px;
+      color: rgba(255, 255, 255, 0.7);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Seek Slider Bar */
+    .video-scrub-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 140px;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.25);
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .video-scrub-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #f08a5d;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 0 8px rgba(240, 138, 93, 0.8);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+    .video-scrub-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+    .video-scrub-slider::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #f08a5d;
+      border: 1.5px solid #ffffff;
+      box-shadow: 0 0 8px rgba(240, 138, 93, 0.8);
+      cursor: pointer;
+    }
 
     .dashboard-lower-grid {
       display: grid;
@@ -1349,10 +1432,9 @@
         </div>
       </div>
 
-      <!-- HERO PRESENTATION CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO -->
+      <!-- HERO PRESENTATION CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO & SCRUBBER DOCK -->
       <div class="hero-presentation-card">
-        <!-- Live Video Element Configured to Start from 0:00 on Page Entry -->
-        <video id="hero-bg-video" class="hero-embedded-video" muted loop playsinline preload="auto" poster="project_hero_render.png">
+        <video id="hero-bg-video" class="hero-embedded-video" loop playsinline preload="auto" poster="project_hero_render.png">
           <source src="project_video.mp4" type="video/mp4">
           <source src="project_video.MP4" type="video/mp4">
           <source src="project_video.webm" type="video/webm">
@@ -1372,7 +1454,7 @@
         </div>
 
         <div class="hero-bottom-bar">
-          <!-- All 4 Metadata Pills with Enhanced Contrast Glassmorphism -->
+          <!-- All 4 Metadata Pills -->
           <div class="meta-pills-cluster">
             <div class="meta-pill-card">
               <span class="pill-icon-box">📍</span>
@@ -1406,6 +1488,19 @@
                 <span class="pill-val-sub">Workers · Community</span>
               </div>
             </div>
+          </div>
+
+          <!-- Video Audio & Scrubber Controls Dock -->
+          <div class="video-controls-dock">
+            <button class="video-ctrl-btn" id="video-play-btn" onclick="toggleHeroVideoPlay()" title="Play / Pause">
+              ⏸
+            </button>
+            <span class="video-time-label" id="video-current-time">0:00</span>
+            <input type="range" class="video-scrub-slider" id="video-seek-slider" min="0" max="100" value="0" step="0.1" oninput="seekHeroVideo(this.value)">
+            <span class="video-time-label" id="video-duration-time">0:00</span>
+            <button class="video-ctrl-btn" id="video-mute-btn" onclick="toggleHeroVideoMute()" title="Mute / Unmute">
+              🔊
+            </button>
           </div>
         </div>
       </div>
@@ -1586,7 +1681,7 @@
           <defs>
             <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#0071e3" stop-opacity="0.9" />
-              <stop offset="100%" stop-color="#0071e3" stop-opacity="0" />
+              <stop offset="100%" stop-color="#0071e3" stop-opacity="0.9" />
             </radialGradient>
           </defs>
           <polygon points="50,50 20,5 80,5" fill="url(#coneGrad)" />
@@ -1739,6 +1834,64 @@
     let isPlaying = false;
     let isTransitioning = false;
 
+    // --- VIDEO PLAYBACK & SCRUBBER LOGIC ---
+    const heroVideo = document.getElementById('hero-bg-video');
+    const playBtn = document.getElementById('video-play-btn');
+    const muteBtn = document.getElementById('video-mute-btn');
+    const seekSlider = document.getElementById('video-seek-slider');
+    const currentTimeLabel = document.getElementById('video-current-time');
+    const durationTimeLabel = document.getElementById('video-duration-time');
+
+    function formatTime(seconds) {
+      if (isNaN(seconds) || seconds < 0) return "0:00";
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    if (heroVideo) {
+      heroVideo.addEventListener('loadedmetadata', () => {
+        durationTimeLabel.innerText = formatTime(heroVideo.duration);
+      });
+
+      heroVideo.addEventListener('timeupdate', () => {
+        if (!heroVideo.duration) return;
+        const percent = (heroVideo.currentTime / heroVideo.duration) * 100;
+        seekSlider.value = percent;
+        currentTimeLabel.innerText = formatTime(heroVideo.currentTime);
+      });
+
+      heroVideo.addEventListener('play', () => {
+        if (playBtn) playBtn.innerText = "⏸";
+      });
+
+      heroVideo.addEventListener('pause', () => {
+        if (playBtn) playBtn.innerText = "▶";
+      });
+    }
+
+    function toggleHeroVideoPlay() {
+      if (!heroVideo) return;
+      if (heroVideo.paused) {
+        heroVideo.play().catch(() => {});
+      } else {
+        heroVideo.pause();
+      }
+    }
+
+    function toggleHeroVideoMute() {
+      if (!heroVideo) return;
+      heroVideo.muted = !heroVideo.muted;
+      if (muteBtn) {
+        muteBtn.innerText = heroVideo.muted ? "🔇" : "🔊";
+      }
+    }
+
+    function seekHeroVideo(percentVal) {
+      if (!heroVideo || !heroVideo.duration) return;
+      heroVideo.currentTime = (percentVal / 100) * heroVideo.duration;
+    }
+
     function goToProjectDetails() {
       const sScreen = document.getElementById('startup-screen');
       const pScreen = document.getElementById('project-details-screen');
@@ -1746,12 +1899,18 @@
       if (pScreen) {
         pScreen.classList.remove('hidden');
         
-        // Reset playback strictly to 0:00 every time user enters Page 2
-        const video = document.getElementById('hero-bg-video');
-        if (video) {
-          video.currentTime = 0;
-          video.play().catch(e => {
-            console.log('Video autoplay permitted following user click gesture');
+        // Reset playback strictly to 0:00 on Page 2 entry
+        if (heroVideo) {
+          heroVideo.currentTime = 0;
+          // Unmute video since user clicked a gesture button
+          heroVideo.muted = false;
+          if (muteBtn) muteBtn.innerText = "🔊";
+          heroVideo.play().catch(e => {
+            console.log('Video autoplay permitted with audio after interaction');
+            // Fallback to muted if browser still enforces restriction
+            heroVideo.muted = true;
+            if (muteBtn) muteBtn.innerText = "🔇";
+            heroVideo.play().catch(() => {});
           });
         }
       }
@@ -1763,10 +1922,9 @@
       if (pScreen) pScreen.classList.add('hidden');
       if (sScreen) sScreen.classList.remove('hidden');
 
-      const video = document.getElementById('hero-bg-video');
-      if (video) {
-        video.pause();
-        video.currentTime = 0; // Rewind so next entry starts from beginning
+      if (heroVideo) {
+        heroVideo.pause();
+        heroVideo.currentTime = 0;
       }
     }
 
@@ -1774,10 +1932,9 @@
       const pScreen = document.getElementById('project-details-screen');
       if (pScreen) pScreen.classList.add('hidden');
 
-      const video = document.getElementById('hero-bg-video');
-      if (video) {
-        video.pause();
-        video.currentTime = 0;
+      if (heroVideo) {
+        heroVideo.pause();
+        heroVideo.currentTime = 0;
       }
 
       if (!isPlaying) toggleAudio();
@@ -2152,22 +2309,26 @@
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
+      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       document.getElementById('map-header').innerText = floorConfig.planTitle;
 
+      // Update in-VR Info Card details
       const vrInfoTitle = document.getElementById('vr-info-title');
       const vrInfoBody = document.getElementById('vr-info-body');
       if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
       if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
 
+      // Update Sky
       const sky = document.getElementById('sky-sphere');
       const imgTester = new Image();
       imgTester.onload = () => sky.setAttribute('src', pointData.src);
       imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
       imgTester.src = pointData.src;
 
+      // Update 2D Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2224,15 +2385,25 @@
 
       markerEntity.innerHTML = `
         <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
+
+        <!-- 1. Outer Glowing Portal Perimeter Ring -->
         <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
         <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
+
+        <!-- 2. Solid Backing Disc to Prevent Zero-Texture Black Hole Artifacts -->
         <a-circle radius="0.38" color="#1a1e29" material="shader: flat; side: double" position="0 0 0.005"></a-circle>
         <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
+
+        <!-- 3. High-DPI Frosted Glass Destination Capsule -->
         <a-entity position="0 -0.56 0.02">
           <a-plane width="1.45" height="0.28" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
           <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65" font="roboto" wrap-count="24"></a-text>
         </a-entity>
+
+        <!-- 4. Vertical Glow Line Stem to Ground Anchor -->
         <a-cylinder height="0.4" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
+
+        <!-- 5. Ground Anchor Orb -->
         <a-sphere radius="0.07" color="${glowColor}" opacity="0.9" position="0 -1.1 0.01" material="shader: flat"></a-sphere>
         <a-ring radius-inner="0.08" radius-outer="0.13" color="${glowColor}" opacity="0.5" position="0 -1.1 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
       `;
