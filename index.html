@@ -3,2085 +3,2085 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Market 360 - Redevelopment of Poorna Market</title>
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-  <style>
-    @font-face {
-      font-family: 'SF Pro Custom';
-      src: url('SF-Pro-Text-Regular.otf') format('opentype');
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'SF Pro Custom';
-      src: url('SF-Pro-Text-Medium.otf') format('opentype');
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: 'SF Pro Custom';
-      src: url('SF-Pro-Text-Bold.otf') format('opentype');
-      font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif !important;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body, html {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000000;
-      color: #ffffff;
-    }
-
-    .a-enter-vr, .a-enter-ar {
-      display: none !important;
-    }
-
-    /* =========================================================
-       PAGE 1: STARTUP LANDING OVERLAY
-       ========================================================= */
-    #startup-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999999;
-      background-color: #09090b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
-    }
-
-    #startup-screen.hidden {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-
-    .bokeh-background {
-      position: absolute;
-      inset: -40px;
-      background: url('market_render.JPG') center/cover no-repeat;
-      filter: blur(35px) brightness(0.6) saturate(1.4);
-      transform: scale(1.1);
-      z-index: 1;
-    }
-
-    .bokeh-light {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(30px);
-      opacity: 0.45;
-      mix-blend-mode: screen;
-      animation: floatBokeh 10s infinite alternate ease-in-out;
-      z-index: 2;
-    }
-    .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
-    .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
-    .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
-
-    @keyframes floatBokeh {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-40px) scale(1.15); }
-    }
-
-    .market-render-wrapper {
-      position: relative;
-      z-index: 10;
-      width: 82vw;
-      height: 72vh;
-      max-width: 1200px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #000000;
-    }
-
-    .market-render-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.02);
-      transition: transform 6s ease-out;
-    }
-    .market-render-wrapper:hover .market-render-image { transform: scale(1.06); }
-
-    .center-cta-btn {
-      position: absolute;
-      z-index: 20;
-      padding: 16px 42px;
-      background: rgba(255, 255, 255, 0.22);
-      border: 1.5px solid rgba(255, 255, 255, 0.7);
-      border-radius: 40px;
-      color: #ffffff;
-      font-size: 19px;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    .center-cta-btn:hover {
-      background: #ffffff;
-      color: #111111;
-      transform: scale(1.06);
-    }
-
-    .startup-logo {
-      position: absolute;
-      bottom: 24px;
-      left: 28px;
-      z-index: 10;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
-    }
-    .startup-logo img { width: 100%; height: 100%; object-fit: contain; }
-
-    .startup-credits-bar {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      padding: 10px 28px;
-      background: rgba(18, 18, 20, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 30px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-    }
-    .credit-item { display: flex; align-items: center; gap: 6px; color: #f5f5f7; font-size: 13px; white-space: nowrap; }
-    .credit-label { color: rgba(255, 255, 255, 0.55); font-weight: 500; }
-    .credit-value { font-weight: 700; }
-
-    /* =========================================================
-       PAGE 2: REDEVELOPMENT OF POORNA MARKET DASHBOARD
-       ========================================================= */
-    #project-details-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 9999990;
-      background-color: #0b0c10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 16px;
-      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
-    }
-
-    #project-details-screen.hidden {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-
-    .dashboard-frame {
-      position: relative;
-      z-index: 3;
-      width: 95vw;
-      max-width: 1400px;
-      height: 94vh;
-      background: rgba(18, 19, 24, 0.94);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 24px;
-      padding: 20px 26px;
-      backdrop-filter: blur(35px);
-      -webkit-backdrop-filter: blur(35px);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.92);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      overflow: hidden;
-    }
-
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 8px;
-    }
-
-    .header-subtag {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 600;
-    }
-
-    .dashboard-nav-links {
-      display: flex;
-      align-items: center;
-      gap: 22px;
-    }
-
-    .dash-nav-item {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 500;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.2s ease;
-    }
-
-    .dash-nav-item.active, .dash-nav-item:hover { color: #ffffff; }
-
-    .dash-nav-item.active::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: #f08a5d;
-      border-radius: 2px;
-    }
-
-    .dash-exit-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      padding: 5px 16px;
-      border-radius: 16px;
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .dash-exit-btn:hover { background: #ffffff; color: #111111; }
-
-    .hero-presentation-card {
-      position: relative;
-      width: 100%;
-      flex: 1.25;
-      min-height: 280px;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: #0d0e12;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 28px 32px;
-    }
-
-    .hero-render-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: right center;
-      z-index: 1;
-      filter: contrast(1.05) saturate(1.08);
-      transform: scale(1.005);
-      transition: transform 7s ease-out;
-    }
-    .hero-presentation-card:hover .hero-render-bg { transform: scale(1.03); }
-
-    .hero-vignette {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.55) 42%, rgba(13, 14, 18, 0.1) 58%, transparent 75%),
-                  linear-gradient(to top, rgba(13, 14, 18, 0.85) 0%, rgba(13, 14, 18, 0.2) 25%, transparent 50%);
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .hero-text-content {
-      position: relative;
-      z-index: 3;
-      max-width: 480px;
-    }
-
-    .hero-title-group h1 {
-      font-size: 36px;
-      line-height: 1.08;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: #ffffff;
-    }
-    .hero-title-group h1 span.highlight-orange { color: #f08a5d; }
-
-    .hero-loc-subtitle {
-      font-size: 10.5px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 8px;
-      font-weight: 600;
-    }
-
-    .hero-tags { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-top: 3px; }
-    .hero-description-p { font-size: 12px; line-height: 1.55; color: rgba(255, 255, 255, 0.85); margin-top: 14px; }
-
-    .hero-bottom-bar {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      width: 100%;
-    }
-
-    .meta-pills-cluster { display: flex; gap: 10px; flex-wrap: wrap; }
-    .meta-pill-card {
-      background: rgba(20, 21, 26, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 12px;
-      padding: 8px 14px;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .pill-icon-box { font-size: 15px; color: #f08a5d; opacity: 0.9; }
-    .pill-text-col { display: flex; flex-direction: column; }
-    .pill-header { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
-    .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
-    .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
-
-    .watch-video-btn {
-      background: rgba(20, 21, 26, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.32);
-      border-radius: 40px;
-      padding: 7px 18px 7px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      backdrop-filter: blur(18px);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    .watch-video-btn .play-circle {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1.5px solid #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: #ffffff;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
-    .watch-video-btn .btn-text-col { display: flex; flex-direction: column; text-align: left; }
-    .watch-video-btn .btn-text-col span:first-child { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: #ffffff; }
-    .watch-video-btn .btn-text-col span:last-child { font-size: 8px; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; letter-spacing: 0.05em; }
-    .watch-video-btn:hover { background: #ffffff; border-color: #ffffff; }
-    .watch-video-btn:hover .play-circle { background: #f08a5d; border-color: #f08a5d; transform: scale(1.08); }
-    .watch-video-btn:hover .btn-text-col span { color: #111111; }
-
-    .dashboard-lower-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 1.05fr 0.95fr;
-      gap: 14px;
-      flex: 0.95;
-      min-height: 190px;
-    }
-
-    .dash-module-card {
-      background: rgba(22, 23, 29, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
-      padding: 16px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-title-bar { display: flex; align-items: center; gap: 8px; }
-    .card-title-bar h3 { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); font-weight: 700; }
-    .card-title-bar .title-decor-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.1); }
-
-    .context-split-row { display: grid; grid-template-columns: 1fr 100px; gap: 12px; align-items: center; margin: 8px 0; }
-    .context-split-row p { font-size: 10.5px; line-height: 1.48; color: rgba(255, 255, 255, 0.78); }
-    .context-photo-box { width: 100%; height: 85px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); }
-    .context-photo-box img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) contrast(1.1); }
-
-    .module-card-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 9.5px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.85);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-    .module-card-action:hover { color: #f08a5d; transform: translateX(3px); }
-
-    .approach-pillars-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0; text-align: center; }
-    .approach-pillar { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    .pillar-visual {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px dashed rgba(255, 255, 255, 0.22);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .pillar-visual svg { width: 22px; height: 22px; }
-    .approach-pillar .pillar-name { font-size: 9.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.04em; }
-    .approach-pillar .pillar-desc { font-size: 8.5px; line-height: 1.35; color: rgba(255, 255, 255, 0.55); }
-
-    .experience-card-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.7); transition: transform 6s ease; }
-    .dash-module-card:hover .experience-card-bg { transform: scale(1.05); }
-    .experience-card-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.35) 65%, rgba(12, 13, 18, 0.7) 100%); z-index: 2; }
-    .experience-content-wrap { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-    .experience-360-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 5px 12px;
-      width: fit-content;
-      margin: 0 auto;
-    }
-    .badge-360-icon {
-      font-size: 11px;
-      font-weight: 700;
-      color: #f08a5d;
-      border: 1px solid #f08a5d;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .badge-360-text { display: flex; flex-direction: column; }
-    .badge-360-text span:first-child { font-size: 8.5px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em; }
-    .badge-360-text span:last-child { font-size: 7.5px; color: rgba(255, 255, 255, 0.6); }
-
-    .explore-market-cta-btn {
-      width: 100%;
-      padding: 10px 16px;
-      background: linear-gradient(135deg, #f08a5d, #e77342);
-      border: none;
-      border-radius: 24px;
-      color: #ffffff;
-      font-size: 11.5px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(240, 138, 93, 0.45);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .explore-market-cta-btn:hover {
-      background: linear-gradient(135deg, #ff9b71, #f08a5d);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
-    }
-
-    #project-video-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 9999998;
-      background: rgba(0, 0, 0, 0.88);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(20px);
-      transition: opacity 0.3s ease, visibility 0.3s;
-    }
-    #project-video-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-    .video-modal-card {
-      position: relative;
-      width: 80vw;
-      max-width: 960px;
-      background: #111111;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-    }
-
-    .video-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 18px;
-      background: #1a1a1f;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .video-modal-header h4 { font-size: 13px; font-weight: 600; }
-    .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
-
-    /* =========================================================
-       PAGE 3: 2D SCREEN OVERLAYS
-       ========================================================= */
-    .header-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 18px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
-      color: #ffffff;
-      z-index: 100;
-      pointer-events: auto;
-    }
-
-    .header-title h1 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-    .header-title p {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.72);
-      margin-top: 3px;
-      letter-spacing: 0.01em;
-    }
-
-    .top-action-capsule {
-      display: flex;
-      align-items: center;
-      background: rgba(20, 22, 28, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 22px;
-      padding: 4px 10px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-    }
-
-    .capsule-btn {
-      background: transparent;
-      border: none;
-      color: #f5f5f7;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.18s ease;
-    }
-    .capsule-btn:hover { color: #0071e3; }
-    .capsule-divider {
-      width: 1px;
-      height: 14px;
-      background: rgba(255, 255, 255, 0.22);
-      margin: 0 2px;
-    }
-
-    #fullscreen-back-btn {
-      position: absolute;
-      top: 16px;
-      left: 24px;
-      z-index: 999999;
-      background: rgba(18, 18, 22, 0.92);
-      border: 1.5px solid rgba(255, 255, 255, 0.5);
-      color: #ffffff;
-      padding: 9px 20px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-    #fullscreen-back-btn:hover { background: #ffffff; color: #111111; transform: scale(1.05); }
-    body.is-fullscreen #fullscreen-back-btn { display: flex; }
-
-    /* Floor Dropdown in 2D View */
-    .floor-dropdown-wrapper {
-      position: absolute;
-      top: 86px;
-      left: 24px;
-      z-index: 110;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding-bottom: 12px;
-    }
-    body.is-fullscreen .floor-dropdown-wrapper { top: 68px; }
-
-    .floor-dropdown-trigger {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 14px 7px 8px;
-      background: rgba(18, 20, 26, 0.82);
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      color: #ffffff;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-
-    .floor-dropdown-trigger .trigger-code {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 28px;
-      height: 26px;
-      padding: 0 6px;
-      background: #0071e3;
-      color: #ffffff;
-      border-radius: 7px;
-      font-size: 11.5px;
-      font-weight: 700;
-      box-shadow: 0 0 12px rgba(0, 113, 227, 0.65);
-    }
-
-    .floor-dropdown-trigger .trigger-arrow {
-      font-size: 10px;
-      transition: transform 0.2s ease;
-      color: rgba(255, 255, 255, 0.65);
-    }
-
-    .floor-dropdown-menu::before {
-      content: '';
-      position: absolute;
-      top: -12px;
-      left: 0;
-      width: 100%;
-      height: 14px;
-    }
-
-    .floor-dropdown-menu {
-      position: absolute;
-      top: calc(100% - 2px);
-      left: 0;
-      width: 220px;
-      background: rgba(16, 18, 24, 0.86);
-      border: 1.5px solid rgba(255, 255, 255, 0.16);
-      border-radius: 16px;
-      padding: 10px;
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-6px);
-      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
-      pointer-events: none;
-    }
-
-    .floor-dropdown-wrapper.stay-open .floor-dropdown-menu,
-    .floor-dropdown-wrapper:hover .floor-dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .floor-dropdown-wrapper.stay-open .floor-dropdown-trigger,
-    .floor-dropdown-wrapper:hover .floor-dropdown-trigger {
-      background: rgba(24, 28, 36, 0.95);
-      border-color: #0071e3;
-      box-shadow: 0 0 16px rgba(0, 113, 227, 0.45);
-    }
-
-    .floor-dropdown-wrapper.stay-open .trigger-arrow,
-    .floor-dropdown-wrapper:hover .trigger-arrow {
-      transform: rotate(180deg);
-      color: #0071e3;
-    }
-
-    .floor-menu-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 7px 10px;
-      background: transparent;
-      border: none;
-      border-radius: 10px;
-      color: rgba(255, 255, 255, 0.82);
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.16s ease, color 0.16s ease;
-      width: 100%;
-    }
-
-    .floor-menu-item .menu-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 26px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 700;
-      color: #ffffff;
-      flex-shrink: 0;
-      transition: all 0.16s ease;
-    }
-
-    .floor-menu-item .menu-label {
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .floor-menu-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .floor-menu-item.active {
-      background: linear-gradient(90deg, rgba(0, 113, 227, 0.35) 0%, rgba(0, 113, 227, 0.12) 100%);
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    .floor-menu-item.active .menu-badge {
-      background: #0071e3;
-      border-color: #0077ed;
-      box-shadow: 0 0 10px rgba(0, 113, 227, 0.65);
-    }
-
-    /* 2D Mini-Map Panel */
-    .minimap-panel {
-      position: absolute;
-      bottom: 24px;
-      left: 24px;
-      width: 172px;
-      background: rgba(16, 18, 24, 0.82);
-      border: 1.5px solid rgba(255, 255, 255, 0.16);
-      border-radius: 14px;
-      padding: 10px;
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
-      z-index: 100;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .minimap-top-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; }
-    .minimap-expand-btn { color: #0071e3; font-size: 11px; }
-    .minimap-img-frame {
-      position: relative;
-      width: 100%;
-      height: 96px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: #000;
-    }
-    #minimap-img { width: 100%; height: 100%; object-fit: cover; }
-    #radar-cone {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 32px;
-      height: 32px;
-      margin: -16px 0 0 -16px;
-      pointer-events: none;
-      transform-origin: center center;
-    }
-
-    /* 2D Bottom Carousel Strip */
-    .bottom-carousel-wrapper {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      pointer-events: auto;
-    }
-    .carousel-arrow-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(16, 18, 24, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      cursor: pointer;
-      backdrop-filter: blur(20px);
-    }
-    .carousel-arrow-btn:hover { background: #0071e3; }
-    .carousel-cards-strip {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      max-width: 58vw;
-      padding: 4px;
-      scrollbar-width: none;
-    }
-    .carousel-cards-strip::-webkit-scrollbar { display: none; }
-    .carousel-card {
-      position: relative;
-      flex: 0 0 156px;
-      height: 92px;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 2px solid transparent;
-      background: #111116;
-      transition: all 0.2s ease;
-    }
-    .carousel-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
-    .carousel-card span {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
-      color: #ffffff;
-      font-size: 10.5px;
-      font-weight: 600;
-      padding: 10px 8px 6px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .carousel-card.active { border-color: #0071e3; box-shadow: 0 0 18px rgba(0, 113, 227, 0.85); }
-
-    /* Bottom-Right Unified Action Dock */
-    .bottom-right-action-dock {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(16, 18, 24, 0.78);
-      border: 1.5px solid rgba(255, 255, 255, 0.16);
-      border-radius: 14px;
-      padding: 6px 8px;
-      backdrop-filter: blur(28px);
-    }
-    .dock-action-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: transparent;
-      border: none;
-      color: #f5f5f7;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .dock-action-btn:hover { background: rgba(255, 255, 255, 0.12); color: #0071e3; }
-    .dock-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
-
-    /* Enlarged Blueprint Modal */
-    #enlarged-map-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 99990;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.4s ease, visibility 0.4s;
-    }
-    #enlarged-map-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .enlarged-map-card {
-      position: relative;
-      z-index: 2;
-      width: fit-content;
-      max-width: 90vw;
-      background: rgba(22, 22, 26, 0.94);
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      border-radius: 20px;
-      padding: 20px 22px;
-      backdrop-filter: blur(25px);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .enlarged-map-header-bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
-    .close-map-btn {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      color: #ffffff;
-      padding: 6px 16px;
-      border-radius: 16px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .blueprint-image-wrapper {
-      position: relative;
-      display: inline-block;
-      line-height: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1.5px solid rgba(255, 255, 255, 0.18);
-    }
-    #enlarged-blueprint-img { max-height: 66vh; max-width: 82vw; object-fit: contain; display: block; }
-    #pins-container { position: absolute; inset: 0; pointer-events: none; }
-    .map-teleport-pin {
-      position: absolute;
-      transform: translate(-50%, -50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #0071e3;
-      border: 2px solid #ffffff;
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9);
-      pointer-events: auto;
-    }
-    .map-teleport-pin.active-node { background: #34c759; box-shadow: 0 0 20px rgba(52, 199, 89, 0.9); }
-  </style>
-
-  <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS
-       ========================================================= -->
-  <script>
-    AFRAME.registerComponent('teleport-hotspot', {
-      schema: { target: { type: 'string' } },
-      init: function () {
-        const el = this.el;
-        const targetId = this.data.target;
-        let lastTriggerTime = 0;
-
-        const triggerTeleport = (evt) => {
-          if (evt) evt.stopPropagation();
-          const now = Date.now();
-          if (now - lastTriggerTime < 500) return;
-          lastTriggerTime = now;
-
-          const cursorEl = evt && evt.detail && evt.detail.cursorEl;
-          if (cursorEl && cursorEl.components && cursorEl.components['haptics']) {
-            cursorEl.components['haptics'].pulse(0.8, 80);
-          }
-
-          if (window.loadFloorAndPoint) {
-            window.loadFloorAndPoint(window.currentFloorLevel, targetId, true);
-          }
-        };
-
-        el.addEventListener('click', triggerTeleport);
-        el.addEventListener('triggerdown', triggerTeleport);
-        el.addEventListener('select', triggerTeleport);
-
-        el.addEventListener('mouseenter', () => {
-          const parent = el.parentElement;
-          if (parent) parent.setAttribute('scale', '1.15 1.15 1.15');
-        });
-        el.addEventListener('mouseleave', () => {
-          const parent = el.parentElement;
-          if (parent) parent.setAttribute('scale', '1 1 1');
-        });
-      }
-    });
-
-    AFRAME.registerComponent('vr-exit-action', {
-      init: function () {
-        const el = this.el;
-        const exitAction = (evt) => {
-          if (evt) evt.stopPropagation();
-          exitVRToOverview();
-        };
-        el.addEventListener('click', exitAction);
-        el.addEventListener('triggerdown', exitAction);
-        el.addEventListener('select', exitAction);
-      }
-    });
-
-    AFRAME.registerComponent('vr-floor-switch', {
-      schema: { floor: { type: 'int' } },
-      init: function () {
-        const el = this.el;
-        const floorNum = this.data.floor;
-        const doSwitch = (evt) => {
-          if (evt) evt.stopPropagation();
-          switchFloor(floorNum);
-        };
-        el.addEventListener('click', doSwitch);
-        el.addEventListener('triggerdown', doSwitch);
-        el.addEventListener('select', doSwitch);
-      }
-    });
-
-    AFRAME.registerComponent('vr-sidebar-controller', {
-      init: function () {
-        const el = this.el;
-        let isExpanded = false;
-
-        const setOpacity = (val) => {
-          el.querySelectorAll('[vr-sub-elem]').forEach(node => {
-            node.setAttribute('opacity', val);
-          });
-        };
-
-        el.addEventListener('mouseenter', () => {
-          setOpacity('0.92');
-          el.setAttribute('scale', '1.04 1.04 1.04');
-        });
-        el.addEventListener('mouseleave', () => {
-          if (!isExpanded) {
-            setOpacity('0.22');
-            el.setAttribute('scale', '1 1 1');
-          }
-        });
-        el.addEventListener('click', () => {
-          isExpanded = !isExpanded;
-          setOpacity(isExpanded ? '0.94' : '0.22');
-        });
-      }
-    });
-
-    AFRAME.registerComponent('vr-info-beacon', {
-      init: function () {
-        const el = this.el;
-        const card = document.getElementById('vr-info-panel');
-
-        const toggleInfo = (evt) => {
-          if (evt) evt.stopPropagation();
-          if (card) {
-            const isVis = card.getAttribute('visible');
-            card.setAttribute('visible', !isVis);
-          }
-        };
-
-        el.addEventListener('click', toggleInfo);
-        el.addEventListener('triggerdown', toggleInfo);
-        el.addEventListener('select', toggleInfo);
-      }
-    });
-
-    AFRAME.registerComponent('look-at-camera', {
-      tick: function () {
-        const camera = document.querySelector('#camera');
-        if (camera && this.el) {
-          const camPos = camera.object3D.position;
-          this.el.object3D.lookAt(camPos.x, this.el.object3D.position.y, camPos.z);
-        }
-      }
-    });
-
-    AFRAME.registerComponent('radar-tracker', {
-      tick: function () {
-        const camera = this.el;
-        const cone = document.getElementById('radar-cone');
-        if (camera && cone) {
-          const rotation = camera.getAttribute('rotation');
-          if (rotation) {
-            cone.style.transform = `rotate(${-rotation.y}deg)`;
-          }
-        }
-      }
-    });
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market 360 - Redevelopment of Poorna Market</title>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <style>
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Medium.otf') format('opentype');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'SF Pro Custom';
+      src: url('SF-Pro-Text-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'SF Pro Custom', -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .a-enter-vr, .a-enter-ar {
+      display: none !important;
+    }
+
+    /* =========================================================
+       PAGE 1: STARTUP LANDING OVERLAY
+       ========================================================= */
+    #startup-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999999;
+      background-color: #09090b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+    }
+
+    #startup-screen.hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    .bokeh-background {
+      position: absolute;
+      inset: -40px;
+      background: url('market_render.JPG') center/cover no-repeat;
+      filter: blur(35px) brightness(0.6) saturate(1.4);
+      transform: scale(1.1);
+      z-index: 1;
+    }
+
+    .bokeh-light {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.45;
+      mix-blend-mode: screen;
+      animation: floatBokeh 10s infinite alternate ease-in-out;
+      z-index: 2;
+    }
+    .bokeh-light.orb1 { width: 320px; height: 320px; background: #ffaa55; top: 10%; left: 15%; }
+    .bokeh-light.orb2 { width: 400px; height: 400px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
+    .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
+
+    @keyframes floatBokeh {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-40px) scale(1.15); }
+    }
+
+    .market-render-wrapper {
+      position: relative;
+      z-index: 10;
+      width: 82vw;
+      height: 72vh;
+      max-width: 1200px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000000;
+    }
+
+    .market-render-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.02);
+      transition: transform 6s ease-out;
+    }
+    .market-render-wrapper:hover .market-render-image { transform: scale(1.06); }
+
+    .center-cta-btn {
+      position: absolute;
+      z-index: 20;
+      padding: 16px 42px;
+      background: rgba(255, 255, 255, 0.22);
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      border-radius: 40px;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .center-cta-btn:hover {
+      background: #ffffff;
+      color: #111111;
+      transform: scale(1.06);
+    }
+
+    .startup-logo {
+      position: absolute;
+      bottom: 24px;
+      left: 28px;
+      z-index: 10;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.6));
+    }
+    .startup-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+    .startup-credits-bar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 10px 28px;
+      background: rgba(18, 18, 20, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+    .credit-item { display: flex; align-items: center; gap: 6px; color: #f5f5f7; font-size: 13px; white-space: nowrap; }
+    .credit-label { color: rgba(255, 255, 255, 0.55); font-weight: 500; }
+    .credit-value { font-weight: 700; }
+
+    /* =========================================================
+       PAGE 2: REDEVELOPMENT OF POORNA MARKET DASHBOARD
+       ========================================================= */
+    #project-details-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999990;
+      background-color: #0b0c10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 16px;
+      transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
+    }
+
+    #project-details-screen.hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    .dashboard-frame {
+      position: relative;
+      z-index: 3;
+      width: 95vw;
+      max-width: 1400px;
+      height: 94vh;
+      background: rgba(18, 19, 24, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      padding: 20px 26px;
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.92);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+
+    .header-subtag {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+    }
+
+    .dashboard-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .dash-nav-item {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .dash-nav-item.active, .dash-nav-item:hover { color: #ffffff; }
+
+    .dash-nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: #f08a5d;
+      border-radius: 2px;
+    }
+
+    .dash-exit-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 5px 16px;
+      border-radius: 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dash-exit-btn:hover { background: #ffffff; color: #111111; }
+
+    .hero-presentation-card {
+      position: relative;
+      width: 100%;
+      flex: 1.25;
+      min-height: 280px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: #0d0e12;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 28px 32px;
+    }
+
+    .hero-render-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: right center;
+      z-index: 1;
+      filter: contrast(1.05) saturate(1.08);
+      transform: scale(1.005);
+      transition: transform 7s ease-out;
+    }
+    .hero-presentation-card:hover .hero-render-bg { transform: scale(1.03); }
+
+    .hero-vignette {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.55) 42%, rgba(13, 14, 18, 0.1) 58%, transparent 75%),
+                  linear-gradient(to top, rgba(13, 14, 18, 0.85) 0%, rgba(13, 14, 18, 0.2) 25%, transparent 50%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-text-content {
+      position: relative;
+      z-index: 3;
+      max-width: 480px;
+    }
+
+    .hero-title-group h1 {
+      font-size: 36px;
+      line-height: 1.08;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+    }
+    .hero-title-group h1 span.highlight-orange { color: #f08a5d; }
+
+    .hero-loc-subtitle {
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .hero-tags { font-size: 11px; color: rgba(255, 255, 255, 0.5); margin-top: 3px; }
+    .hero-description-p { font-size: 12px; line-height: 1.55; color: rgba(255, 255, 255, 0.85); margin-top: 14px; }
+
+    .hero-bottom-bar {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 100%;
+    }
+
+    .meta-pills-cluster { display: flex; gap: 10px; flex-wrap: wrap; }
+    .meta-pill-card {
+      background: rgba(20, 21, 26, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 8px 14px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-icon-box { font-size: 15px; color: #f08a5d; opacity: 0.9; }
+    .pill-text-col { display: flex; flex-direction: column; }
+    .pill-header { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
+    .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
+    .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
+
+    .watch-video-btn {
+      background: rgba(20, 21, 26, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.32);
+      border-radius: 40px;
+      padding: 7px 18px 7px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      backdrop-filter: blur(18px);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .watch-video-btn .play-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #ffffff;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .watch-video-btn .btn-text-col { display: flex; flex-direction: column; text-align: left; }
+    .watch-video-btn .btn-text-col span:first-child { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: #ffffff; }
+    .watch-video-btn .btn-text-col span:last-child { font-size: 8px; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; letter-spacing: 0.05em; }
+    .watch-video-btn:hover { background: #ffffff; border-color: #ffffff; }
+    .watch-video-btn:hover .play-circle { background: #f08a5d; border-color: #f08a5d; transform: scale(1.08); }
+    .watch-video-btn:hover .btn-text-col span { color: #111111; }
+
+    .dashboard-lower-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1.05fr 0.95fr;
+      gap: 14px;
+      flex: 0.95;
+      min-height: 190px;
+    }
+
+    .dash-module-card {
+      background: rgba(22, 23, 29, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-title-bar { display: flex; align-items: center; gap: 8px; }
+    .card-title-bar h3 { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.7); font-weight: 700; }
+    .card-title-bar .title-decor-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.1); }
+
+    .context-split-row { display: grid; grid-template-columns: 1fr 100px; gap: 12px; align-items: center; margin: 8px 0; }
+    .context-split-row p { font-size: 10.5px; line-height: 1.48; color: rgba(255, 255, 255, 0.78); }
+    .context-photo-box { width: 100%; height: 85px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); }
+    .context-photo-box img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%) contrast(1.1); }
+
+    .module-card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 9.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .module-card-action:hover { color: #f08a5d; transform: translateX(3px); }
+
+    .approach-pillars-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0; text-align: center; }
+    .approach-pillar { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .pillar-visual {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pillar-visual svg { width: 22px; height: 22px; }
+    .approach-pillar .pillar-name { font-size: 9.5px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.04em; }
+    .approach-pillar .pillar-desc { font-size: 8.5px; line-height: 1.35; color: rgba(255, 255, 255, 0.55); }
+
+    .experience-card-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; filter: brightness(0.7); transition: transform 6s ease; }
+    .dash-module-card:hover .experience-card-bg { transform: scale(1.05); }
+    .experience-card-scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12, 13, 18, 0.95) 15%, rgba(12, 13, 18, 0.35) 65%, rgba(12, 13, 18, 0.7) 100%); z-index: 2; }
+    .experience-content-wrap { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+    .experience-360-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      width: fit-content;
+      margin: 0 auto;
+    }
+    .badge-360-icon {
+      font-size: 11px;
+      font-weight: 700;
+      color: #f08a5d;
+      border: 1px solid #f08a5d;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .badge-360-text { display: flex; flex-direction: column; }
+    .badge-360-text span:first-child { font-size: 8.5px; font-weight: 700; color: #ffffff; letter-spacing: 0.05em; }
+    .badge-360-text span:last-child { font-size: 7.5px; color: rgba(255, 255, 255, 0.6); }
+
+    .explore-market-cta-btn {
+      width: 100%;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #f08a5d, #e77342);
+      border: none;
+      border-radius: 24px;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(240, 138, 93, 0.45);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .explore-market-cta-btn:hover {
+      background: linear-gradient(135deg, #ff9b71, #f08a5d);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
+    }
+
+    #project-video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999998;
+      background: rgba(0, 0, 0, 0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(20px);
+      transition: opacity 0.3s ease, visibility 0.3s;
+    }
+    #project-video-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .video-modal-card {
+      position: relative;
+      width: 80vw;
+      max-width: 960px;
+      background: #111111;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .video-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px;
+      background: #1a1a1f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .video-modal-header h4 { font-size: 13px; font-weight: 600; }
+    .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
+
+    /* =========================================================
+       PAGE 3: 2D SCREEN OVERLAYS
+       ========================================================= */
+    .header-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+      color: #ffffff;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .header-title p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      margin-top: 3px;
+      letter-spacing: 0.01em;
+    }
+
+    .top-action-capsule {
+      display: flex;
+      align-items: center;
+      background: rgba(20, 22, 28, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      padding: 4px 10px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    }
+
+    .capsule-btn {
+      background: transparent;
+      border: none;
+      color: #f5f5f7;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.18s ease;
+    }
+    .capsule-btn:hover { color: #0071e3; }
+    .capsule-divider {
+      width: 1px;
+      height: 14px;
+      background: rgba(255, 255, 255, 0.22);
+      margin: 0 2px;
+    }
+
+    #fullscreen-back-btn {
+      position: absolute;
+      top: 16px;
+      left: 24px;
+      z-index: 999999;
+      background: rgba(18, 18, 22, 0.92);
+      border: 1.5px solid rgba(255, 255, 255, 0.5);
+      color: #ffffff;
+      padding: 9px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    #fullscreen-back-btn:hover { background: #ffffff; color: #111111; transform: scale(1.05); }
+    body.is-fullscreen #fullscreen-back-btn { display: flex; }
+
+    /* Floor Dropdown in 2D View */
+    .floor-dropdown-wrapper {
+      position: absolute;
+      top: 86px;
+      left: 24px;
+      z-index: 110;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding-bottom: 12px;
+    }
+    body.is-fullscreen .floor-dropdown-wrapper { top: 68px; }
+
+    .floor-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 14px 7px 8px;
+      background: rgba(18, 20, 26, 0.82);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .floor-dropdown-trigger .trigger-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 26px;
+      padding: 0 6px;
+      background: #0071e3;
+      color: #ffffff;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(0, 113, 227, 0.65);
+    }
+
+    .floor-dropdown-trigger .trigger-arrow {
+      font-size: 10px;
+      transition: transform 0.2s ease;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .floor-dropdown-menu::before {
+      content: '';
+      position: absolute;
+      top: -12px;
+      left: 0;
+      width: 100%;
+      height: 14px;
+    }
+
+    .floor-dropdown-menu {
+      position: absolute;
+      top: calc(100% - 2px);
+      left: 0;
+      width: 220px;
+      background: rgba(16, 18, 24, 0.86);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 10px;
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+      pointer-events: none;
+    }
+
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-menu,
+    .floor-dropdown-wrapper:hover .floor-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .floor-dropdown-wrapper.stay-open .floor-dropdown-trigger,
+    .floor-dropdown-wrapper:hover .floor-dropdown-trigger {
+      background: rgba(24, 28, 36, 0.95);
+      border-color: #0071e3;
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.45);
+    }
+
+    .floor-dropdown-wrapper.stay-open .trigger-arrow,
+    .floor-dropdown-wrapper:hover .trigger-arrow {
+      transform: rotate(180deg);
+      color: #0071e3;
+    }
+
+    .floor-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 7px 10px;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.16s ease, color 0.16s ease;
+      width: 100%;
+    }
+
+    .floor-menu-item .menu-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ffffff;
+      flex-shrink: 0;
+      transition: all 0.16s ease;
+    }
+
+    .floor-menu-item .menu-label {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .floor-menu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .floor-menu-item.active {
+      background: linear-gradient(90deg, rgba(0, 113, 227, 0.35) 0%, rgba(0, 113, 227, 0.12) 100%);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .floor-menu-item.active .menu-badge {
+      background: #0071e3;
+      border-color: #0077ed;
+      box-shadow: 0 0 10px rgba(0, 113, 227, 0.65);
+    }
+
+    /* 2D Mini-Map Panel */
+    .minimap-panel {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 172px;
+      background: rgba(16, 18, 24, 0.82);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 10px;
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65);
+      z-index: 100;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .minimap-top-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 700; }
+    .minimap-expand-btn { color: #0071e3; font-size: 11px; }
+    .minimap-img-frame {
+      position: relative;
+      width: 100%;
+      height: 96px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #000;
+    }
+    #minimap-img { width: 100%; height: 100%; object-fit: cover; }
+    #radar-cone {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 32px;
+      height: 32px;
+      margin: -16px 0 0 -16px;
+      pointer-events: none;
+      transform-origin: center center;
+    }
+
+    /* 2D Bottom Carousel Strip */
+    .bottom-carousel-wrapper {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      pointer-events: auto;
+    }
+    .carousel-arrow-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(16, 18, 24, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+    }
+    .carousel-arrow-btn:hover { background: #0071e3; }
+    .carousel-cards-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      max-width: 58vw;
+      padding: 4px;
+      scrollbar-width: none;
+    }
+    .carousel-cards-strip::-webkit-scrollbar { display: none; }
+    .carousel-card {
+      position: relative;
+      flex: 0 0 156px;
+      height: 92px;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: #111116;
+      transition: all 0.2s ease;
+    }
+    .carousel-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.85); }
+    .carousel-card span {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 10px 8px 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .carousel-card.active { border-color: #0071e3; box-shadow: 0 0 18px rgba(0, 113, 227, 0.85); }
+
+    /* Bottom-Right Unified Action Dock */
+    .bottom-right-action-dock {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 18, 24, 0.78);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      padding: 6px 8px;
+      backdrop-filter: blur(28px);
+    }
+    .dock-action-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .dock-action-btn:hover { background: rgba(255, 255, 255, 0.12); color: #0071e3; }
+    .dock-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    /* Enlarged Blueprint Modal */
+    #enlarged-map-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99990;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    #enlarged-map-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .enlarged-map-card {
+      position: relative;
+      z-index: 2;
+      width: fit-content;
+      max-width: 90vw;
+      background: rgba(22, 22, 26, 0.94);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 20px;
+      padding: 20px 22px;
+      backdrop-filter: blur(25px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .enlarged-map-header-bar { display: flex; justify-content: space-between; align-items: center; gap: 24px; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; }
+    .close-map-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 16px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .blueprint-image-wrapper {
+      position: relative;
+      display: inline-block;
+      line-height: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255, 255, 255, 0.18);
+    }
+    #enlarged-blueprint-img { max-height: 66vh; max-width: 82vw; object-fit: contain; display: block; }
+    #pins-container { position: absolute; inset: 0; pointer-events: none; }
+    .map-teleport-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0071e3;
+      border: 2px solid #ffffff;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(0, 113, 227, 0.9);
+      pointer-events: auto;
+    }
+    .map-teleport-pin.active-node { background: #34c759; box-shadow: 0 0 20px rgba(52, 199, 89, 0.9); }
+  </style>
+
+  <!-- =========================================================
+       CUSTOM A-FRAME COMPONENTS
+       ========================================================= -->
+  <script>
+    AFRAME.registerComponent('teleport-hotspot', {
+      schema: { target: { type: 'string' } },
+      init: function () {
+        const el = this.el;
+        const targetId = this.data.target;
+        let lastTriggerTime = 0;
+
+        const triggerTeleport = (evt) => {
+          if (evt) evt.stopPropagation();
+          const now = Date.now();
+          if (now - lastTriggerTime < 500) return;
+          lastTriggerTime = now;
+
+          const cursorEl = evt && evt.detail && evt.detail.cursorEl;
+          if (cursorEl && cursorEl.components && cursorEl.components['haptics']) {
+            cursorEl.components['haptics'].pulse(0.8, 80);
+          }
+
+          if (window.loadFloorAndPoint) {
+            window.loadFloorAndPoint(window.currentFloorLevel, targetId, true);
+          }
+        };
+
+        el.addEventListener('click', triggerTeleport);
+        el.addEventListener('triggerdown', triggerTeleport);
+        el.addEventListener('select', triggerTeleport);
+
+        el.addEventListener('mouseenter', () => {
+          const parent = el.parentElement;
+          if (parent) parent.setAttribute('scale', '1.15 1.15 1.15');
+        });
+        el.addEventListener('mouseleave', () => {
+          const parent = el.parentElement;
+          if (parent) parent.setAttribute('scale', '1 1 1');
+        });
+      }
+    });
+
+    AFRAME.registerComponent('vr-exit-action', {
+      init: function () {
+        const el = this.el;
+        const exitAction = (evt) => {
+          if (evt) evt.stopPropagation();
+          exitVRToOverview();
+        };
+        el.addEventListener('click', exitAction);
+        el.addEventListener('triggerdown', exitAction);
+        el.addEventListener('select', exitAction);
+      }
+    });
+
+    AFRAME.registerComponent('vr-floor-switch', {
+      schema: { floor: { type: 'int' } },
+      init: function () {
+        const el = this.el;
+        const floorNum = this.data.floor;
+        const doSwitch = (evt) => {
+          if (evt) evt.stopPropagation();
+          switchFloor(floorNum);
+        };
+        el.addEventListener('click', doSwitch);
+        el.addEventListener('triggerdown', doSwitch);
+        el.addEventListener('select', doSwitch);
+      }
+    });
+
+    AFRAME.registerComponent('vr-sidebar-controller', {
+      init: function () {
+        const el = this.el;
+        let isExpanded = false;
+
+        const setOpacity = (val) => {
+          el.querySelectorAll('[vr-sub-elem]').forEach(node => {
+            node.setAttribute('opacity', val);
+          });
+        };
+
+        el.addEventListener('mouseenter', () => {
+          setOpacity('0.92');
+          el.setAttribute('scale', '1.04 1.04 1.04');
+        });
+        el.addEventListener('mouseleave', () => {
+          if (!isExpanded) {
+            setOpacity('0.22');
+            el.setAttribute('scale', '1 1 1');
+          }
+        });
+        el.addEventListener('click', () => {
+          isExpanded = !isExpanded;
+          setOpacity(isExpanded ? '0.94' : '0.22');
+        });
+      }
+    });
+
+    AFRAME.registerComponent('vr-info-beacon', {
+      init: function () {
+        const el = this.el;
+        const card = document.getElementById('vr-info-panel');
+
+        const toggleInfo = (evt) => {
+          if (evt) evt.stopPropagation();
+          if (card) {
+            const isVis = card.getAttribute('visible');
+            card.setAttribute('visible', !isVis);
+          }
+        };
+
+        el.addEventListener('click', toggleInfo);
+        el.addEventListener('triggerdown', toggleInfo);
+        el.addEventListener('select', toggleInfo);
+      }
+    });
+
+    AFRAME.registerComponent('look-at-camera', {
+      tick: function () {
+        const camera = document.querySelector('#camera');
+        if (camera && this.el) {
+          const camPos = camera.object3D.position;
+          this.el.object3D.lookAt(camPos.x, this.el.object3D.position.y, camPos.z);
+        }
+      }
+    });
+
+    AFRAME.registerComponent('radar-tracker', {
+      tick: function () {
+        const camera = this.el;
+        const cone = document.getElementById('radar-cone');
+        if (camera && cone) {
+          const rotation = camera.getAttribute('rotation');
+          if (rotation) {
+            cone.style.transform = `rotate(${-rotation.y}deg)`;
+          }
+        }
+      }
+    });
+  </script>
 </head>
 <body>
 
-  <!-- PAGE 1: STARTUP LANDING -->
-  <div id="startup-screen">
-    <div class="bokeh-background"></div>
-    <div class="bokeh-light orb1"></div>
-    <div class="bokeh-light orb2"></div>
-    <div class="bokeh-light orb3"></div>
-
-    <div class="market-render-wrapper">
-      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
-      <button id="main-navigate-btn" class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
-    </div>
-
-    <div class="startup-logo">
-      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
-    </div>
-
-    <div class="startup-credits-bar">
-      <div class="credit-item"><span class="credit-label">Name:</span><span class="credit-value">Balakrishna Darla</span></div>
-      <div class="credit-item"><span class="credit-label">Year:</span><span class="credit-value">Vth Year</span></div>
-      <div class="credit-item"><span class="credit-label">Sem:</span><span class="credit-value">IX</span></div>
-      <div class="credit-item"><span class="credit-label">Roll no:</span><span class="credit-value">Vu22arch0100016</span></div>
-    </div>
-  </div>
-
-  <!-- PAGE 2: REDEVELOPMENT OF POORNA MARKET (RESTORED DASHBOARD) -->
-  <div id="project-details-screen" class="hidden">
-    <div class="bokeh-background"></div>
-
-    <div class="dashboard-frame">
-      <div class="dashboard-header">
-        <span class="header-subtag">9th Semester · Community Design</span>
-        <div class="dashboard-nav-links">
-          <span class="dash-nav-item active">01 Overview</span>
-          <span class="dash-nav-item">02 Context</span>
-          <span class="dash-nav-item">03 Analysis</span>
-          <span class="dash-nav-item">04 Strategy</span>
-          <span class="dash-nav-item">05 Design</span>
-          <span class="dash-nav-item">06 Experience</span>
-          <button class="dash-exit-btn" onclick="returnToStartup()">✕ Exit</button>
-        </div>
-      </div>
-
-      <div class="hero-presentation-card">
-        <img src="project_hero_render.png" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Hero Render">
-        <div class="hero-vignette"></div>
-
-        <div class="hero-text-content">
-          <div class="hero-title-group">
-            <h1>Redevelopment of<br><span class="highlight-orange">Poorna Market</span></h1>
-            <p class="hero-loc-subtitle">Visakhapatnam, Andhra Pradesh</p>
-            <p class="hero-tags">Community Design · Urban Market · Architectural Redevelopment</p>
-          </div>
-          <p class="hero-description-p">
-            Reimagining Poorna Market as a vibrant, accessible and resilient community market while strengthening its existing commercial identity and livelihoods.
-          </p>
-        </div>
-
-        <div class="hero-bottom-bar">
-          <div class="meta-pills-cluster">
-            <div class="meta-pill-card">
-              <span class="pill-icon-box">📍</span>
-              <div class="pill-text-col">
-                <span class="pill-header">Location</span>
-                <span class="pill-val-strong">Visakhapatnam</span>
-                <span class="pill-val-sub">Andhra Pradesh</span>
-              </div>
-            </div>
-            <div class="meta-pill-card">
-              <span class="pill-icon-box">🏢</span>
-              <div class="pill-text-col">
-                <span class="pill-header">Program</span>
-                <span class="pill-val-strong">Urban Market</span>
-                <span class="pill-val-sub">Redevelopment</span>
-              </div>
-            </div>
-            <div class="meta-pill-card">
-              <span class="pill-icon-box">🏛</span>
-              <div class="pill-text-col">
-                <span class="pill-header">Scale</span>
-                <span class="pill-val-strong">8 Levels</span>
-                <span class="pill-val-sub">Multi-level market with amenities</span>
-              </div>
-            </div>
-            <div class="meta-pill-card">
-              <span class="pill-icon-box">👥</span>
-              <div class="pill-text-col">
-                <span class="pill-header">Users</span>
-                <span class="pill-val-strong">Vendors · Shoppers</span>
-                <span class="pill-val-sub">Workers · Community</span>
-              </div>
-            </div>
-          </div>
-
-          <button class="watch-video-btn" onclick="openVideoModal()">
-            <div class="play-circle">▶</div>
-            <div class="btn-text-col">
-              <span>Watch</span>
-              <span>Project Video</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <div class="dashboard-lower-grid">
-        <div class="dash-module-card">
-          <div class="card-title-bar">
-            <h3>Context & Intent</h3>
-            <div class="title-decor-line"></div>
-          </div>
-          <div class="context-split-row">
-            <p>
-              Poorna Market is one of Visakhapatnam's oldest and most vibrant commercial markets. Over decades of organic growth, density and congestion have challenged its infrastructure and user experience. This project aims to organise, upgrade and reimagine the market as a modern, climate-responsive and inclusive community market, without losing its character and local identity.
-            </p>
-            <div class="context-photo-box">
-              <img src="poorna_market_context.jpg" onerror="this.src='site_plan.png'" alt="Context Photo">
-            </div>
-          </div>
-          <button class="module-card-action">→ Explore Context</button>
-        </div>
-
-        <div class="dash-module-card">
-          <div class="card-title-bar">
-            <h3>Design Approach</h3>
-            <div class="title-decor-line"></div>
-          </div>
-          <div class="approach-pillars-row">
-            <div class="approach-pillar">
-              <div class="pillar-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
-                  <circle cx="12" cy="12" r="9"/>
-                  <circle cx="9" cy="9" r="1.5" fill="#f08a5d"/>
-                  <circle cx="15" cy="15" r="1.5" fill="#f08a5d"/>
-                  <circle cx="15" cy="9" r="1.5" fill="#f08a5d"/>
-                </svg>
-              </div>
-              <span class="pillar-name">Vibrancy</span>
-              <span class="pillar-desc">Movement, activity and local character</span>
-            </div>
-
-            <div class="approach-pillar">
-              <div class="pillar-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
-                  <rect x="4" y="4" width="6" height="6" rx="1"/>
-                  <rect x="14" y="4" width="6" height="6" rx="1"/>
-                  <rect x="4" y="14" width="6" height="6" rx="1"/>
-                  <rect x="14" y="14" width="6" height="6" rx="1"/>
-                </svg>
-              </div>
-              <span class="pillar-name">Fragmentation</span>
-              <span class="pillar-desc">Clustered market zones and variety</span>
-            </div>
-
-            <div class="approach-pillar">
-              <div class="pillar-visual">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
-                  <circle cx="12" cy="12" r="8"/>
-                  <circle cx="12" cy="12" r="3" fill="#f08a5d"/>
-                </svg>
-              </div>
-              <span class="pillar-name">Focal Points</span>
-              <span class="pillar-desc">Anchors for orientation and community</span>
-            </div>
-          </div>
-          <button class="module-card-action">→ Explore Design Strategy</button>
-        </div>
-
-        <div class="dash-module-card">
-          <img src="market_interior_preview.jpg" onerror="this.src='market_render.JPG'" class="experience-card-bg" alt="Market Interior">
-          <div class="experience-card-scrim"></div>
-
-          <div class="experience-content-wrap">
-            <div class="card-title-bar">
-              <h3>Experience The Market</h3>
-              <div class="title-decor-line"></div>
-            </div>
-
-            <div class="experience-360-badge">
-              <div class="badge-360-icon">360°</div>
-              <div class="badge-360-text">
-                <span>Interactive Market Experience</span>
-                <span>Walk through key spaces in 360°</span>
-              </div>
-            </div>
-
-            <button id="explore-market-btn" class="explore-market-cta-btn" onclick="startVirtualTour()">
-              <span>Explore The Market</span> <span>→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Video Modal Popup -->
-  <div id="project-video-modal" class="hidden">
-    <div class="video-modal-card">
-      <div class="video-modal-header">
-        <h4>Poorna Market Redevelopment - Architectural Walkthrough</h4>
-        <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
-      </div>
-      <video id="project-video-player" controls style="width: 100%; display: block;" poster="project_hero_render.png">
-        <source src="project_video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </div>
-
-  <!-- Ambient Audio -->
-  <audio id="ambient-audio" loop preload="none" crossorigin="anonymous">
-    <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
-    <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
-  </audio>
-
-  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS ==================== -->
-  <div class="header-bar">
-    <div class="header-title">
-      <h1 id="location-title">Upper Junction</h1>
-      <p id="location-subtitle">Site • Architectural 360 Panorama</p>
-    </div>
-
-    <div class="top-action-capsule">
-      <button class="capsule-btn" onclick="returnToStartup()">
-        <span>🏠</span> <span>Home</span>
-      </button>
-      <div class="capsule-divider"></div>
-      <button id="sound-btn" class="capsule-btn" onclick="toggleAudio()">
-        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Persistent 2D Floor Selector Dropdown -->
-  <div class="floor-dropdown-wrapper" id="floor-dropdown">
-    <div class="floor-dropdown-trigger" id="floor-trigger">
-      <span class="trigger-code" id="active-floor-badge">S</span>
-      <span id="active-floor-name">Site</span>
-      <span class="trigger-arrow">▾</span>
-    </div>
-
-    <div class="floor-dropdown-menu" id="floor-menu">
-      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
-        <span class="menu-badge">TR</span>
-        <span class="menu-label">Terrace</span>
-      </button>
-      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this, event)">
-        <span class="menu-badge">3</span>
-        <span class="menu-label">Third Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this, event)">
-        <span class="menu-badge">2</span>
-        <span class="menu-label">Second Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this, event)">
-        <span class="menu-badge">1</span>
-        <span class="menu-label">First Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this, event)">
-        <span class="menu-badge">G</span>
-        <span class="menu-label">Ground Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this, event)">
-        <span class="menu-badge">P1</span>
-        <span class="menu-label">Podium-1</span>
-      </button>
-      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this, event)">
-        <span class="menu-badge">ST</span>
-        <span class="menu-label">Stilt Floor</span>
-      </button>
-      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this, event)">
-        <span class="menu-badge">S</span>
-        <span class="menu-label">Site</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 2D Minimap with Rotating Dynamic Radar Cone -->
-  <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
-    <div class="minimap-top-row">
-      <span class="map-title" id="map-header">Site Layout</span>
-      <div class="minimap-expand-btn">⤢ ENLARGE</div>
-    </div>
-    <div class="minimap-img-frame">
-      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Floor Layout">
-      <!-- Rotating Radar Viewing Cone -->
-      <svg id="radar-cone" viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#0071e3" stop-opacity="0.9" />
-            <stop offset="100%" stop-color="#0071e3" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-        <polygon points="50,50 20,5 80,5" fill="url(#coneGrad)" />
-        <circle cx="50" cy="50" r="7" fill="#ffffff" stroke="#0071e3" stroke-width="3" />
-      </svg>
-    </div>
-  </div>
-
-  <!-- 2D Bottom Carousel Strip -->
-  <div class="bottom-carousel-wrapper">
-    <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
-    <div class="carousel-cards-strip" id="thumb-strip"></div>
-    <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
-  </div>
-
-  <!-- 2D Bottom-Right Action Dock -->
-  <div class="bottom-right-action-dock">
-    <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
-      <svg viewBox="0 0 24 24"><path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
-    </button>
-    <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
-      <svg id="fs-icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-    </button>
-    <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
-      <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
-    </button>
-  </div>
-
-  <!-- 2D Enlarged Blueprint Modal -->
-  <div id="enlarged-map-modal" class="hidden">
-    <div class="bokeh-background" onclick="closeEnlargedMap()"></div>
-    <div class="enlarged-map-card">
-      <div class="enlarged-map-header-bar">
-        <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
-        <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close</button>
-      </div>
-
-      <div class="blueprint-image-wrapper">
-        <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
-        <div id="pins-container"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================
-       A-FRAME VR CANVAS
-       ========================================================= -->
-  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
-    <a-assets timeout="10000">
-      <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
-    </a-assets>
-
-    <a-entity id="cameraRig" position="0 0 0">
-      <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false" radar-tracker>
-        <a-cursor 
-          id="cursor"
-          color="#0071E3"
-          raycaster="objects: .clickable; far: 40"
-          animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
-        </a-cursor>
-        <a-sphere 
-          id="fade-sphere" 
-          radius="0.1" 
-          position="0 0 -0.05"
-          material="color: #000000; side: back; shader: flat; transparent: true; opacity: 0"
-          visible="false">
-        </a-sphere>
-      </a-camera>
-
-      <a-entity id="rightHand" laser-controls="hand: right" oculus-touch-controls="hand: right" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
-      <a-entity id="leftHand" laser-controls="hand: left" oculus-touch-controls="hand: left" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
-    </a-entity>
-
-    <!-- 1. Repositioned & Ultra-Translucent Back Button (Bottom-Center) -->
-    <a-entity id="vr-in-headset-back" position="0 -1.55 -3.1" rotation="-15 0 0">
-      <a-plane class="clickable" vr-exit-action width="1.15" height="0.28" color="#0a0c10" opacity="0.25" material="shader: flat; transparent: true">
-        <a-ring radius-inner="0.57" radius-outer="0.58" color="#ffffff" opacity="0.35" material="shader: flat"></a-ring>
-        <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.8 0.8 0.8"></a-text>
-      </a-plane>
-    </a-entity>
-
-    <!-- 2. Top-Left Subtle Hoverable Level Selector in VR -->
-    <a-entity id="vr-floors-sidebar" position="-2.4 1.4 -3.4" rotation="10 30 0" vr-sidebar-controller>
-      <a-plane class="clickable" vr-sub-elem width="1.0" height="2.5" color="#0b0d14" opacity="0.22" material="shader: flat; transparent: true"></a-plane>
-      <a-text vr-sub-elem value="LEVELS" align="center" position="0 1.12 0.02" scale="0.6 0.6 0.6" color="#0071E3" opacity="0.45"></a-text>
-
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 7" position="0 0.82 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="TR  Terrace" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 6" position="0 0.56 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="3   Third Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 5" position="0 0.30 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="2   Second Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 4" position="0 0.04 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="1   First Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 3" position="0 -0.22 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="G   Ground Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 2" position="0 -0.48 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="P1  Podium-1" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 1" position="0 -0.74 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-        <a-text value="ST  Stilt Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-      <a-plane id="vr-btn-site" class="clickable" vr-sub-elem vr-floor-switch="floor: 0" position="0 -1.0 0.02" width="0.88" height="0.22" color="#0071e3" opacity="0.6" material="shader: flat; transparent: true">
-        <a-text value="S   Site" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
-      </a-plane>
-    </a-entity>
-
-    <!-- 3. Pulsing Info Beacon ("i") & Minimizable Space Card -->
-    <a-entity id="vr-info-beacon-group" position="2.2 0.8 -3.2" look-at-camera>
-      <a-circle class="clickable" vr-info-beacon radius="0.2" color="#ffaa55" material="shader: flat; side: double">
-        <a-ring radius-inner="0.2" radius-outer="0.25" color="#ffffff" opacity="0.8" animation="property: scale; from: 1 1 1; to: 1.45 1.45 1.45; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-ring>
-        <a-text value="i" align="center" position="0 0 0.01" scale="1.4 1.4 1.4" color="#000000" font="sourcecodepro"></a-text>
-      </a-circle>
-
-      <!-- Expandable / Minimizable Briefing Card -->
-      <a-entity id="vr-info-panel" position="-1.4 0 0.05" visible="false">
-        <a-plane width="2.4" height="1.4" color="#11131a" opacity="0.95" material="shader: flat">
-          <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55"></a-text>
-          <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1"></a-text>
-          
-          <a-plane class="clickable" vr-info-beacon position="0.95 0.52 0.03" width="0.26" height="0.16" color="#ffaa55" material="shader: flat">
-            <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55"></a-text>
-          </a-plane>
-        </a-plane>
-      </a-entity>
-    </a-entity>
-
-    <!-- Dynamic Container for 3D In-Scene Waypoint Portals -->
-    <a-entity id="in-scene-teleport-pins"></a-entity>
-
-    <!-- 360 Sky Sphere -->
-    <a-sky id="sky-sphere" src="#primary-sky-tex" rotation="0 -90 0"></a-sky>
-  </a-scene>
-
-  <script>
-    const audio = document.getElementById('ambient-audio');
-    let isPlaying = false;
-    let isTransitioning = false;
-
-    function goToProjectDetails() {
-      const sScreen = document.getElementById('startup-screen');
-      const pScreen = document.getElementById('project-details-screen');
-      if (sScreen) sScreen.classList.add('hidden');
-      if (pScreen) pScreen.classList.remove('hidden');
-    }
-
-    function returnToStartup() {
-      const sScreen = document.getElementById('startup-screen');
-      const pScreen = document.getElementById('project-details-screen');
-      if (pScreen) pScreen.classList.add('hidden');
-      if (sScreen) sScreen.classList.remove('hidden');
-    }
-
-    function startVirtualTour() {
-      const pScreen = document.getElementById('project-details-screen');
-      if (pScreen) pScreen.classList.add('hidden');
-      if (!isPlaying) toggleAudio();
-    }
-
-    function openVideoModal() {
-      const modal = document.getElementById('project-video-modal');
-      const player = document.getElementById('project-video-player');
-      if (modal) modal.classList.remove('hidden');
-      if (player) player.play().catch(e => console.log('Autoplay deferred'));
-    }
-
-    function closeVideoModal() {
-      const modal = document.getElementById('project-video-modal');
-      const player = document.getElementById('project-video-player');
-      if (modal) modal.classList.add('hidden');
-      if (player) player.pause();
-    }
-
-    function toggleAudio() {
-      if (isPlaying) {
-        audio.pause();
-        document.getElementById('sound-label').innerText = "Enable Ambience";
-        document.getElementById('sound-icon').innerText = "🔈";
-        isPlaying = false;
-      } else {
-        audio.volume = 0.4;
-        audio.play().then(() => {
-          document.getElementById('sound-label').innerText = "Mute Ambience";
-          document.getElementById('sound-icon').innerText = "🔊";
-          isPlaying = true;
-        }).catch(() => {});
-      }
-    }
-
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-
-    function enterImmersiveVR() {
-      const scene = document.querySelector('a-scene');
-      if (scene) {
-        scene.is('vr-mode') ? scene.exitVR() : scene.enterVR();
-      }
-    }
-
-    function exitVRToOverview() {
-      const scene = document.querySelector('a-scene');
-      if (scene && scene.is('vr-mode')) {
-        scene.exitVR();
-      }
-      returnToStartup();
-    }
-
-    function resetCameraOrientation() {
-      const cam = document.getElementById('camera');
-      if (cam) cam.setAttribute('rotation', '0 0 0');
-    }
-
-    function scrollThumbnails(dir) {
-      const strip = document.getElementById('thumb-strip');
-      if (strip) strip.scrollBy({ left: dir * 160, behavior: 'smooth' });
-    }
-
-    const dropdownWrapper = document.getElementById('floor-dropdown');
-    const dropdownTrigger = document.getElementById('floor-trigger');
-    const dropdownMenu = document.getElementById('floor-menu');
-
-    if (dropdownTrigger) {
-      dropdownTrigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownWrapper.classList.toggle('stay-open');
-      });
-    }
-
-    window.addEventListener('click', (e) => {
-      if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
-        dropdownWrapper.classList.remove('stay-open');
-      }
-    });
-
-    const floorPlansConfig = [
-      {
-        level: 0,
-        floorName: "Site",
-        floorCode: "S",
-        planImg: "site_plan.png",
-        planTitle: "Site Layout",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Site Context & Urban Threshold",
-        descBody: "The perimeter urban realm interfacing Poorna Market with Visakhapatnam's primary road network. Pedestrian and vehicular paths converge here.",
-        points: [
-          { 
-            id: "site-node-1", 
-            name: "Upper Junction", 
-            pinNum: "1", 
-            pinX: 62.5, 
-            pinY: 21, 
-            src: "site_1.png", 
-            fallbackSrc: "market_render.JPG",
-            peers: [
-              { targetId: "site-node-2", name: "Lower Right", pos: "-2.6 0.2 -4.8" },
-              { targetId: "site-node-3", name: "West Entrance", pos: "4.2 0.3 -3.6" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "0 0.8 -4.8", isFloorJump: true, targetFloor: 1 }
-            ]
-          },
-          { 
-            id: "site-node-2", 
-            name: "Lower Right", 
-            pinNum: "2", 
-            pinX: 69, 
-            pinY: 69, 
-            src: "site_2.png", 
-            fallbackSrc: "market_render.JPG",
-            peers: [
-              { targetId: "site-node-1", name: "Upper Junction", pos: "1.2 0.2 5.0" },
-              { targetId: "site-node-3", name: "West Entrance", pos: "-4.5 0.3 -2.2" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "2.4 0.8 -4.0", isFloorJump: true, targetFloor: 1 }
-            ]
-          },
-          { 
-            id: "site-node-3", 
-            name: "West Entrance", 
-            pinNum: "3", 
-            pinX: 14.5, 
-            pinY: 55, 
-            src: "site_3.png", 
-            fallbackSrc: "market_render.JPG",
-            peers: [
-              { targetId: "site-node-1", name: "Upper Junction", pos: "-3.8 0.3 3.5" },
-              { targetId: "site-node-2", name: "Lower Right", pos: "0.2 0.1 -4.8" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "-2.5 0.8 -4.2", isFloorJump: true, targetFloor: 1 }
-            ]
-          }
-        ]
-      },
-      {
-        level: 1,
-        floorName: "Stilt Floor",
-        floorCode: "ST",
-        planImg: "stilt_plan.png",
-        planTitle: "Stilt Parking & Entry Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Stilt Floor - Servicing Hub",
-        descBody: "Engineered for vehicle staging, vendor drop-off, waste management, and organized commuter parking.",
-        points: [
-          { 
-            id: "stilt-node-1", 
-            name: "Stilt Access", 
-            pinNum: "1", 
-            pinX: 30, 
-            pinY: 50, 
-            src: "stilt_1.png", 
-            fallbackSrc: "market_render.JPG", 
-            peers: [
-              { targetId: "site-node-1", name: "Return to Site", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 0 },
-              { targetId: "podium-node-1", name: "Proceed to Podium-1", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 2 }
-            ] 
-          }
-        ]
-      },
-      {
-        level: 2,
-        floorName: "Podium-1",
-        floorCode: "P1",
-        planImg: "podium_plan.png",
-        planTitle: "Podium-1 Promenade Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Podium-1 - Pedestrian Promenade",
-        descBody: "An elevated landscaped promenade separating vehicular movement from civic gathering.",
-        points: [
-          { 
-            id: "podium-node-1", 
-            name: "Podium Walkway", 
-            pinNum: "1", 
-            pinX: 50, 
-            pinY: 50, 
-            src: "podium_1.png", 
-            fallbackSrc: "market_render.JPG", 
-            peers: [
-              { targetId: "stilt-node-1", name: "Down to Stilt", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 1 },
-              { targetId: "ground-node-1", name: "Enter Ground Market", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 3 }
-            ] 
-          }
-        ]
-      },
-      {
-        level: 3,
-        floorName: "Ground Floor",
-        floorCode: "G",
-        planImg: "ground_plan.png",
-        planTitle: "Ground Produce Hall",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Ground Floor - Fresh Produce Atrium",
-        descBody: "The primary high-density fresh produce hall, featuring natural cross-ventilation shafts.",
-        points: [
-          { 
-            id: "ground-node-1", 
-            name: "Ground Market Hall", 
-            pinNum: "1", 
-            pinX: 35, 
-            pinY: 45, 
-            src: "ground_1.png", 
-            fallbackSrc: "market_render.JPG",
-            peers: [
-              { targetId: "first-node-1", name: "Ascend to 1st Floor", pos: "3.2 0.8 -4.0", isFloorJump: true, targetFloor: 4 }
-            ]
-          }
-        ]
-      },
-      {
-        level: 4,
-        floorName: "First Floor",
-        floorCode: "1",
-        planImg: "first_plan.png",
-        planTitle: "First Floor Corridor Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "First Floor - Dry Goods & Spices",
-        descBody: "Specialty spice merchants, textiles, and dry goods configured in clustered stalls.",
-        points: [
-          { 
-            id: "first-node-1", 
-            name: "First Floor Corridor", 
-            pinNum: "1", 
-            pinX: 40, 
-            pinY: 50, 
-            src: "first_1.png", 
-            fallbackSrc: "market_render.JPG", 
-            peers: [
-              { targetId: "ground-node-1", name: "Down to Ground", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 3 }
-            ] 
-          }
-        ]
-      },
-      {
-        level: 5,
-        floorName: "Second Floor",
-        floorCode: "2",
-        planImg: "second_plan.png",
-        planTitle: "Second Floor Gallery Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Second Floor - Commercial Gallery",
-        descBody: "Medium-format retail shops and co-working vendor cooperatives.",
-        points: [
-          { id: "second-node-1", name: "Gallery Deck", pinNum: "1", pinX: 50, pinY: 50, src: "second_1.png", fallbackSrc: "market_render.JPG", peers: [] }
-        ]
-      },
-      {
-        level: 6,
-        floorName: "Third Floor",
-        floorCode: "3",
-        planImg: "third_plan.png",
-        planTitle: "Third Floor Deck Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Third Floor - Community Upper Deck",
-        descBody: "A community deck hosting culinary training hubs and shaded public break spaces.",
-        points: [
-          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG", peers: [] }
-        ]
-      },
-      {
-        level: 7,
-        floorName: "Terrace",
-        floorCode: "TR",
-        planImg: "terrace_plan.png",
-        planTitle: "Rooftop Terrace Plan",
-        fallbackImg: "market_render.JPG",
-        descTitle: "Rooftop Terrace - Civic Sky Garden",
-        descBody: "A rooftop solar farm, urban agriculture garden, and panoramic civic overlook.",
-        points: [
-          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG", peers: [] }
-        ]
-      }
-    ];
-
-    window.currentFloorLevel = 0;
-    let activePointId = "site-node-1";
-
-    function switchFloor(floorNum, btnElement, e) {
-      if (e) e.stopPropagation();
-      if (isTransitioning) return;
-      window.currentFloorLevel = floorNum;
-
-      if (dropdownWrapper) dropdownWrapper.classList.remove('stay-open');
-      if (dropdownMenu) {
-        dropdownMenu.style.pointerEvents = 'none';
-        setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
-      }
-
-      document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
-      if (btnElement) {
-        btnElement.classList.add('active');
-      } else {
-        const matchingBtn = document.querySelector(`.floor-menu-item[data-floor="${floorNum}"]`);
-        if (matchingBtn) matchingBtn.classList.add('active');
-      }
-
-      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
-      if (floorConfig) {
-        document.getElementById('active-floor-badge').innerText = floorConfig.floorCode;
-        document.getElementById('active-floor-name').innerText = floorConfig.floorName;
-      }
-
-      document.querySelectorAll('[vr-floor-switch]').forEach(plane => {
-        const fl = parseInt(plane.getAttribute('vr-floor-switch').split(':')[1]);
-        plane.setAttribute('color', fl === floorNum ? '#0071e3' : '#181a24');
-      });
-
-      const firstPoint = floorConfig ? floorConfig.points[0] : null;
-      loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
-    }
-
-    window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
-      if (isTransitioning && animate) return;
-      const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
-      const pointData = floorConfig.points.find(p => p.id === pointId) || floorConfig.points[0];
-      if (!pointData) return;
-
-      activePointId = pointData.id;
-      window.currentFloorLevel = floorNum;
-
-      const fadeSphere = document.getElementById('fade-sphere');
-
-      if (!animate) {
-        applyView(floorConfig, pointData);
-        return;
-      }
-
-      isTransitioning = true;
-      if (fadeSphere) {
-        fadeSphere.setAttribute('visible', 'true');
-        fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 350, easing: 'easeInQuad' });
-      }
-
-      setTimeout(() => {
-        applyView(floorConfig, pointData);
-        if (fadeSphere) {
-          fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeOutQuad' });
-        }
-        setTimeout(() => {
-          if (fadeSphere) {
-            fadeSphere.setAttribute('visible', 'false');
-            fadeSphere.removeAttribute('animation');
-          }
-          isTransitioning = false;
-        }, 410);
-      }, 360);
-    };
-
-    function applyView(floorConfig, pointData) {
-      document.getElementById('location-title').innerText = pointData.name;
-      document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
-
-      const mapImg = document.getElementById('minimap-img');
-      mapImg.src = floorConfig.planImg;
-      mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
-      document.getElementById('map-header').innerText = floorConfig.planTitle;
-
-      const vrInfoTitle = document.getElementById('vr-info-title');
-      const vrInfoBody = document.getElementById('vr-info-body');
-      if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
-      if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
-
-      const sky = document.getElementById('sky-sphere');
-      const imgTester = new Image();
-      imgTester.onload = () => sky.setAttribute('src', pointData.src);
-      imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
-      imgTester.src = pointData.src;
-
-      const thumbStrip = document.getElementById('thumb-strip');
-      thumbStrip.innerHTML = '';
-      floorConfig.points.forEach(pt => {
-        const card = document.createElement('div');
-        card.className = `carousel-card ${pt.id === activePointId ? 'active' : ''}`;
-        card.onclick = () => loadFloorAndPoint(floorConfig.level, pt.id, true);
-        card.innerHTML = `<img src="${pt.src}" onerror="this.src='${pt.fallbackSrc}'" alt="${pt.name}"><span>${pt.name}</span>`;
-        thumbStrip.appendChild(card);
-      });
-
-      renderInSceneTeleportPins(floorConfig, pointData);
-    }
-
-    function renderInSceneTeleportPins(floorConfig, currentPoint) {
-      const pinsContainer = document.getElementById('in-scene-teleport-pins');
-      pinsContainer.innerHTML = '';
-      if (!currentPoint.peers || currentPoint.peers.length === 0) return;
-
-      currentPoint.peers.forEach(peer => {
-        let previewImg = 'market_render.JPG';
-        let fallbackImg = 'market_render.JPG';
-        let targetFloor = floorConfig.level;
-
-        if (peer.isFloorJump) {
-          targetFloor = peer.targetFloor;
-          const jumpFloorConfig = floorPlansConfig.find(f => f.level === targetFloor);
-          if (jumpFloorConfig && jumpFloorConfig.points[0]) {
-            previewImg = jumpFloorConfig.points[0].src;
-            fallbackImg = jumpFloorConfig.points[0].fallbackSrc;
-          }
-        } else {
-          const targetNode = floorConfig.points.find(p => p.id === peer.targetId);
-          if (targetNode) {
-            previewImg = targetNode.src;
-            fallbackImg = targetNode.fallbackSrc;
-          }
-        }
-        createVRMarker(pinsContainer, peer.targetId, peer.name, peer.pos, previewImg, fallbackImg, peer.isFloorJump, targetFloor);
-      });
-    }
-
-    function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
-      const markerEntity = document.createElement('a-entity');
-      markerEntity.setAttribute('position', position);
-      markerEntity.setAttribute('look-at-camera', '');
-
-      const ringColor = isFloorJump ? '#34c759' : '#FFFFFF';
-      const glowColor = isFloorJump ? '#34c759' : '#ffaa55';
-      const cleanName = name.replace(/^Point\s*\d+:\s*/i, '');
-
-      const clickAttr = isFloorJump 
-        ? `vr-floor-switch="floor: ${targetFloor}"` 
-        : `teleport-hotspot="target: ${targetId}"`;
-
-      markerEntity.innerHTML = `
-        <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
-        <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
-        <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
-        <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
-        <a-entity position="0 -0.56 0.02">
-          <a-plane width="1.45" height="0.26" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
-          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.6 0.6 0.6"></a-text>
-        </a-entity>
-        <a-cylinder height="0.4" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
-        <a-sphere radius="0.07" color="${glowColor}" opacity="0.9" position="0 -1.1 0.01" material="shader: flat"></a-sphere>
-        <a-ring radius-inner="0.08" radius-outer="0.13" color="${glowColor}" opacity="0.5" position="0 -1.1 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
-      `;
-
-      parentEl.appendChild(markerEntity);
-    }
-
-    function openEnlargedMap() {
-      const modal = document.getElementById('enlarged-map-modal');
-      const enlargedImg = document.getElementById('enlarged-blueprint-img');
-      const floorConfig = floorPlansConfig.find(f => f.level === window.currentFloorLevel) || floorPlansConfig[0];
-      
-      enlargedImg.src = floorConfig.planImg;
-      enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
-      document.getElementById('enlarged-modal-title').innerText = `${floorConfig.floorName} - Blueprint Layout`;
-
-      const pinsContainer = document.getElementById('pins-container');
-      pinsContainer.innerHTML = '';
-      floorConfig.points.forEach((pt) => {
-        const pin = document.createElement('div');
-        pin.className = `map-teleport-pin ${pt.id === activePointId ? 'active-node' : ''}`;
-        pin.style.left = `${pt.pinX}%`;
-        pin.style.top = `${pt.pinY}%`;
-        pin.innerText = pt.pinNum;
-        pin.onclick = (e) => {
-          e.stopPropagation();
-          closeEnlargedMap();
-          loadFloorAndPoint(window.currentFloorLevel, pt.id, true);
-        };
-        pinsContainer.appendChild(pin);
-      });
-
-      modal.classList.remove('hidden');
-    }
-
-    function closeEnlargedMap() {
-      document.getElementById('enlarged-map-modal').classList.add('hidden');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const navBtn = document.getElementById('main-navigate-btn');
-      if (navBtn) {
-        navBtn.addEventListener('click', goToProjectDetails);
-      }
-      loadFloorAndPoint(0, "site-node-1", false);
-    });
-  </script>
+  <!-- PAGE 1: STARTUP LANDING -->
+  <div id="startup-screen">
+    <div class="bokeh-background"></div>
+    <div class="bokeh-light orb1"></div>
+    <div class="bokeh-light orb2"></div>
+    <div class="bokeh-light orb3"></div>
+
+    <div class="market-render-wrapper">
+      <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
+      <button id="main-navigate-btn" class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
+    </div>
+
+    <div class="startup-logo">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+    </div>
+
+    <div class="startup-credits-bar">
+      <div class="credit-item"><span class="credit-label">Name:</span><span class="credit-value">Balakrishna Darla</span></div>
+      <div class="credit-item"><span class="credit-label">Year:</span><span class="credit-value">Vth Year</span></div>
+      <div class="credit-item"><span class="credit-label">Sem:</span><span class="credit-value">IX</span></div>
+      <div class="credit-item"><span class="credit-label">Roll no:</span><span class="credit-value">Vu22arch0100016</span></div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: REDEVELOPMENT OF POORNA MARKET (RESTORED DASHBOARD) -->
+  <div id="project-details-screen" class="hidden">
+    <div class="bokeh-background"></div>
+
+    <div class="dashboard-frame">
+      <div class="dashboard-header">
+        <span class="header-subtag">9th Semester · Community Design</span>
+        <div class="dashboard-nav-links">
+          <span class="dash-nav-item active">01 Overview</span>
+          <span class="dash-nav-item">02 Context</span>
+          <span class="dash-nav-item">03 Analysis</span>
+          <span class="dash-nav-item">04 Strategy</span>
+          <span class="dash-nav-item">05 Design</span>
+          <span class="dash-nav-item">06 Experience</span>
+          <button class="dash-exit-btn" onclick="returnToStartup()">✕ Exit</button>
+        </div>
+      </div>
+
+      <div class="hero-presentation-card">
+        <img src="project_hero_render.png" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Hero Render">
+        <div class="hero-vignette"></div>
+
+        <div class="hero-text-content">
+          <div class="hero-title-group">
+            <h1>Redevelopment of<br><span class="highlight-orange">Poorna Market</span></h1>
+            <p class="hero-loc-subtitle">Visakhapatnam, Andhra Pradesh</p>
+            <p class="hero-tags">Community Design · Urban Market · Architectural Redevelopment</p>
+          </div>
+          <p class="hero-description-p">
+            Reimagining Poorna Market as a vibrant, accessible and resilient community market while strengthening its existing commercial identity and livelihoods.
+          </p>
+        </div>
+
+        <div class="hero-bottom-bar">
+          <div class="meta-pills-cluster">
+            <div class="meta-pill-card">
+              <span class="pill-icon-box">📍</span>
+              <div class="pill-text-col">
+                <span class="pill-header">Location</span>
+                <span class="pill-val-strong">Visakhapatnam</span>
+                <span class="pill-val-sub">Andhra Pradesh</span>
+              </div>
+            </div>
+            <div class="meta-pill-card">
+              <span class="pill-icon-box">🏢</span>
+              <div class="pill-text-col">
+                <span class="pill-header">Program</span>
+                <span class="pill-val-strong">Urban Market</span>
+                <span class="pill-val-sub">Redevelopment</span>
+              </div>
+            </div>
+            <div class="meta-pill-card">
+              <span class="pill-icon-box">🏛</span>
+              <div class="pill-text-col">
+                <span class="pill-header">Scale</span>
+                <span class="pill-val-strong">8 Levels</span>
+                <span class="pill-val-sub">Multi-level market with amenities</span>
+              </div>
+            </div>
+            <div class="meta-pill-card">
+              <span class="pill-icon-box">👥</span>
+              <div class="pill-text-col">
+                <span class="pill-header">Users</span>
+                <span class="pill-val-strong">Vendors · Shoppers</span>
+                <span class="pill-val-sub">Workers · Community</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="watch-video-btn" onclick="openVideoModal()">
+            <div class="play-circle">▶</div>
+            <div class="btn-text-col">
+              <span>Watch</span>
+              <span>Project Video</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="dashboard-lower-grid">
+        <div class="dash-module-card">
+          <div class="card-title-bar">
+            <h3>Context & Intent</h3>
+            <div class="title-decor-line"></div>
+          </div>
+          <div class="context-split-row">
+            <p>
+              Poorna Market is one of Visakhapatnam's oldest and most vibrant commercial markets. Over decades of organic growth, density and congestion have challenged its infrastructure and user experience. This project aims to organise, upgrade and reimagine the market as a modern, climate-responsive and inclusive community market, without losing its character and local identity.
+            </p>
+            <div class="context-photo-box">
+              <img src="poorna_market_context.jpg" onerror="this.src='site_plan.png'" alt="Context Photo">
+            </div>
+          </div>
+          <button class="module-card-action">→ Explore Context</button>
+        </div>
+
+        <div class="dash-module-card">
+          <div class="card-title-bar">
+            <h3>Design Approach</h3>
+            <div class="title-decor-line"></div>
+          </div>
+          <div class="approach-pillars-row">
+            <div class="approach-pillar">
+              <div class="pillar-visual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9"/>
+                  <circle cx="9" cy="9" r="1.5" fill="#f08a5d"/>
+                  <circle cx="15" cy="15" r="1.5" fill="#f08a5d"/>
+                  <circle cx="15" cy="9" r="1.5" fill="#f08a5d"/>
+                </svg>
+              </div>
+              <span class="pillar-name">Vibrancy</span>
+              <span class="pillar-desc">Movement, activity and local character</span>
+            </div>
+
+            <div class="approach-pillar">
+              <div class="pillar-visual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
+                  <rect x="4" y="4" width="6" height="6" rx="1"/>
+                  <rect x="14" y="4" width="6" height="6" rx="1"/>
+                  <rect x="4" y="14" width="6" height="6" rx="1"/>
+                  <rect x="14" y="14" width="6" height="6" rx="1"/>
+                </svg>
+              </div>
+              <span class="pillar-name">Fragmentation</span>
+              <span class="pillar-desc">Clustered market zones and variety</span>
+            </div>
+
+            <div class="approach-pillar">
+              <div class="pillar-visual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f08a5d" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="8"/>
+                  <circle cx="12" cy="12" r="3" fill="#f08a5d"/>
+                </svg>
+              </div>
+              <span class="pillar-name">Focal Points</span>
+              <span class="pillar-desc">Anchors for orientation and community</span>
+            </div>
+          </div>
+          <button class="module-card-action">→ Explore Design Strategy</button>
+        </div>
+
+        <div class="dash-module-card">
+          <img src="market_interior_preview.jpg" onerror="this.src='market_render.JPG'" class="experience-card-bg" alt="Market Interior">
+          <div class="experience-card-scrim"></div>
+
+          <div class="experience-content-wrap">
+            <div class="card-title-bar">
+              <h3>Experience The Market</h3>
+              <div class="title-decor-line"></div>
+            </div>
+
+            <div class="experience-360-badge">
+              <div class="badge-360-icon">360°</div>
+              <div class="badge-360-text">
+                <span>Interactive Market Experience</span>
+                <span>Walk through key spaces in 360°</span>
+              </div>
+            </div>
+
+            <button id="explore-market-btn" class="explore-market-cta-btn" onclick="startVirtualTour()">
+              <span>Explore The Market</span> <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Modal Popup -->
+  <div id="project-video-modal" class="hidden">
+    <div class="video-modal-card">
+      <div class="video-modal-header">
+        <h4>Poorna Market Redevelopment - Architectural Walkthrough</h4>
+        <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
+      </div>
+      <video id="project-video-player" controls style="width: 100%; display: block;" poster="project_hero_render.png">
+        <source src="project_video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <!-- Ambient Audio -->
+  <audio id="ambient-audio" loop preload="none" crossorigin="anonymous">
+    <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
+    <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS ==================== -->
+  <div class="header-bar">
+    <div class="header-title">
+      <h1 id="location-title">Upper Junction</h1>
+      <p id="location-subtitle">Site • Architectural 360 Panorama</p>
+    </div>
+
+    <div class="top-action-capsule">
+      <button class="capsule-btn" onclick="returnToStartup()">
+        <span>🏠</span> <span>Home</span>
+      </button>
+      <div class="capsule-divider"></div>
+      <button id="sound-btn" class="capsule-btn" onclick="toggleAudio()">
+        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Persistent 2D Floor Selector Dropdown -->
+  <div class="floor-dropdown-wrapper" id="floor-dropdown">
+    <div class="floor-dropdown-trigger" id="floor-trigger">
+      <span class="trigger-code" id="active-floor-badge">S</span>
+      <span id="active-floor-name">Site</span>
+      <span class="trigger-arrow">▾</span>
+    </div>
+
+    <div class="floor-dropdown-menu" id="floor-menu">
+      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
+        <span class="menu-badge">TR</span>
+        <span class="menu-label">Terrace</span>
+      </button>
+      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this, event)">
+        <span class="menu-badge">3</span>
+        <span class="menu-label">Third Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this, event)">
+        <span class="menu-badge">2</span>
+        <span class="menu-label">Second Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this, event)">
+        <span class="menu-badge">1</span>
+        <span class="menu-label">First Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this, event)">
+        <span class="menu-badge">G</span>
+        <span class="menu-label">Ground Floor</span>
+      </button>
+      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this, event)">
+        <span class="menu-badge">P1</span>
+        <span class="menu-label">Podium-1</span>
+      </button>
+      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this, event)">
+        <span class="menu-badge">ST</span>
+        <span class="menu-label">Stilt Floor</span>
+      </button>
+      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this, event)">
+        <span class="menu-badge">S</span>
+        <span class="menu-label">Site</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2D Minimap with Rotating Dynamic Radar Cone -->
+  <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
+    <div class="minimap-top-row">
+      <span class="map-title" id="map-header">Site Layout</span>
+      <div class="minimap-expand-btn">⤢ ENLARGE</div>
+    </div>
+    <div class="minimap-img-frame">
+      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Floor Layout">
+      <!-- Rotating Radar Viewing Cone -->
+      <svg id="radar-cone" viewBox="0 0 100 100">
+        <defs>
+          <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#0071e3" stop-opacity="0.9" />
+            <stop offset="100%" stop-color="#0071e3" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <polygon points="50,50 20,5 80,5" fill="url(#coneGrad)" />
+        <circle cx="50" cy="50" r="7" fill="#ffffff" stroke="#0071e3" stroke-width="3" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- 2D Bottom Carousel Strip -->
+  <div class="bottom-carousel-wrapper">
+    <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
+    <div class="carousel-cards-strip" id="thumb-strip"></div>
+    <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
+  </div>
+
+  <!-- 2D Bottom-Right Action Dock -->
+  <div class="bottom-right-action-dock">
+    <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
+      <svg viewBox="0 0 24 24"><path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+    </button>
+    <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
+      <svg id="fs-icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+    </button>
+    <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
+      <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+    </button>
+  </div>
+
+  <!-- 2D Enlarged Blueprint Modal -->
+  <div id="enlarged-map-modal" class="hidden">
+    <div class="bokeh-background" onclick="closeEnlargedMap()"></div>
+    <div class="enlarged-map-card">
+      <div class="enlarged-map-header-bar">
+        <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
+        <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close</button>
+      </div>
+
+      <div class="blueprint-image-wrapper">
+        <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
+        <div id="pins-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       A-FRAME VR CANVAS
+       ========================================================= -->
+  <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false">
+    <a-assets timeout="10000">
+      <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
+    </a-assets>
+
+    <a-entity id="cameraRig" position="0 0 0">
+      <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false" radar-tracker>
+        <a-cursor 
+          id="cursor"
+          color="#0071E3"
+          raycaster="objects: .clickable; far: 40"
+          animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
+        </a-cursor>
+        <a-sphere 
+          id="fade-sphere" 
+          radius="0.1" 
+          position="0 0 -0.05"
+          material="color: #000000; side: back; shader: flat; transparent: true; opacity: 0"
+          visible="false">
+        </a-sphere>
+      </a-camera>
+
+      <a-entity id="rightHand" laser-controls="hand: right" oculus-touch-controls="hand: right" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" oculus-touch-controls="hand: left" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
+    </a-entity>
+
+    <!-- 1. Repositioned & Ultra-Translucent Back Button (Bottom-Center) -->
+    <a-entity id="vr-in-headset-back" position="0 -1.55 -3.1" rotation="-15 0 0">
+      <a-plane class="clickable" vr-exit-action width="1.15" height="0.28" color="#0a0c10" opacity="0.25" material="shader: flat; transparent: true">
+        <a-ring radius-inner="0.57" radius-outer="0.58" color="#ffffff" opacity="0.35" material="shader: flat"></a-ring>
+        <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.8 0.8 0.8"></a-text>
+      </a-plane>
+    </a-entity>
+
+    <!-- 2. Top-Left Subtle Hoverable Level Selector in VR -->
+    <a-entity id="vr-floors-sidebar" position="-2.4 1.4 -3.4" rotation="10 30 0" vr-sidebar-controller>
+      <a-plane class="clickable" vr-sub-elem width="1.0" height="2.5" color="#0b0d14" opacity="0.22" material="shader: flat; transparent: true"></a-plane>
+      <a-text vr-sub-elem value="LEVELS" align="center" position="0 1.12 0.02" scale="0.6 0.6 0.6" color="#0071E3" opacity="0.45"></a-text>
+
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 7" position="0 0.82 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="TR  Terrace" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 6" position="0 0.56 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="3   Third Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 5" position="0 0.30 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="2   Second Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 4" position="0 0.04 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="1   First Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 3" position="0 -0.22 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="G   Ground Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 2" position="0 -0.48 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="P1  Podium-1" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 1" position="0 -0.74 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
+        <a-text value="ST  Stilt Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+      <a-plane id="vr-btn-site" class="clickable" vr-sub-elem vr-floor-switch="floor: 0" position="0 -1.0 0.02" width="0.88" height="0.22" color="#0071e3" opacity="0.6" material="shader: flat; transparent: true">
+        <a-text value="S   Site" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+      </a-plane>
+    </a-entity>
+
+    <!-- 3. Pulsing Info Beacon ("i") & Minimizable Space Card -->
+    <a-entity id="vr-info-beacon-group" position="2.2 0.8 -3.2" look-at-camera>
+      <a-circle class="clickable" vr-info-beacon radius="0.2" color="#ffaa55" material="shader: flat; side: double">
+        <a-ring radius-inner="0.2" radius-outer="0.25" color="#ffffff" opacity="0.8" animation="property: scale; from: 1 1 1; to: 1.45 1.45 1.45; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-ring>
+        <a-text value="i" align="center" position="0 0 0.01" scale="1.4 1.4 1.4" color="#000000" font="sourcecodepro"></a-text>
+      </a-circle>
+
+      <!-- Expandable / Minimizable Briefing Card -->
+      <a-entity id="vr-info-panel" position="-1.4 0 0.05" visible="false">
+        <a-plane width="2.4" height="1.4" color="#11131a" opacity="0.95" material="shader: flat">
+          <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55"></a-text>
+          <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1"></a-text>
+          
+          <a-plane class="clickable" vr-info-beacon position="0.95 0.52 0.03" width="0.26" height="0.16" color="#ffaa55" material="shader: flat">
+            <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55"></a-text>
+          </a-plane>
+        </a-plane>
+      </a-entity>
+    </a-entity>
+
+    <!-- Dynamic Container for 3D In-Scene Waypoint Portals -->
+    <a-entity id="in-scene-teleport-pins"></a-entity>
+
+    <!-- 360 Sky Sphere -->
+    <a-sky id="sky-sphere" src="#primary-sky-tex" rotation="0 -90 0"></a-sky>
+  </a-scene>
+
+  <script>
+    const audio = document.getElementById('ambient-audio');
+    let isPlaying = false;
+    let isTransitioning = false;
+
+    function goToProjectDetails() {
+      const sScreen = document.getElementById('startup-screen');
+      const pScreen = document.getElementById('project-details-screen');
+      if (sScreen) sScreen.classList.add('hidden');
+      if (pScreen) pScreen.classList.remove('hidden');
+    }
+
+    function returnToStartup() {
+      const sScreen = document.getElementById('startup-screen');
+      const pScreen = document.getElementById('project-details-screen');
+      if (pScreen) pScreen.classList.add('hidden');
+      if (sScreen) sScreen.classList.remove('hidden');
+    }
+
+    function startVirtualTour() {
+      const pScreen = document.getElementById('project-details-screen');
+      if (pScreen) pScreen.classList.add('hidden');
+      if (!isPlaying) toggleAudio();
+    }
+
+    function openVideoModal() {
+      const modal = document.getElementById('project-video-modal');
+      const player = document.getElementById('project-video-player');
+      if (modal) modal.classList.remove('hidden');
+      if (player) player.play().catch(e => console.log('Autoplay deferred'));
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('project-video-modal');
+      const player = document.getElementById('project-video-player');
+      if (modal) modal.classList.add('hidden');
+      if (player) player.pause();
+    }
+
+    function toggleAudio() {
+      if (isPlaying) {
+        audio.pause();
+        document.getElementById('sound-label').innerText = "Enable Ambience";
+        document.getElementById('sound-icon').innerText = "🔈";
+        isPlaying = false;
+      } else {
+        audio.volume = 0.4;
+        audio.play().then(() => {
+          document.getElementById('sound-label').innerText = "Mute Ambience";
+          document.getElementById('sound-icon').innerText = "🔊";
+          isPlaying = true;
+        }).catch(() => {});
+      }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function enterImmersiveVR() {
+      const scene = document.querySelector('a-scene');
+      if (scene) {
+        scene.is('vr-mode') ? scene.exitVR() : scene.enterVR();
+      }
+    }
+
+    function exitVRToOverview() {
+      const scene = document.querySelector('a-scene');
+      if (scene && scene.is('vr-mode')) {
+        scene.exitVR();
+      }
+      returnToStartup();
+    }
+
+    function resetCameraOrientation() {
+      const cam = document.getElementById('camera');
+      if (cam) cam.setAttribute('rotation', '0 0 0');
+    }
+
+    function scrollThumbnails(dir) {
+      const strip = document.getElementById('thumb-strip');
+      if (strip) strip.scrollBy({ left: dir * 160, behavior: 'smooth' });
+    }
+
+    const dropdownWrapper = document.getElementById('floor-dropdown');
+    const dropdownTrigger = document.getElementById('floor-trigger');
+    const dropdownMenu = document.getElementById('floor-menu');
+
+    if (dropdownTrigger) {
+      dropdownTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdownWrapper.classList.toggle('stay-open');
+      });
+    }
+
+    window.addEventListener('click', (e) => {
+      if (dropdownWrapper && !dropdownWrapper.contains(e.target)) {
+        dropdownWrapper.classList.remove('stay-open');
+      }
+    });
+
+    const floorPlansConfig = [
+      {
+        level: 0,
+        floorName: "Site",
+        floorCode: "S",
+        planImg: "site_plan.png",
+        planTitle: "Site Layout",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Site Context & Urban Threshold",
+        descBody: "The perimeter urban realm interfacing Poorna Market with Visakhapatnam's primary road network. Pedestrian and vehicular paths converge here.",
+        points: [
+          { 
+            id: "site-node-1", 
+            name: "Upper Junction", 
+            pinNum: "1", 
+            pinX: 62.5, 
+            pinY: 21, 
+            src: "site_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-2", name: "Lower Right", pos: "-2.6 0.2 -4.8" },
+              { targetId: "site-node-3", name: "West Entrance", pos: "4.2 0.3 -3.6" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "0 0.8 -4.8", isFloorJump: true, targetFloor: 1 }
+            ]
+          },
+          { 
+            id: "site-node-2", 
+            name: "Lower Right", 
+            pinNum: "2", 
+            pinX: 69, 
+            pinY: 69, 
+            src: "site_2.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", name: "Upper Junction", pos: "1.2 0.2 5.0" },
+              { targetId: "site-node-3", name: "West Entrance", pos: "-4.5 0.3 -2.2" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "2.4 0.8 -4.0", isFloorJump: true, targetFloor: 1 }
+            ]
+          },
+          { 
+            id: "site-node-3", 
+            name: "West Entrance", 
+            pinNum: "3", 
+            pinX: 14.5, 
+            pinY: 55, 
+            src: "site_3.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "site-node-1", name: "Upper Junction", pos: "-3.8 0.3 3.5" },
+              { targetId: "site-node-2", name: "Lower Right", pos: "0.2 0.1 -4.8" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "-2.5 0.8 -4.2", isFloorJump: true, targetFloor: 1 }
+            ]
+          }
+        ]
+      },
+      {
+        level: 1,
+        floorName: "Stilt Floor",
+        floorCode: "ST",
+        planImg: "stilt_plan.png",
+        planTitle: "Stilt Parking & Entry Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Stilt Floor - Servicing Hub",
+        descBody: "Engineered for vehicle staging, vendor drop-off, waste management, and organized commuter parking.",
+        points: [
+          { 
+            id: "stilt-node-1", 
+            name: "Stilt Access", 
+            pinNum: "1", 
+            pinX: 30, 
+            pinY: 50, 
+            src: "stilt_1.png", 
+            fallbackSrc: "market_render.JPG", 
+            peers: [
+              { targetId: "site-node-1", name: "Return to Site", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 0 },
+              { targetId: "podium-node-1", name: "Proceed to Podium-1", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 2 }
+            ] 
+          }
+        ]
+      },
+      {
+        level: 2,
+        floorName: "Podium-1",
+        floorCode: "P1",
+        planImg: "podium_plan.png",
+        planTitle: "Podium-1 Promenade Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Podium-1 - Pedestrian Promenade",
+        descBody: "An elevated landscaped promenade separating vehicular movement from civic gathering.",
+        points: [
+          { 
+            id: "podium-node-1", 
+            name: "Podium Walkway", 
+            pinNum: "1", 
+            pinX: 50, 
+            pinY: 50, 
+            src: "podium_1.png", 
+            fallbackSrc: "market_render.JPG", 
+            peers: [
+              { targetId: "stilt-node-1", name: "Down to Stilt", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 1 },
+              { targetId: "ground-node-1", name: "Enter Ground Market", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 3 }
+            ] 
+          }
+        ]
+      },
+      {
+        level: 3,
+        floorName: "Ground Floor",
+        floorCode: "G",
+        planImg: "ground_plan.png",
+        planTitle: "Ground Produce Hall",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Ground Floor - Fresh Produce Atrium",
+        descBody: "The primary high-density fresh produce hall, featuring natural cross-ventilation shafts.",
+        points: [
+          { 
+            id: "ground-node-1", 
+            name: "Ground Market Hall", 
+            pinNum: "1", 
+            pinX: 35, 
+            pinY: 45, 
+            src: "ground_1.png", 
+            fallbackSrc: "market_render.JPG",
+            peers: [
+              { targetId: "first-node-1", name: "Ascend to 1st Floor", pos: "3.2 0.8 -4.0", isFloorJump: true, targetFloor: 4 }
+            ]
+          }
+        ]
+      },
+      {
+        level: 4,
+        floorName: "First Floor",
+        floorCode: "1",
+        planImg: "first_plan.png",
+        planTitle: "First Floor Corridor Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "First Floor - Dry Goods & Spices",
+        descBody: "Specialty spice merchants, textiles, and dry goods configured in clustered stalls.",
+        points: [
+          { 
+            id: "first-node-1", 
+            name: "First Floor Corridor", 
+            pinNum: "1", 
+            pinX: 40, 
+            pinY: 50, 
+            src: "first_1.png", 
+            fallbackSrc: "market_render.JPG", 
+            peers: [
+              { targetId: "ground-node-1", name: "Down to Ground", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 3 }
+            ] 
+          }
+        ]
+      },
+      {
+        level: 5,
+        floorName: "Second Floor",
+        floorCode: "2",
+        planImg: "second_plan.png",
+        planTitle: "Second Floor Gallery Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Second Floor - Commercial Gallery",
+        descBody: "Medium-format retail shops and co-working vendor cooperatives.",
+        points: [
+          { id: "second-node-1", name: "Gallery Deck", pinNum: "1", pinX: 50, pinY: 50, src: "second_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 6,
+        floorName: "Third Floor",
+        floorCode: "3",
+        planImg: "third_plan.png",
+        planTitle: "Third Floor Deck Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Third Floor - Community Upper Deck",
+        descBody: "A community deck hosting culinary training hubs and shaded public break spaces.",
+        points: [
+          { id: "third-node-1", name: "Upper Deck", pinNum: "1", pinX: 50, pinY: 50, src: "third_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      },
+      {
+        level: 7,
+        floorName: "Terrace",
+        floorCode: "TR",
+        planImg: "terrace_plan.png",
+        planTitle: "Rooftop Terrace Plan",
+        fallbackImg: "market_render.JPG",
+        descTitle: "Rooftop Terrace - Civic Sky Garden",
+        descBody: "A rooftop solar farm, urban agriculture garden, and panoramic civic overlook.",
+        points: [
+          { id: "terrace-node-1", name: "Rooftop Overlook", pinNum: "1", pinX: 50, pinY: 50, src: "terrace_1.png", fallbackSrc: "market_render.JPG", peers: [] }
+        ]
+      }
+    ];
+
+    window.currentFloorLevel = 0;
+    let activePointId = "site-node-1";
+
+    function switchFloor(floorNum, btnElement, e) {
+      if (e) e.stopPropagation();
+      if (isTransitioning) return;
+      window.currentFloorLevel = floorNum;
+
+      if (dropdownWrapper) dropdownWrapper.classList.remove('stay-open');
+      if (dropdownMenu) {
+        dropdownMenu.style.pointerEvents = 'none';
+        setTimeout(() => { dropdownMenu.style.pointerEvents = ''; }, 300);
+      }
+
+      document.querySelectorAll('.floor-menu-item').forEach(btn => btn.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        const matchingBtn = document.querySelector(`.floor-menu-item[data-floor="${floorNum}"]`);
+        if (matchingBtn) matchingBtn.classList.add('active');
+      }
+
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum);
+      if (floorConfig) {
+        document.getElementById('active-floor-badge').innerText = floorConfig.floorCode;
+        document.getElementById('active-floor-name').innerText = floorConfig.floorName;
+      }
+
+      document.querySelectorAll('[vr-floor-switch]').forEach(plane => {
+        const fl = parseInt(plane.getAttribute('vr-floor-switch').split(':')[1]);
+        plane.setAttribute('color', fl === floorNum ? '#0071e3' : '#181a24');
+      });
+
+      const firstPoint = floorConfig ? floorConfig.points[0] : null;
+      loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
+    }
+
+    window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
+      if (isTransitioning && animate) return;
+      const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
+      const pointData = floorConfig.points.find(p => p.id === pointId) || floorConfig.points[0];
+      if (!pointData) return;
+
+      activePointId = pointData.id;
+      window.currentFloorLevel = floorNum;
+
+      const fadeSphere = document.getElementById('fade-sphere');
+
+      if (!animate) {
+        applyView(floorConfig, pointData);
+        return;
+      }
+
+      isTransitioning = true;
+      if (fadeSphere) {
+        fadeSphere.setAttribute('visible', 'true');
+        fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 350, easing: 'easeInQuad' });
+      }
+
+      setTimeout(() => {
+        applyView(floorConfig, pointData);
+        if (fadeSphere) {
+          fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeOutQuad' });
+        }
+        setTimeout(() => {
+          if (fadeSphere) {
+            fadeSphere.setAttribute('visible', 'false');
+            fadeSphere.removeAttribute('animation');
+          }
+          isTransitioning = false;
+        }, 410);
+      }, 360);
+    };
+
+    function applyView(floorConfig, pointData) {
+      document.getElementById('location-title').innerText = pointData.name;
+      document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
+
+      const mapImg = document.getElementById('minimap-img');
+      mapImg.src = floorConfig.planImg;
+      mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
+      document.getElementById('map-header').innerText = floorConfig.planTitle;
+
+      const vrInfoTitle = document.getElementById('vr-info-title');
+      const vrInfoBody = document.getElementById('vr-info-body');
+      if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
+      if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
+
+      const sky = document.getElementById('sky-sphere');
+      const imgTester = new Image();
+      imgTester.onload = () => sky.setAttribute('src', pointData.src);
+      imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
+      imgTester.src = pointData.src;
+
+      const thumbStrip = document.getElementById('thumb-strip');
+      thumbStrip.innerHTML = '';
+      floorConfig.points.forEach(pt => {
+        const card = document.createElement('div');
+        card.className = `carousel-card ${pt.id === activePointId ? 'active' : ''}`;
+        card.onclick = () => loadFloorAndPoint(floorConfig.level, pt.id, true);
+        card.innerHTML = `<img src="${pt.src}" onerror="this.src='${pt.fallbackSrc}'" alt="${pt.name}"><span>${pt.name}</span>`;
+        thumbStrip.appendChild(card);
+      });
+
+      renderInSceneTeleportPins(floorConfig, pointData);
+    }
+
+    function renderInSceneTeleportPins(floorConfig, currentPoint) {
+      const pinsContainer = document.getElementById('in-scene-teleport-pins');
+      pinsContainer.innerHTML = '';
+      if (!currentPoint.peers || currentPoint.peers.length === 0) return;
+
+      currentPoint.peers.forEach(peer => {
+        let previewImg = 'market_render.JPG';
+        let fallbackImg = 'market_render.JPG';
+        let targetFloor = floorConfig.level;
+
+        if (peer.isFloorJump) {
+          targetFloor = peer.targetFloor;
+          const jumpFloorConfig = floorPlansConfig.find(f => f.level === targetFloor);
+          if (jumpFloorConfig && jumpFloorConfig.points[0]) {
+            previewImg = jumpFloorConfig.points[0].src;
+            fallbackImg = jumpFloorConfig.points[0].fallbackSrc;
+          }
+        } else {
+          const targetNode = floorConfig.points.find(p => p.id === peer.targetId);
+          if (targetNode) {
+            previewImg = targetNode.src;
+            fallbackImg = targetNode.fallbackSrc;
+          }
+        }
+        createVRMarker(pinsContainer, peer.targetId, peer.name, peer.pos, previewImg, fallbackImg, peer.isFloorJump, targetFloor);
+      });
+    }
+
+    function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
+      const markerEntity = document.createElement('a-entity');
+      markerEntity.setAttribute('position', position);
+      markerEntity.setAttribute('look-at-camera', '');
+
+      const ringColor = isFloorJump ? '#34c759' : '#FFFFFF';
+      const glowColor = isFloorJump ? '#34c759' : '#ffaa55';
+      const cleanName = name.replace(/^Point\s*\d+:\s*/i, '');
+
+      const clickAttr = isFloorJump 
+        ? `vr-floor-switch="floor: ${targetFloor}"` 
+        : `teleport-hotspot="target: ${targetId}"`;
+
+      markerEntity.innerHTML = `
+        <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
+        <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
+        <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
+        <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
+        <a-entity position="0 -0.56 0.02">
+          <a-plane width="1.45" height="0.26" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
+          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.6 0.6 0.6"></a-text>
+        </a-entity>
+        <a-cylinder height="0.4" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
+        <a-sphere radius="0.07" color="${glowColor}" opacity="0.9" position="0 -1.1 0.01" material="shader: flat"></a-sphere>
+        <a-ring radius-inner="0.08" radius-outer="0.13" color="${glowColor}" opacity="0.5" position="0 -1.1 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
+      `;
+
+      parentEl.appendChild(markerEntity);
+    }
+
+    function openEnlargedMap() {
+      const modal = document.getElementById('enlarged-map-modal');
+      const enlargedImg = document.getElementById('enlarged-blueprint-img');
+      const floorConfig = floorPlansConfig.find(f => f.level === window.currentFloorLevel) || floorPlansConfig[0];
+      
+      enlargedImg.src = floorConfig.planImg;
+      enlargedImg.onerror = () => { enlargedImg.src = floorConfig.fallbackImg; };
+      document.getElementById('enlarged-modal-title').innerText = `${floorConfig.floorName} - Blueprint Layout`;
+
+      const pinsContainer = document.getElementById('pins-container');
+      pinsContainer.innerHTML = '';
+      floorConfig.points.forEach((pt) => {
+        const pin = document.createElement('div');
+        pin.className = `map-teleport-pin ${pt.id === activePointId ? 'active-node' : ''}`;
+        pin.style.left = `${pt.pinX}%`;
+        pin.style.top = `${pt.pinY}%`;
+        pin.innerText = pt.pinNum;
+        pin.onclick = (e) => {
+          e.stopPropagation();
+          closeEnlargedMap();
+          loadFloorAndPoint(window.currentFloorLevel, pt.id, true);
+        };
+        pinsContainer.appendChild(pin);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeEnlargedMap() {
+      document.getElementById('enlarged-map-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const navBtn = document.getElementById('main-navigate-btn');
+      if (navBtn) {
+        navBtn.addEventListener('click', goToProjectDetails);
+      }
+      loadFloorAndPoint(0, "site-node-1", false);
+    });
+  </script>
 </body>
 </html>
