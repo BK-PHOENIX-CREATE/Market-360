@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #20 -->
+<!-- BUILD ITERATION: #21 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -95,7 +95,6 @@
     }
     .bokeh-light.orb1 { width: 340px; height: 340px; background: #ffaa55; top: 10%; left: 15%; }
     .bokeh-light.orb2 { width: 420px; height: 420px; background: #4488ff; bottom: 15%; right: 10%; animation-duration: 13s; }
-    .bokeh-light.orb3 { width: 250px; height: 250px; background: #ffffff; top: 50%; left: 70%; animation-duration: 8s; }
 
     @keyframes floatBokeh {
       0% { transform: translateY(0px) scale(1); }
@@ -289,7 +288,6 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
-    /* HERO CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO & CONTROLS DOCK */
     .hero-presentation-card {
       position: relative;
       width: 100%;
@@ -383,7 +381,6 @@
     .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
     .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
 
-    /* VIDEO INTERACTIVE CONTROLS DOCK (PLAY/PAUSE, SCRUBBER, MUTE) */
     .video-controls-dock {
       display: flex;
       align-items: center;
@@ -427,7 +424,6 @@
       white-space: nowrap;
     }
 
-    /* Seek Slider Bar */
     .video-scrub-slider {
       -webkit-appearance: none;
       appearance: none;
@@ -437,7 +433,6 @@
       background: rgba(255, 255, 255, 0.25);
       outline: none;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
     .video-scrub-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -687,7 +682,6 @@
     #fullscreen-back-btn:hover { background: #ffffff; color: #111111; transform: scale(1.05); }
     body.is-fullscreen #fullscreen-back-btn { display: flex; }
 
-    /* 2D Floor Selector Dropdown */
     .floor-dropdown-wrapper {
       position: absolute;
       top: 86px;
@@ -1177,7 +1171,7 @@
   </style>
 
   <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS & SPATIAL AUDIO
+       CUSTOM A-FRAME COMPONENTS & SPATIAL ENGINE
        ========================================================= -->
   <script>
     class AudioSFXEngine {
@@ -1296,34 +1290,6 @@
       }
     });
 
-    AFRAME.registerComponent('vr-sidebar-controller', {
-      init: function () {
-        const el = this.el;
-        let isExpanded = false;
-
-        const setOpacity = (val) => {
-          el.querySelectorAll('[vr-sub-elem]').forEach(node => {
-            node.setAttribute('opacity', val);
-          });
-        };
-
-        el.addEventListener('mouseenter', () => {
-          setOpacity('0.92');
-          el.setAttribute('scale', '1.04 1.04 1.04');
-        });
-        el.addEventListener('mouseleave', () => {
-          if (!isExpanded) {
-            setOpacity('0.22');
-            el.setAttribute('scale', '1 1 1');
-          }
-        });
-        el.addEventListener('click', () => {
-          isExpanded = !isExpanded;
-          setOpacity(isExpanded ? '0.94' : '0.22');
-        });
-      }
-    });
-
     AFRAME.registerComponent('vr-info-beacon', {
       init: function () {
         const el = this.el;
@@ -1340,6 +1306,19 @@
         el.addEventListener('click', toggleInfo);
         el.addEventListener('triggerdown', toggleInfo);
         el.addEventListener('select', toggleInfo);
+      }
+    });
+
+    AFRAME.registerComponent('vr-map-toggle', {
+      init: function () {
+        const el = this.el;
+        const triggerMap = (evt) => {
+          if (evt) evt.stopPropagation();
+          openEnlargedMap();
+        };
+        el.addEventListener('click', triggerMap);
+        el.addEventListener('triggerdown', triggerMap);
+        el.addEventListener('select', triggerMap);
       }
     });
 
@@ -1366,6 +1345,7 @@
       }
     });
 
+    // Dual HUD Separation Manager
     AFRAME.registerComponent('vr-mode-manager', {
       init: function () {
         const scene = this.el;
@@ -1394,7 +1374,6 @@
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
-    <div class="bokeh-light orb3"></div>
 
     <div class="market-render-wrapper">
       <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
@@ -1432,7 +1411,7 @@
         </div>
       </div>
 
-      <!-- HERO PRESENTATION CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO & SCRUBBER DOCK -->
+      <!-- HERO PRESENTATION CARD WITH EMBEDDED BACKGROUND VIDEO & CONTROLS -->
       <div class="hero-presentation-card">
         <video id="hero-bg-video" class="hero-embedded-video" loop playsinline preload="auto" poster="project_hero_render.png">
           <source src="project_video.mp4" type="video/mp4">
@@ -1601,7 +1580,7 @@
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
 
-  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS (WRAPPED FOR VR ISOLATION) ==================== -->
+  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS ==================== -->
   <div id="desktop-hud-container">
     <div class="header-bar">
       <div class="header-title">
@@ -1620,7 +1599,6 @@
       </div>
     </div>
 
-    <!-- Persistent Fullscreen Floating Back Button -->
     <button id="fullscreen-back-btn" onclick="exitFullscreenToOverview()">
       <span>←</span> <span>Back to Overview</span>
     </button>
@@ -1733,18 +1711,27 @@
   </div>
 
   <!-- =========================================================
-       A-FRAME VR CANVAS (HEADSET MODE ONLY SPATIAL HUD)
+       A-FRAME VR CANVAS (REFERENCE-ALIGNED SPATIAL INTERFACE)
        ========================================================= -->
   <a-scene id="vr-scene" embedded vr-mode-ui="enabled: false" vr-mode-manager>
     <a-assets timeout="10000">
       <img id="primary-sky-tex" src="site_1.png" crossorigin="anonymous">
+      <!-- Thumbnail Assets for Left Curved Level Selector -->
+      <img id="thumb-tr" src="terrace_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-3" src="third_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-2" src="second_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-1" src="first_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-g" src="ground_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-p1" src="podium_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-st" src="stilt_1.png" onerror="this.src='market_render.JPG'">
+      <img id="thumb-s" src="site_1.png" onerror="this.src='market_render.JPG'">
     </a-assets>
 
     <a-entity id="cameraRig" position="0 0 0">
       <a-camera id="camera" look-controls="pointerLockEnabled: false" wasd-controls="enabled: false" radar-tracker>
         <a-cursor 
           id="cursor"
-          color="#0071E3"
+          color="#00D2FF"
           raycaster="objects: .clickable; far: 40"
           animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
@@ -1757,72 +1744,145 @@
         </a-sphere>
       </a-camera>
 
-      <a-entity id="rightHand" laser-controls="hand: right" oculus-touch-controls="hand: right" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
-      <a-entity id="leftHand" laser-controls="hand: left" oculus-touch-controls="hand: left" raycaster="objects: .clickable; far: 40; lineColor: #0071E3; lineOpacity: 0.85; showLine: true"></a-entity>
+      <a-entity id="rightHand" laser-controls="hand: right" oculus-touch-controls="hand: right" raycaster="objects: .clickable; far: 40; lineColor: #00D2FF; lineOpacity: 0.85; showLine: true"></a-entity>
+      <a-entity id="leftHand" laser-controls="hand: left" oculus-touch-controls="hand: left" raycaster="objects: .clickable; far: 40; lineColor: #00D2FF; lineOpacity: 0.85; showLine: true"></a-entity>
     </a-entity>
 
-    <!-- IN-VR SPATIAL HUD (VISIBLE ONLY IN IMMERSIVE VR HEADSET SESSION) -->
+    <!-- IN-VR SPATIAL HUD (REFERENCE-MATCHED SPATIAL DESIGN) -->
     <a-entity id="in-vr-spatial-hud" visible="false">
-      <!-- 1. Repositioned Bottom-Center Back Button with High-DPI Typography -->
-      <a-entity id="vr-in-headset-back" position="0 -1.55 -3.1" rotation="-15 0 0">
-        <a-plane class="clickable" vr-exit-action width="1.25" height="0.32" color="#0a0c10" opacity="0.35" material="shader: flat; transparent: true">
-          <a-ring radius-inner="0.62" radius-outer="0.63" color="#ffffff" opacity="0.35" material="shader: flat"></a-ring>
-          <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.85 0.85 0.85" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
+      
+      <!-- 1. TOP-LEFT LOGO EMBLEM -->
+      <a-entity position="-2.6 1.85 -3.2" rotation="0 24 0">
+        <a-text value="POORNA MARKET\nVIRTUAL TOUR" position="0 0 0" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="20" letter-spacing="3"></a-text>
       </a-entity>
 
-      <!-- 2. Top-Left Subtle Hoverable Level Selector in VR -->
-      <a-entity id="vr-floors-sidebar" position="-2.4 1.4 -3.4" rotation="10 30 0" vr-sidebar-controller>
-        <a-plane class="clickable" vr-sub-elem width="1.0" height="2.5" color="#0b0d14" opacity="0.22" material="shader: flat; transparent: true"></a-plane>
-        <a-text vr-sub-elem value="LEVELS" align="center" position="0 1.12 0.02" scale="0.65 0.65 0.65" color="#0071E3" opacity="0.5" font="roboto" wrap-count="20"></a-text>
+      <!-- 2. TOP-RIGHT SPATIAL ACTION DOCK: MAP, INFO, SETTINGS, EXIT -->
+      <a-entity position="2.2 1.85 -3.2" rotation="0 -24 0">
+        <!-- Map Action -->
+        <a-entity position="-0.9 0 0">
+          <a-circle class="clickable" vr-map-toggle radius="0.14" color="#161822" opacity="0.82" material="shader: flat; side: double">
+            <a-ring radius-inner="0.13" radius-outer="0.14" color="#ffffff" opacity="0.3"></a-ring>
+            <a-text value="📍" align="center" position="0 0 0.01" scale="0.9 0.9 0.9"></a-text>
+          </a-circle>
+          <a-text value="Map" align="center" position="0 -0.22 0" scale="0.45 0.45 0.45" color="#e0e0e0" font="roboto"></a-text>
+        </a-entity>
 
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 7" position="0 0.82 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="TR  Terrace" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 6" position="0 0.56 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="3   Third Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 5" position="0 0.30 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="2   Second Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 4" position="0 0.04 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="1   First Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 3" position="0 -0.22 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="G   Ground Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 2" position="0 -0.48 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="P1  Podium-1" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 1" position="0 -0.74 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="ST  Stilt Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-        <a-plane id="vr-btn-site" class="clickable" vr-sub-elem vr-floor-switch="floor: 0" position="0 -1.0 0.02" width="0.88" height="0.22" color="#0071e3" opacity="0.7" material="shader: flat; transparent: true">
-          <a-text value="S   Site" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
-        </a-plane>
-      </a-entity>
+        <!-- Info Action -->
+        <a-entity position="-0.3 0 0">
+          <a-circle class="clickable" vr-info-beacon radius="0.14" color="#161822" opacity="0.82" material="shader: flat; side: double">
+            <a-ring radius-inner="0.13" radius-outer="0.14" color="#ffffff" opacity="0.3"></a-ring>
+            <a-text value="i" align="center" position="0 0 0.01" scale="1.1 1.1 1.1" color="#ffffff" font="sourcecodepro"></a-text>
+          </a-circle>
+          <a-text value="Info" align="center" position="0 -0.22 0" scale="0.45 0.45 0.45" color="#e0e0e0" font="roboto"></a-text>
+        </a-entity>
 
-      <!-- 3. Pulsing Info Beacon ("i") & High-DPI Space Card -->
-      <a-entity id="vr-info-beacon-group" position="2.2 0.8 -3.2" look-at-camera>
-        <a-circle class="clickable" vr-info-beacon radius="0.2" color="#ffaa55" material="shader: flat; side: double">
-          <a-ring radius-inner="0.2" radius-outer="0.25" color="#ffffff" opacity="0.8" animation="property: scale; from: 1 1 1; to: 1.45 1.45 1.45; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-ring>
-          <a-text value="i" align="center" position="0 0 0.01" scale="1.4 1.4 1.4" color="#000000" font="sourcecodepro"></a-text>
-        </a-circle>
+        <!-- Settings Action -->
+        <a-entity position="0.3 0 0">
+          <a-circle class="clickable" radius="0.14" color="#161822" opacity="0.82" material="shader: flat; side: double">
+            <a-ring radius-inner="0.13" radius-outer="0.14" color="#ffffff" opacity="0.3"></a-ring>
+            <a-text value="⚙" align="center" position="0 0 0.01" scale="0.9 0.9 0.9"></a-text>
+          </a-circle>
+          <a-text value="Settings" align="center" position="0 -0.22 0" scale="0.45 0.45 0.45" color="#e0e0e0" font="roboto"></a-text>
+        </a-entity>
 
-        <!-- Expandable / Minimizable Briefing Card -->
-        <a-entity id="vr-info-panel" position="-1.4 0 0.05" visible="false">
-          <a-plane width="2.4" height="1.4" color="#11131a" opacity="0.95" material="shader: flat">
-            <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55" font="roboto" wrap-count="24"></a-text>
-            <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1" font="roboto" wrap-count="28"></a-text>
-            <a-plane class="clickable" vr-info-beacon position="0.95 0.52 0.03" width="0.26" height="0.16" color="#ffaa55" material="shader: flat">
-              <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55" font="roboto"></a-text>
-            </a-plane>
-          </a-plane>
+        <!-- Exit Action -->
+        <a-entity position="0.9 0 0">
+          <a-circle class="clickable" vr-exit-action radius="0.14" color="#161822" opacity="0.82" material="shader: flat; side: double">
+            <a-ring radius-inner="0.13" radius-outer="0.14" color="#ffffff" opacity="0.3"></a-ring>
+            <a-text value="✕" align="center" position="0 0 0.01" scale="0.9 0.9 0.9" color="#ffffff"></a-text>
+          </a-circle>
+          <a-text value="Exit" align="center" position="0 -0.22 0" scale="0.45 0.45 0.45" color="#e0e0e0" font="roboto"></a-text>
         </a-entity>
       </a-entity>
+
+      <!-- 3. CURVED VERTICAL LEVEL STEPPER (LEFT SPATIAL HUD) -->
+      <a-entity id="vr-curved-stepper" position="-2.4 0.1 -3.2" rotation="0 26 0">
+        <!-- Frosted Dark Glass Backing Plate -->
+        <a-plane width="1.15" height="2.6" color="#0e1017" opacity="0.85" material="shader: flat; transparent: true">
+          <a-ring radius-inner="0.56" radius-outer="0.57" color="#ffffff" opacity="0.15"></a-ring>
+        </a-plane>
+
+        <a-text value="LEVELS" position="-0.44 1.15 0.02" scale="0.55 0.55 0.55" color="#ffffff" font="roboto" wrap-count="20" letter-spacing="2"></a-text>
+
+        <!-- Timeline Connector Rail -->
+        <a-cylinder position="-0.38 -0.05 0.02" radius="0.003" height="1.95" color="#ffffff" opacity="0.4" material="shader: flat"></a-cylinder>
+
+        <!-- Floor 7: Terrace -->
+        <a-entity position="0 0.88 0.03" class="clickable" vr-floor-switch="floor: 7">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-tr" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="TR\nTerrace" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 6: Third Floor -->
+        <a-entity position="0 0.62 0.03" class="clickable" vr-floor-switch="floor: 6">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-3" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="3\nThird Floor" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 5: Second Floor -->
+        <a-entity position="0 0.36 0.03" class="clickable" vr-floor-switch="floor: 5">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-2" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="2\nSecond Floor" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 4: First Floor -->
+        <a-entity position="0 0.10 0.03" class="clickable" vr-floor-switch="floor: 4">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-1" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="1\nFirst Floor" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 3: Ground Floor -->
+        <a-entity position="0 -0.16 0.03" class="clickable" vr-floor-switch="floor: 3">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-g" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="G\nGround Floor" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 2: Podium 1 -->
+        <a-entity position="0 -0.42 0.03" class="clickable" vr-floor-switch="floor: 2">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-p1" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="P1\nPodium 1" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 1: Stilt Floor -->
+        <a-entity position="0 -0.68 0.03" class="clickable" vr-floor-switch="floor: 1">
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-st" material="shader: flat"><a-ring radius-inner="0.07" radius-outer="0.076" color="#ffffff" opacity="0.7"></a-ring></a-circle>
+          <a-text value="ST\nStilt Floor" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+
+        <!-- Floor 0: Site (Active Glowing Pill State) -->
+        <a-entity id="vr-active-floor-pill" position="0 -0.94 0.03" class="clickable" vr-floor-switch="floor: 0">
+          <a-plane position="0.05 0 -0.01" width="1.0" height="0.2" color="#005bb5" opacity="0.9" material="shader: flat; transparent: true">
+            <a-ring radius-inner="0.48" radius-outer="0.5" color="#00d2ff" opacity="0.8"></a-ring>
+          </a-plane>
+          <a-circle position="-0.38 0 0" radius="0.07" src="#thumb-s" material="shader: flat">
+            <a-ring radius-inner="0.07" radius-outer="0.082" color="#00d2ff" opacity="0.95"></a-ring>
+          </a-circle>
+          <a-text value="S\nSite" position="-0.26 0 0" scale="0.42 0.42 0.42" color="#ffffff" font="roboto" wrap-count="20"></a-text>
+        </a-entity>
+      </a-entity>
+
+      <!-- 4. POPUP BRIEFING INFO CARD -->
+      <a-entity id="vr-info-panel" position="0 0 -2.8" visible="false">
+        <a-plane width="2.4" height="1.4" color="#11131a" opacity="0.95" material="shader: flat">
+          <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55" font="roboto" wrap-count="24"></a-text>
+          <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1" font="roboto" wrap-count="28"></a-text>
+          <a-plane class="clickable" vr-info-beacon position="0.95 0.52 0.03" width="0.26" height="0.16" color="#ffaa55" material="shader: flat">
+            <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55" font="roboto"></a-text>
+          </a-plane>
+        </a-plane>
+      </a-entity>
+
+      <!-- 5. FLOOR CIRCULATION CHEVRONS RIBBON -->
+      <a-entity id="floor-chevrons-guide" position="0 -1.4 -2.6" rotation="-90 0 0">
+        <a-ring radius-inner="0.48" radius-outer="0.52" color="#00d2ff" opacity="0.75" material="shader: flat; side: double"></a-ring>
+        <a-text value="^" align="center" position="0 0.1 0.01" scale="2.2 2.2 2.2" color="#00d2ff" font="roboto"></a-text>
+        <a-text value="^" align="center" position="0 0.5 0.01" scale="1.8 1.8 1.8" color="#00d2ff" opacity="0.8" font="roboto"></a-text>
+        <a-text value="^" align="center" position="0 0.9 0.01" scale="1.5 1.5 1.5" color="#00d2ff" opacity="0.6" font="roboto"></a-text>
+      </a-entity>
+
     </a-entity>
 
-    <!-- Dynamic Container for 3D In-Scene Waypoint Portals -->
+    <!-- Dynamic Container for Pedestal Ground Waypoint Portals -->
     <a-entity id="in-scene-teleport-pins"></a-entity>
 
     <!-- 360 Sky Sphere -->
@@ -1898,16 +1958,11 @@
       if (sScreen) sScreen.classList.add('hidden');
       if (pScreen) {
         pScreen.classList.remove('hidden');
-        
-        // Reset playback strictly to 0:00 on Page 2 entry
         if (heroVideo) {
           heroVideo.currentTime = 0;
-          // Unmute video since user clicked a gesture button
           heroVideo.muted = false;
           if (muteBtn) muteBtn.innerText = "🔊";
           heroVideo.play().catch(e => {
-            console.log('Video autoplay permitted with audio after interaction');
-            // Fallback to muted if browser still enforces restriction
             heroVideo.muted = true;
             if (muteBtn) muteBtn.innerText = "🔇";
             heroVideo.play().catch(() => {});
@@ -2026,23 +2081,23 @@
             src: "site_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-2", name: "Lower Right", pos: "-2.6 0.2 -4.8" },
-              { targetId: "site-node-3", name: "West Entrance", pos: "4.2 0.3 -3.6" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "0 0.8 -4.8", isFloorJump: true, targetFloor: 1 }
+              { targetId: "site-node-2", name: "Lower Exit", pos: "-2.6 0.2 -4.8", chevron: "<" },
+              { targetId: "site-node-3", name: "West Entrance", pos: "4.2 0.3 -3.6", chevron: ">" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt Floor", pos: "0 0.8 -4.8", isFloorJump: true, targetFloor: 1, chevron: "^" }
             ]
           },
           { 
             id: "site-node-2", 
-            name: "Lower Right", 
+            name: "Lower Exit", 
             pinNum: "2", 
             pinX: 69, 
             pinY: 69, 
             src: "site_2.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-1", name: "Upper Junction", pos: "1.2 0.2 5.0" },
-              { targetId: "site-node-3", name: "West Entrance", pos: "-4.5 0.3 -2.2" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "2.4 0.8 -4.0", isFloorJump: true, targetFloor: 1 }
+              { targetId: "site-node-1", name: "Upper Junction", pos: "1.2 0.2 5.0", chevron: ">" },
+              { targetId: "site-node-3", name: "West Entrance", pos: "-4.5 0.3 -2.2", chevron: "<" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt Floor", pos: "2.4 0.8 -4.0", isFloorJump: true, targetFloor: 1, chevron: "^" }
             ]
           },
           { 
@@ -2054,9 +2109,9 @@
             src: "site_3.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "site-node-1", name: "Upper Junction", pos: "-3.8 0.3 3.5" },
-              { targetId: "site-node-2", name: "Lower Right", pos: "0.2 0.1 -4.8" },
-              { targetId: "stilt-node-1", name: "Ascend to Stilt", pos: "-2.5 0.8 -4.2", isFloorJump: true, targetFloor: 1 }
+              { targetId: "site-node-1", name: "Upper Junction", pos: "-3.8 0.3 3.5", chevron: "<" },
+              { targetId: "site-node-2", name: "Lower Exit", pos: "0.2 0.1 -4.8", chevron: ">" },
+              { targetId: "stilt-node-1", name: "Ascend to Stilt Floor", pos: "-2.5 0.8 -4.2", isFloorJump: true, targetFloor: 1, chevron: "^" }
             ]
           }
         ]
@@ -2080,20 +2135,20 @@
             src: "stilt_1.png", 
             fallbackSrc: "market_render.JPG", 
             peers: [
-              { targetId: "site-node-1", name: "Return to Site", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 0 },
-              { targetId: "podium-node-1", name: "Proceed to Podium-1", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 2 }
+              { targetId: "site-node-1", name: "Return to Site", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 0, chevron: "<" },
+              { targetId: "podium-node-1", name: "Proceed to Podium 1", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 2, chevron: ">" }
             ] 
           }
         ]
       },
       {
         level: 2,
-        floorName: "Podium-1",
+        floorName: "Podium 1",
         floorCode: "P1",
         planImg: "podium_plan.png",
-        planTitle: "Podium-1 Promenade Plan",
+        planTitle: "Podium 1 Promenade Plan",
         fallbackImg: "market_render.JPG",
-        descTitle: "Podium-1 - Pedestrian Promenade",
+        descTitle: "Podium 1 - Pedestrian Promenade",
         descBody: "An elevated landscaped promenade separating vehicular movement from civic gathering.",
         points: [
           { 
@@ -2105,8 +2160,8 @@
             src: "podium_1.png", 
             fallbackSrc: "market_render.JPG", 
             peers: [
-              { targetId: "stilt-node-1", name: "Down to Stilt", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 1 },
-              { targetId: "ground-node-1", name: "Enter Ground Market", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 3 }
+              { targetId: "stilt-node-1", name: "Down to Stilt", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 1, chevron: "<" },
+              { targetId: "ground-node-1", name: "Enter Ground Market", pos: "3.0 0.8 -4.0", isFloorJump: true, targetFloor: 3, chevron: ">" }
             ] 
           }
         ]
@@ -2130,7 +2185,7 @@
             src: "ground_1.png", 
             fallbackSrc: "market_render.JPG",
             peers: [
-              { targetId: "first-node-1", name: "Ascend to 1st Floor", pos: "3.2 0.8 -4.0", isFloorJump: true, targetFloor: 4 }
+              { targetId: "first-node-1", name: "Ascend to 1st Floor", pos: "3.2 0.8 -4.0", isFloorJump: true, targetFloor: 4, chevron: "^" }
             ]
           }
         ]
@@ -2154,7 +2209,7 @@
             src: "first_1.png", 
             fallbackSrc: "market_render.JPG", 
             peers: [
-              { targetId: "ground-node-1", name: "Down to Ground", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 3 }
+              { targetId: "ground-node-1", name: "Down to Ground", pos: "-3.0 0.2 -4.0", isFloorJump: true, targetFloor: 3, chevron: "<" }
             ] 
           }
         ]
@@ -2228,15 +2283,18 @@
         document.getElementById('active-floor-name').innerText = floorConfig.floorName;
       }
 
-      document.querySelectorAll('[vr-floor-switch]').forEach(plane => {
-        const fl = parseInt(plane.getAttribute('vr-floor-switch').split(':')[1]);
-        plane.setAttribute('color', fl === floorNum ? '#0071e3' : '#181a24');
-      });
+      // Update In-VR Stepper Active Pill Highlight
+      const vrPill = document.getElementById('vr-active-floor-pill');
+      if (vrPill) {
+        const yOffset = -0.94 + (floorNum * 0.26);
+        vrPill.setAttribute('position', `0 ${yOffset} 0.03`);
+      }
 
       const firstPoint = floorConfig ? floorConfig.points[0] : null;
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
+    // Smooth View Transition with Camera Focal Dip
     window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
@@ -2366,46 +2424,52 @@
             fallbackImg = targetNode.fallbackSrc;
           }
         }
-        createVRMarker(pinsContainer, peer.targetId, peer.name, peer.pos, previewImg, fallbackImg, peer.isFloorJump, targetFloor);
+        createVRMarker(pinsContainer, peer.targetId, peer.name, peer.pos, previewImg, fallbackImg, peer.isFloorJump, targetFloor, peer.chevron || '>');
       });
     }
 
-    function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
+    /* REFERENCE-ALIGNED PEDESTAL WAYPOINT PORTALS */
+    function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor, chevron) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
       markerEntity.setAttribute('look-at-camera', '');
 
-      const ringColor = isFloorJump ? '#34c759' : '#FFFFFF';
-      const glowColor = isFloorJump ? '#34c759' : '#ffaa55';
-      const cleanName = name.replace(/^Point\s*\d+:\s*/i, '');
-
+      const ringColor = isFloorJump ? '#00D2FF' : '#FFFFFF';
+      const glowColor = isFloorJump ? '#00D2FF' : '#ffaa55';
       const clickAttr = isFloorJump 
         ? `vr-floor-switch="floor: ${targetFloor}"` 
         : `teleport-hotspot="target: ${targetId}"`;
 
       markerEntity.innerHTML = `
-        <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
+        <!-- Raycast Hit Target -->
+        <a-sphere class="clickable" ${clickAttr} radius="0.75" material="opacity: 0.001; transparent: true"></a-sphere>
 
-        <!-- 1. Outer Glowing Portal Perimeter Ring -->
-        <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
-        <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
+        <!-- 1. Circular Preview Disc with Double Concentric Rings -->
+        <a-circle radius="0.42" color="#1a1e29" material="shader: flat; side: double" position="0 0 0.005"></a-circle>
+        <a-circle radius="0.42" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
+        <a-ring radius-inner="0.42" radius-outer="0.45" color="${ringColor}" opacity="0.95" material="shader: flat; side: double" position="0 0 0.015"></a-ring>
+        <a-ring radius-inner="0.45" radius-outer="0.48" color="${glowColor}" opacity="0.5" material="shader: flat; side: double" position="0 0 0.015"></a-ring>
 
-        <!-- 2. Solid Backing Disc to Prevent Zero-Texture Black Hole Artifacts -->
-        <a-circle radius="0.38" color="#1a1e29" material="shader: flat; side: double" position="0 0 0.005"></a-circle>
-        <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
+        <!-- 2. Embedded Directional Chevron Badge -->
+        <a-circle radius="0.1" color="#181a24" opacity="0.9" material="shader: flat; side: double" position="0 -0.26 0.02">
+          <a-text value="${chevron}" align="center" position="0 0 0.01" scale="0.7 0.7 0.7" color="#ffffff" font="roboto"></a-text>
+        </a-circle>
 
-        <!-- 3. High-DPI Frosted Glass Destination Capsule -->
-        <a-entity position="0 -0.56 0.02">
-          <a-plane width="1.45" height="0.28" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
-          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65" font="roboto" wrap-count="24"></a-text>
+        <!-- 3. Frosted Dark Glass Destination Pill Tag -->
+        <a-entity position="0 -0.52 0.02">
+          <a-plane width="1.5" height="0.28" color="#161822" opacity="0.9" material="shader: flat; side: double">
+            <a-ring radius-inner="0.68" radius-outer="0.7" color="#ffffff" opacity="0.18"></a-ring>
+          </a-plane>
+          <a-text value="${name}" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65" font="roboto" wrap-count="24"></a-text>
         </a-entity>
 
         <!-- 4. Vertical Glow Line Stem to Ground Anchor -->
-        <a-cylinder height="0.4" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
+        <a-cylinder height="0.42" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
 
-        <!-- 5. Ground Anchor Orb -->
-        <a-sphere radius="0.07" color="${glowColor}" opacity="0.9" position="0 -1.1 0.01" material="shader: flat"></a-sphere>
-        <a-ring radius-inner="0.08" radius-outer="0.13" color="${glowColor}" opacity="0.5" position="0 -1.1 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
+        <!-- 5. Concentric Ground Pedestal Rings -->
+        <a-ring radius-inner="0.18" radius-outer="0.22" color="${glowColor}" opacity="0.85" position="0 -1.09 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
+        <a-ring radius-inner="0.25" radius-outer="0.27" color="${glowColor}" opacity="0.45" position="0 -1.09 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
+        <a-sphere radius="0.05" color="#FFFFFF" opacity="0.95" position="0 -1.09 0.01" material="shader: flat"></a-sphere>
       `;
 
       parentEl.appendChild(markerEntity);
