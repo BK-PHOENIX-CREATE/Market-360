@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #17 -->
+<!-- BUILD ITERATION: #18 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -289,6 +289,7 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
+    /* HERO CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO */
     .hero-presentation-card {
       position: relative;
       width: 100%;
@@ -304,25 +305,23 @@
       padding: 28px 32px;
     }
 
-    .hero-render-bg {
+    .hero-embedded-video {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: right center;
+      object-position: center;
       z-index: 1;
       filter: contrast(1.05) saturate(1.08);
-      transform: scale(1.005);
-      transition: transform 7s ease-out;
+      pointer-events: none;
     }
-    .hero-presentation-card:hover .hero-render-bg { transform: scale(1.03); }
 
     .hero-vignette {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.55) 42%, rgba(13, 14, 18, 0.1) 58%, transparent 75%),
-                  linear-gradient(to top, rgba(13, 14, 18, 0.85) 0%, rgba(13, 14, 18, 0.2) 25%, transparent 50%);
+      background: linear-gradient(to right, rgba(13, 14, 18, 0.98) 0%, rgba(13, 14, 18, 0.92) 28%, rgba(13, 14, 18, 0.45) 48%, rgba(13, 14, 18, 0.12) 65%, transparent 80%),
+                  linear-gradient(to top, rgba(13, 14, 18, 0.9) 0%, rgba(13, 14, 18, 0.25) 25%, transparent 50%);
       z-index: 2;
       pointer-events: none;
     }
@@ -358,22 +357,23 @@
       position: relative;
       z-index: 3;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: flex-end;
       width: 100%;
     }
 
     .meta-pills-cluster { display: flex; gap: 10px; flex-wrap: wrap; }
     .meta-pill-card {
-      background: rgba(20, 21, 26, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(20, 21, 26, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 12px;
       padding: 8px 14px;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       display: flex;
       align-items: center;
       gap: 10px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
     }
 
     .pill-icon-box { font-size: 15px; color: #f08a5d; opacity: 0.9; }
@@ -381,38 +381,6 @@
     .pill-header { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
     .pill-val-strong { font-size: 11.5px; font-weight: 700; color: #ffffff; }
     .pill-val-sub { font-size: 9.5px; color: rgba(255, 255, 255, 0.65); }
-
-    .watch-video-btn {
-      background: rgba(20, 21, 26, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.32);
-      border-radius: 40px;
-      padding: 7px 18px 7px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      backdrop-filter: blur(18px);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-    }
-    .watch-video-btn .play-circle {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1.5px solid #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: #ffffff;
-      transition: transform 0.2s ease, background 0.2s ease;
-    }
-    .watch-video-btn .btn-text-col { display: flex; flex-direction: column; text-align: left; }
-    .watch-video-btn .btn-text-col span:first-child { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; color: #ffffff; }
-    .watch-video-btn .btn-text-col span:last-child { font-size: 8px; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; letter-spacing: 0.05em; }
-    .watch-video-btn:hover { background: #ffffff; border-color: #ffffff; }
-    .watch-video-btn:hover .play-circle { background: #f08a5d; border-color: #f08a5d; transform: scale(1.08); }
-    .watch-video-btn:hover .btn-text-col span { color: #111111; }
 
     .dashboard-lower-grid {
       display: grid;
@@ -532,86 +500,8 @@
       box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
     }
 
-    /* Video Player Modal Styling */
-    #project-video-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 9999998;
-      background: rgba(0, 0, 0, 0.88);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      transition: opacity 0.3s ease, visibility 0.3s;
-    }
-    #project-video-modal.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .video-modal-card {
-      position: relative;
-      width: 82vw;
-      max-width: 1040px;
-      background: #111116;
-      border: 1.5px solid rgba(255, 255, 255, 0.22);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .video-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 20px;
-      background: #181920;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .video-modal-header h4 {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      color: #f5f5f7;
-    }
-    .video-close-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .video-close-btn:hover {
-      background: #ffffff;
-      color: #111111;
-    }
-
-    .video-viewport-wrapper {
-      position: relative;
-      width: 100%;
-      background: #000000;
-      aspect-ratio: 16 / 9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #project-video-player {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
+    /* Ambient Audio */
+    #ambient-audio { display: none; }
 
     /* =========================================================
        PAGE 3: 2D SCREEN OVERLAYS (WRAPPED FOR DUAL HUD SEPARATION)
@@ -1206,7 +1096,7 @@
   </style>
 
   <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS & SPATIAL ENGINE
+       CUSTOM A-FRAME COMPONENTS & SPATIAL AUDIO
        ========================================================= -->
   <script>
     class AudioSFXEngine {
@@ -1461,8 +1351,15 @@
         </div>
       </div>
 
+      <!-- HERO PRESENTATION CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO -->
       <div class="hero-presentation-card">
-        <img src="project_hero_render.png" onerror="this.src='market_render.JPG'" class="hero-render-bg" alt="Poorna Market Perspective Render">
+        <!-- Live Autoplaying Looping Walkthrough Video -->
+        <video id="hero-bg-video" class="hero-embedded-video" autoplay muted loop playsinline preload="auto" poster="project_hero_render.png">
+          <source src="project_video.mp4" type="video/mp4">
+          <source src="project_video.MP4" type="video/mp4">
+          <source src="project_video.webm" type="video/webm">
+        </video>
+
         <div class="hero-vignette"></div>
 
         <div class="hero-text-content">
@@ -1477,6 +1374,7 @@
         </div>
 
         <div class="hero-bottom-bar">
+          <!-- All 4 Metadata Pills with Enhanced Contrast Glassmorphism -->
           <div class="meta-pills-cluster">
             <div class="meta-pill-card">
               <span class="pill-icon-box">📍</span>
@@ -1511,14 +1409,6 @@
               </div>
             </div>
           </div>
-
-          <button class="watch-video-btn" onclick="openVideoModal()">
-            <div class="play-circle">▶</div>
-            <div class="btn-text-col">
-              <span>Watch</span>
-              <span>Project Video</span>
-            </div>
-          </button>
         </div>
       </div>
 
@@ -1608,25 +1498,6 @@
             </button>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Video Modal Popup (Configured for project_video.mp4) -->
-  <div id="project-video-modal" class="hidden">
-    <div class="video-modal-card">
-      <div class="video-modal-header">
-        <h4>Poorna Market Redevelopment - Architectural Walkthrough</h4>
-        <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
-      </div>
-      <div class="video-viewport-wrapper">
-        <video id="project-video-player" controls preload="metadata" poster="project_hero_render.png">
-          <!-- Primary target file path in root repository -->
-          <source src="project_video.mp4" type="video/mp4">
-          <source src="project_video.MP4" type="video/mp4">
-          <source src="project_video.webm" type="video/webm">
-          Your browser does not support HTML5 video playback.
-        </video>
       </div>
     </div>
   </div>
@@ -1874,7 +1745,14 @@
       const sScreen = document.getElementById('startup-screen');
       const pScreen = document.getElementById('project-details-screen');
       if (sScreen) sScreen.classList.add('hidden');
-      if (pScreen) pScreen.classList.remove('hidden');
+      if (pScreen) {
+        pScreen.classList.remove('hidden');
+        // Trigger smooth autoplay of the embedded background video
+        const video = document.getElementById('hero-bg-video');
+        if (video) {
+          video.play().catch(e => console.log('Video autoplay permitted after user interaction'));
+        }
+      }
     }
 
     function returnToStartup() {
@@ -1882,33 +1760,19 @@
       const pScreen = document.getElementById('project-details-screen');
       if (pScreen) pScreen.classList.add('hidden');
       if (sScreen) sScreen.classList.remove('hidden');
+
+      const video = document.getElementById('hero-bg-video');
+      if (video) video.pause();
     }
 
     function startVirtualTour() {
       const pScreen = document.getElementById('project-details-screen');
       if (pScreen) pScreen.classList.add('hidden');
+
+      const video = document.getElementById('hero-bg-video');
+      if (video) video.pause();
+
       if (!isPlaying) toggleAudio();
-    }
-
-    function openVideoModal() {
-      const modal = document.getElementById('project-video-modal');
-      const player = document.getElementById('project-video-player');
-      if (modal) modal.classList.remove('hidden');
-      if (player) {
-        player.currentTime = 0;
-        player.play().catch(e => {
-          console.log('Video autoplay prevented by browser policy, user interaction permitted');
-        });
-      }
-    }
-
-    function closeVideoModal() {
-      const modal = document.getElementById('project-video-modal');
-      const player = document.getElementById('project-video-player');
-      if (modal) modal.classList.add('hidden');
-      if (player) {
-        player.pause();
-      }
     }
 
     function toggleAudio() {
@@ -2208,6 +2072,7 @@
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
+    // Smooth Cubic View Transition with Camera Focal Dip
     window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
@@ -2280,22 +2145,26 @@
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
+      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       document.getElementById('map-header').innerText = floorConfig.planTitle;
 
+      // Update in-VR Info Card details
       const vrInfoTitle = document.getElementById('vr-info-title');
       const vrInfoBody = document.getElementById('vr-info-body');
       if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
       if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
 
+      // Update Sky
       const sky = document.getElementById('sky-sphere');
       const imgTester = new Image();
       imgTester.onload = () => sky.setAttribute('src', pointData.src);
       imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
       imgTester.src = pointData.src;
 
+      // Update 2D Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2337,6 +2206,7 @@
       });
     }
 
+    // High-DPI Portal Waypoints with solid backing geometry to prevent black hole clipping
     function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
