@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #16 -->
+<!-- BUILD ITERATION: #17 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -532,6 +532,7 @@
       box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
     }
 
+    /* Video Player Modal Styling */
     #project-video-modal {
       position: fixed;
       inset: 0;
@@ -541,31 +542,76 @@
       align-items: center;
       justify-content: center;
       backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       transition: opacity 0.3s ease, visibility 0.3s;
     }
-    #project-video-modal.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    #project-video-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
 
     .video-modal-card {
       position: relative;
-      width: 80vw;
-      max-width: 960px;
-      background: #111111;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
+      width: 82vw;
+      max-width: 1040px;
+      background: #111116;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
+      display: flex;
+      flex-direction: column;
     }
 
     .video-modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 18px;
-      background: #1a1a1f;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 20px;
+      background: #181920;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
-    .video-modal-header h4 { font-size: 13px; font-weight: 600; }
-    .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
+    .video-modal-header h4 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #f5f5f7;
+    }
+    .video-close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .video-close-btn:hover {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .video-viewport-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000000;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #project-video-player {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
 
     /* =========================================================
        PAGE 3: 2D SCREEN OVERLAYS (WRAPPED FOR DUAL HUD SEPARATION)
@@ -582,7 +628,9 @@
       visibility: hidden !important;
       pointer-events: none !important;
     }
-    #desktop-hud-container > * { pointer-events: auto; }
+    #desktop-hud-container > * {
+      pointer-events: auto;
+    }
 
     .header-bar {
       position: absolute;
@@ -1161,7 +1209,6 @@
        CUSTOM A-FRAME COMPONENTS & SPATIAL ENGINE
        ========================================================= -->
   <script>
-    // Synthesized Web Audio Teleportation Whoosh Engine
     class AudioSFXEngine {
       constructor() { this.ctx = null; }
       init() {
@@ -1348,7 +1395,6 @@
       }
     });
 
-    // Dual HUD Separation Manager: Controls VR vs 2D HUD Visibility
     AFRAME.registerComponent('vr-mode-manager', {
       init: function () {
         const scene = this.el;
@@ -1384,6 +1430,7 @@
       <button id="main-navigate-btn" class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
     </div>
 
+    <!-- Restored Startup Logo Badge -->
     <div class="startup-logo">
       <span>BK</span>
     </div>
@@ -1565,17 +1612,22 @@
     </div>
   </div>
 
-  <!-- Video Modal Popup -->
+  <!-- Video Modal Popup (Configured for project_video.mp4) -->
   <div id="project-video-modal" class="hidden">
     <div class="video-modal-card">
       <div class="video-modal-header">
         <h4>Poorna Market Redevelopment - Architectural Walkthrough</h4>
         <button class="video-close-btn" onclick="closeVideoModal()">✕</button>
       </div>
-      <video id="project-video-player" controls style="width: 100%; display: block;" poster="project_hero_render.png">
-        <source src="project_video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="video-viewport-wrapper">
+        <video id="project-video-player" controls preload="metadata" poster="project_hero_render.png">
+          <!-- Primary target file path in root repository -->
+          <source src="project_video.mp4" type="video/mp4">
+          <source src="project_video.MP4" type="video/mp4">
+          <source src="project_video.webm" type="video/webm">
+          Your browser does not support HTML5 video playback.
+        </video>
+      </div>
     </div>
   </div>
 
@@ -1842,14 +1894,21 @@
       const modal = document.getElementById('project-video-modal');
       const player = document.getElementById('project-video-player');
       if (modal) modal.classList.remove('hidden');
-      if (player) player.play().catch(e => console.log('Autoplay deferred'));
+      if (player) {
+        player.currentTime = 0;
+        player.play().catch(e => {
+          console.log('Video autoplay prevented by browser policy, user interaction permitted');
+        });
+      }
     }
 
     function closeVideoModal() {
       const modal = document.getElementById('project-video-modal');
       const player = document.getElementById('project-video-player');
       if (modal) modal.classList.add('hidden');
-      if (player) player.pause();
+      if (player) {
+        player.pause();
+      }
     }
 
     function toggleAudio() {
@@ -2149,7 +2208,6 @@
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
-    // Smooth Cubic View Transition with Camera Focal Dip
     window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
@@ -2222,26 +2280,22 @@
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       document.getElementById('map-header').innerText = floorConfig.planTitle;
 
-      // Update in-VR Info Card details
       const vrInfoTitle = document.getElementById('vr-info-title');
       const vrInfoBody = document.getElementById('vr-info-body');
       if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
       if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
 
-      // Update Sky
       const sky = document.getElementById('sky-sphere');
       const imgTester = new Image();
       imgTester.onload = () => sky.setAttribute('src', pointData.src);
       imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
       imgTester.src = pointData.src;
 
-      // Update 2D Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2283,7 +2337,6 @@
       });
     }
 
-    // High-DPI Portal Waypoints with solid backing geometry to prevent black hole clipping
     function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
