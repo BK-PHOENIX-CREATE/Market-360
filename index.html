@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #18 -->
+<!-- BUILD ITERATION: #19 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -289,7 +289,6 @@
     }
     .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
-    /* HERO CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO */
     .hero-presentation-card {
       position: relative;
       width: 100%;
@@ -500,7 +499,6 @@
       box-shadow: 0 8px 24px rgba(240, 138, 93, 0.65);
     }
 
-    /* Ambient Audio */
     #ambient-audio { display: none; }
 
     /* =========================================================
@@ -1353,8 +1351,8 @@
 
       <!-- HERO PRESENTATION CARD WITH EMBEDDED AUTOPLAY BACKGROUND VIDEO -->
       <div class="hero-presentation-card">
-        <!-- Live Autoplaying Looping Walkthrough Video -->
-        <video id="hero-bg-video" class="hero-embedded-video" autoplay muted loop playsinline preload="auto" poster="project_hero_render.png">
+        <!-- Live Video Element Configured to Start from 0:00 on Page Entry -->
+        <video id="hero-bg-video" class="hero-embedded-video" muted loop playsinline preload="auto" poster="project_hero_render.png">
           <source src="project_video.mp4" type="video/mp4">
           <source src="project_video.MP4" type="video/mp4">
           <source src="project_video.webm" type="video/webm">
@@ -1747,10 +1745,14 @@
       if (sScreen) sScreen.classList.add('hidden');
       if (pScreen) {
         pScreen.classList.remove('hidden');
-        // Trigger smooth autoplay of the embedded background video
+        
+        // Reset playback strictly to 0:00 every time user enters Page 2
         const video = document.getElementById('hero-bg-video');
         if (video) {
-          video.play().catch(e => console.log('Video autoplay permitted after user interaction'));
+          video.currentTime = 0;
+          video.play().catch(e => {
+            console.log('Video autoplay permitted following user click gesture');
+          });
         }
       }
     }
@@ -1762,7 +1764,10 @@
       if (sScreen) sScreen.classList.remove('hidden');
 
       const video = document.getElementById('hero-bg-video');
-      if (video) video.pause();
+      if (video) {
+        video.pause();
+        video.currentTime = 0; // Rewind so next entry starts from beginning
+      }
     }
 
     function startVirtualTour() {
@@ -1770,7 +1775,10 @@
       if (pScreen) pScreen.classList.add('hidden');
 
       const video = document.getElementById('hero-bg-video');
-      if (video) video.pause();
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
 
       if (!isPlaying) toggleAudio();
     }
@@ -2072,7 +2080,6 @@
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
-    // Smooth Cubic View Transition with Camera Focal Dip
     window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
@@ -2145,26 +2152,22 @@
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       document.getElementById('map-header').innerText = floorConfig.planTitle;
 
-      // Update in-VR Info Card details
       const vrInfoTitle = document.getElementById('vr-info-title');
       const vrInfoBody = document.getElementById('vr-info-body');
       if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
       if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
 
-      // Update Sky
       const sky = document.getElementById('sky-sphere');
       const imgTester = new Image();
       imgTester.onload = () => sky.setAttribute('src', pointData.src);
       imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
       imgTester.src = pointData.src;
 
-      // Update 2D Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -2206,7 +2209,6 @@
       });
     }
 
-    // High-DPI Portal Waypoints with solid backing geometry to prevent black hole clipping
     function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
@@ -2222,25 +2224,15 @@
 
       markerEntity.innerHTML = `
         <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
-
-        <!-- 1. Outer Glowing Portal Perimeter Ring -->
         <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
         <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
-
-        <!-- 2. Solid Backing Disc to Prevent Zero-Texture Black Hole Artifacts -->
         <a-circle radius="0.38" color="#1a1e29" material="shader: flat; side: double" position="0 0 0.005"></a-circle>
         <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
-
-        <!-- 3. High-DPI Frosted Glass Destination Capsule -->
         <a-entity position="0 -0.56 0.02">
           <a-plane width="1.45" height="0.28" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
           <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65" font="roboto" wrap-count="24"></a-text>
         </a-entity>
-
-        <!-- 4. Vertical Glow Line Stem to Ground Anchor -->
         <a-cylinder height="0.4" radius="0.007" color="#FFFFFF" opacity="0.75" position="0 -0.88 0.01" material="shader: flat"></a-cylinder>
-
-        <!-- 5. Ground Anchor Orb -->
         <a-sphere radius="0.07" color="${glowColor}" opacity="0.9" position="0 -1.1 0.01" material="shader: flat"></a-sphere>
         <a-ring radius-inner="0.08" radius-outer="0.13" color="${glowColor}" opacity="0.5" position="0 -1.1 0.01" rotation="-90 0 0" material="shader: flat; side: double"></a-ring>
       `;
