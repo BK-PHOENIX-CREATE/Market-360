@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #11 -->
+<!-- BUILD ITERATION: #12 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +6,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Market 360 - Redevelopment of Poorna Market</title>
-  <!-- Stable A-Frame WebXR Framework -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
   <style>
@@ -51,7 +50,7 @@
     .a-enter-vr, .a-enter-ar { display: none !important; }
 
     /* =========================================================
-       PAGE 1: STARTUP LANDING OVERLAY
+       PAGE 1: STARTUP LANDING OVERLAY (FIXED COMPOSITING BUG)
        ========================================================= */
     #startup-screen {
       position: fixed;
@@ -62,6 +61,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      isolation: isolate; /* Ensures child z-indexes stay strictly inside this root */
       transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
     }
 
@@ -73,71 +73,95 @@
 
     .bokeh-background {
       position: absolute;
-      inset: -40px;
+      inset: -50px;
       background: url('market_render.JPG') center/cover no-repeat;
-      filter: blur(35px) brightness(0.6) saturate(1.4);
+      filter: blur(40px) brightness(0.55) saturate(1.4);
       transform: scale(1.1);
       z-index: 1;
+      pointer-events: none;
     }
+
+    .bokeh-light {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(35px);
+      opacity: 0.4;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .bokeh-light.orb1 { width: 340px; height: 340px; background: #ffaa55; top: 10%; left: 15%; }
+    .bokeh-light.orb2 { width: 420px; height: 420px; background: #4488ff; bottom: 15%; right: 10%; }
 
     .market-render-wrapper {
       position: relative;
-      z-index: 10;
+      z-index: 50; /* Elevated above background blur layers */
       width: 82vw;
       height: 72vh;
+      min-height: 420px;
       max-width: 1200px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000000;
+      background: #111116;
     }
 
     .market-render-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scale(1.02);
+      display: block;
+      transform: scale(1.01);
       transition: transform 6s ease-out;
     }
-    .market-render-wrapper:hover .market-render-image { transform: scale(1.06); }
+    .market-render-wrapper:hover .market-render-image { transform: scale(1.05); }
 
     .center-cta-btn {
       position: absolute;
-      z-index: 20;
-      padding: 16px 42px;
-      background: rgba(255, 255, 255, 0.22);
-      border: 1.5px solid rgba(255, 255, 255, 0.7);
+      z-index: 100; /* Stays solidly in front of the image */
+      padding: 16px 44px;
+      background: rgba(20, 22, 28, 0.75);
+      border: 2px solid rgba(255, 255, 255, 0.85);
       border-radius: 40px;
       color: #ffffff;
       font-size: 19px;
       font-weight: 700;
+      letter-spacing: 0.02em;
       cursor: pointer;
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
       transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
     }
-    .center-cta-btn:hover { background: #ffffff; color: #111111; transform: scale(1.06); }
+    .center-cta-btn:hover {
+      background: #ffffff;
+      color: #111111;
+      transform: scale(1.06);
+      box-shadow: 0 16px 45px rgba(255, 255, 255, 0.3);
+    }
 
     .startup-credits-bar {
       position: absolute;
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 10;
+      z-index: 60;
       display: flex;
       align-items: center;
       gap: 32px;
       padding: 10px 28px;
-      background: rgba(18, 18, 20, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(18, 18, 22, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 30px;
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       font-size: 13px;
+      white-space: nowrap;
     }
     .credit-item { display: flex; align-items: center; gap: 6px; color: #f5f5f7; }
     .credit-label { color: rgba(255, 255, 255, 0.55); font-weight: 500; }
@@ -207,7 +231,9 @@
       font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
+    .dash-exit-btn:hover { background: #ffffff; color: #111111; }
 
     .hero-presentation-card {
       position: relative;
@@ -943,15 +969,10 @@
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
     <div class="bokeh-light orb2"></div>
-    <div class="bokeh-light orb3"></div>
 
     <div class="market-render-wrapper">
       <img src="market_render.JPG" alt="Overall Market Render" class="market-render-image">
       <button id="main-navigate-btn" class="center-cta-btn" onclick="goToProjectDetails()">Let's Navigate</button>
-    </div>
-
-    <div class="startup-logo">
-      <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
     </div>
 
     <div class="startup-credits-bar">
@@ -962,7 +983,7 @@
     </div>
   </div>
 
-  <!-- PAGE 2: REDEVELOPMENT OF POORNA MARKET (RESTORED DASHBOARD) -->
+  <!-- PAGE 2: REDEVELOPMENT OF POORNA MARKET -->
   <div id="project-details-screen" class="hidden">
     <div class="bokeh-background"></div>
 
