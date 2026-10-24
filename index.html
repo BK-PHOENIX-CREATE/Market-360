@@ -1,4 +1,4 @@
-<!-- BUILD ITERATION: #12 -->
+<!-- BUILD ITERATION: #13 -->
 <!-- FILE: index.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -50,7 +50,7 @@
     .a-enter-vr, .a-enter-ar { display: none !important; }
 
     /* =========================================================
-       PAGE 1: STARTUP LANDING OVERLAY (FIXED COMPOSITING BUG)
+       PAGE 1: STARTUP LANDING OVERLAY
        ========================================================= */
     #startup-screen {
       position: fixed;
@@ -61,7 +61,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      isolation: isolate; /* Ensures child z-indexes stay strictly inside this root */
+      isolation: isolate;
       transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.5s;
     }
 
@@ -95,7 +95,7 @@
 
     .market-render-wrapper {
       position: relative;
-      z-index: 50; /* Elevated above background blur layers */
+      z-index: 50;
       width: 82vw;
       height: 72vh;
       min-height: 420px;
@@ -122,7 +122,7 @@
 
     .center-cta-btn {
       position: absolute;
-      z-index: 100; /* Stays solidly in front of the image */
+      z-index: 100;
       padding: 16px 44px;
       background: rgba(20, 22, 28, 0.75);
       border: 2px solid rgba(255, 255, 255, 0.85);
@@ -465,8 +465,22 @@
     .video-close-btn { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
 
     /* =========================================================
-       PAGE 3: 360 WALKTHROUGH 2D OVERLAYS
+       PAGE 3: 2D SCREEN OVERLAYS (WRAPPED FOR VR ISOLATION)
        ========================================================= */
+    #desktop-hud-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 0.3s ease, visibility 0.3s;
+    }
+    #desktop-hud-container.vr-hidden {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    #desktop-hud-container > * { pointer-events: auto; }
+
     .header-bar {
       position: absolute;
       top: 0;
@@ -479,7 +493,6 @@
       background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
       color: #ffffff;
       z-index: 100;
-      pointer-events: auto;
     }
     .header-title h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
     .header-title p { font-size: 12px; color: rgba(255, 255, 255, 0.72); margin-top: 3px; }
@@ -508,7 +521,6 @@
     .capsule-btn:hover { color: #0071e3; }
     .capsule-divider { width: 1px; height: 14px; background: rgba(255, 255, 255, 0.22); margin: 0 2px; }
 
-    /* Persistent 2D Floor Selector Dropdown */
     .floor-dropdown-wrapper {
       position: absolute;
       top: 86px;
@@ -603,7 +615,6 @@
       font-weight: 700;
     }
 
-    /* 2D Minimap with Rotating Dynamic Radar Cone */
     .minimap-panel {
       position: absolute;
       bottom: 24px;
@@ -644,7 +655,6 @@
       transform-origin: center center;
     }
 
-    /* 2D Bottom Carousel Strip */
     .bottom-carousel-wrapper {
       position: absolute;
       bottom: 24px;
@@ -654,7 +664,6 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      pointer-events: auto;
     }
     .carousel-arrow-btn {
       width: 38px;
@@ -708,7 +717,6 @@
     }
     .carousel-card.active { border-color: #0071e3; box-shadow: 0 0 18px rgba(0, 113, 227, 0.85); }
 
-    /* Bottom-Right Unified Action Dock */
     .bottom-right-action-dock {
       position: absolute;
       bottom: 24px;
@@ -738,7 +746,6 @@
     .dock-action-btn:hover { background: rgba(255, 255, 255, 0.12); color: #0071e3; }
     .dock-action-btn svg { width: 20px; height: 20px; fill: currentColor; }
 
-    /* Enlarged Blueprint Modal */
     #enlarged-map-modal {
       position: fixed;
       inset: 0;
@@ -805,9 +812,59 @@
   </style>
 
   <!-- =========================================================
-       CUSTOM A-FRAME COMPONENTS
+       CUSTOM A-FRAME COMPONENTS & SPATIAL AUDIO ENGINE
        ========================================================= -->
   <script>
+    // Web Audio Synthesized Spatial Whoosh SFX Engine
+    class AudioSFXEngine {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTeleportWhoosh() {
+        try {
+          this.init();
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          // Smooth exponential lowpass sweep
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(140, t);
+          filter.frequency.exponentialRampToValueAtTime(850, t + 0.18);
+          filter.frequency.exponentialRampToValueAtTime(100, t + 0.42);
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(80, t);
+          osc.frequency.exponentialRampToValueAtTime(240, t + 0.15);
+          osc.frequency.exponentialRampToValueAtTime(60, t + 0.42);
+
+          gain.gain.setValueAtTime(0.001, t);
+          gain.gain.linearRampToValueAtTime(0.25, t + 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(t);
+          osc.stop(t + 0.43);
+        } catch(e) {
+          console.warn("Audio Context init deferred", e);
+        }
+      }
+    }
+    window.sfxEngine = new AudioSFXEngine();
+
     AFRAME.registerComponent('teleport-hotspot', {
       schema: { target: { type: 'string' } },
       init: function () {
@@ -820,6 +877,8 @@
           const now = Date.now();
           if (now - lastTriggerTime < 500) return;
           lastTriggerTime = now;
+
+          window.sfxEngine.playTeleportWhoosh();
 
           const cursorEl = evt && evt.detail && evt.detail.cursorEl;
           if (cursorEl && cursorEl.components && cursorEl.components['haptics']) {
@@ -837,7 +896,7 @@
 
         el.addEventListener('mouseenter', () => {
           const parent = el.parentElement;
-          if (parent) parent.setAttribute('scale', '1.12 1.12 1.12');
+          if (parent) parent.setAttribute('scale', '1.14 1.14 1.14');
         });
         el.addEventListener('mouseleave', () => {
           const parent = el.parentElement;
@@ -866,6 +925,7 @@
         const floorNum = this.data.floor;
         const doSwitch = (evt) => {
           if (evt) evt.stopPropagation();
+          window.sfxEngine.playTeleportWhoosh();
           switchFloor(floorNum);
         };
         el.addEventListener('click', doSwitch);
@@ -944,15 +1004,19 @@
       }
     });
 
-    // In-VR Mode Manager: ensures 3D spatial HUD only appears when headset VR is active
+    // Dual HUD Separation Manager
     AFRAME.registerComponent('vr-mode-manager', {
       init: function () {
         const scene = this.el;
         const vrHUD = document.getElementById('in-vr-spatial-hud');
+        const desktopHUD = document.getElementById('desktop-hud-container');
 
         const updateVisibility = () => {
           const isVR = scene.is('vr-mode');
           if (vrHUD) vrHUD.setAttribute('visible', isVR);
+          if (desktopHUD) {
+            desktopHUD.classList.toggle('vr-hidden', isVR);
+          }
         };
 
         scene.addEventListener('enter-vr', updateVisibility);
@@ -964,7 +1028,7 @@
 </head>
 <body>
 
-  <!-- PAGE 1: STARTUP LANDING -->
+  <!-- PAGE 1: STARTUP LANDING OVERLAY -->
   <div id="startup-screen">
     <div class="bokeh-background"></div>
     <div class="bokeh-light orb1"></div>
@@ -1166,126 +1230,129 @@
     </div>
   </div>
 
-  <!-- Ambient Audio -->
+  <!-- Ambient Background Audio -->
   <audio id="ambient-audio" loop preload="none" crossorigin="anonymous">
     <source src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Wind_blowing_at_mountain_pass.ogg" type="audio/ogg">
     <source src="https://actions.google.com/sounds/v1/weather/wind_arctic_constant.ogg" type="audio/ogg">
   </audio>
 
-  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS ==================== -->
-  <div class="header-bar">
-    <div class="header-title">
-      <h1 id="location-title">Upper Junction</h1>
-      <p id="location-subtitle">Site • Architectural 360 Panorama</p>
-    </div>
-
-    <div class="top-action-capsule">
-      <button class="capsule-btn" onclick="returnToStartup()">
-        <span>🏠</span> <span>Home</span>
-      </button>
-      <div class="capsule-divider"></div>
-      <button id="sound-btn" class="capsule-btn" onclick="toggleAudio()">
-        <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Persistent 2D Floor Selector Dropdown -->
-  <div class="floor-dropdown-wrapper" id="floor-dropdown">
-    <div class="floor-dropdown-trigger" id="floor-trigger">
-      <span class="trigger-code" id="active-floor-badge">S</span>
-      <span id="active-floor-name">Site</span>
-      <span class="trigger-arrow">▾</span>
-    </div>
-
-    <div class="floor-dropdown-menu" id="floor-menu">
-      <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
-        <span class="menu-badge">TR</span>
-        <span class="menu-label">Terrace</span>
-      </button>
-      <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this, event)">
-        <span class="menu-badge">3</span>
-        <span class="menu-label">Third Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this, event)">
-        <span class="menu-badge">2</span>
-        <span class="menu-label">Second Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this, event)">
-        <span class="menu-badge">1</span>
-        <span class="menu-label">First Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this, event)">
-        <span class="menu-badge">G</span>
-        <span class="menu-label">Ground Floor</span>
-      </button>
-      <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this, event)">
-        <span class="menu-badge">P1</span>
-        <span class="menu-label">Podium-1</span>
-      </button>
-      <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this, event)">
-        <span class="menu-badge">ST</span>
-        <span class="menu-label">Stilt Floor</span>
-      </button>
-      <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this, event)">
-        <span class="menu-badge">S</span>
-        <span class="menu-label">Site</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 2D Minimap with Rotating Dynamic Radar Cone -->
-  <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
-    <div class="minimap-top-row">
-      <span class="map-title" id="map-header">Site Layout</span>
-      <div class="minimap-expand-btn">⤢ ENLARGE</div>
-    </div>
-    <div class="minimap-img-frame">
-      <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Floor Layout">
-      <svg id="radar-cone" viewBox="0 0 100 100">
-        <defs>
-          <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#0071e3" stop-opacity="0.9" />
-            <stop offset="100%" stop-color="#0071e3" stop-opacity="0" />
-          </radialGradient>
-        </defs>
-        <polygon points="50,50 20,5 80,5" fill="url(#coneGrad)" />
-        <circle cx="50" cy="50" r="7" fill="#ffffff" stroke="#0071e3" stroke-width="3" />
-      </svg>
-    </div>
-  </div>
-
-  <!-- 2D Bottom Carousel Strip -->
-  <div class="bottom-carousel-wrapper">
-    <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
-    <div class="carousel-cards-strip" id="thumb-strip"></div>
-    <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
-  </div>
-
-  <!-- 2D Bottom-Right Action Dock -->
-  <div class="bottom-right-action-dock">
-    <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
-      <svg viewBox="0 0 24 24"><path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
-    </button>
-    <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
-      <svg id="fs-icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-    </button>
-    <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
-      <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
-    </button>
-  </div>
-
-  <!-- 2D Enlarged Blueprint Modal -->
-  <div id="enlarged-map-modal" class="hidden">
-    <div class="bokeh-background" onclick="closeEnlargedMap()"></div>
-    <div class="enlarged-map-card">
-      <div class="enlarged-map-header-bar">
-        <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
-        <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close</button>
+  <!-- ==================== PAGE 3: 2D SCREEN OVERLAYS (WRAPPED) ==================== -->
+  <div id="desktop-hud-container">
+    <div class="header-bar">
+      <div class="header-title">
+        <h1 id="location-title">Upper Junction</h1>
+        <p id="location-subtitle">Site • Architectural 360 Panorama</p>
       </div>
-      <div class="blueprint-image-wrapper">
-        <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
-        <div id="pins-container"></div>
+
+      <div class="top-action-capsule">
+        <button class="capsule-btn" onclick="returnToStartup()">
+          <span>🏠</span> <span>Home</span>
+        </button>
+        <div class="capsule-divider"></div>
+        <button id="sound-btn" class="capsule-btn" onclick="toggleAudio()">
+          <span id="sound-icon">🔈</span> <span id="sound-label">Enable Ambience</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2D Floor Selector Dropdown -->
+    <div class="floor-dropdown-wrapper" id="floor-dropdown">
+      <div class="floor-dropdown-trigger" id="floor-trigger">
+        <span class="trigger-code" id="active-floor-badge">S</span>
+        <span id="active-floor-name">Site</span>
+        <span class="trigger-arrow">▾</span>
+      </div>
+
+      <div class="floor-dropdown-menu" id="floor-menu">
+        <button class="floor-menu-item" data-floor="7" onclick="switchFloor(7, this, event)">
+          <span class="menu-badge">TR</span>
+          <span class="menu-label">Terrace</span>
+        </button>
+        <button class="floor-menu-item" data-floor="6" onclick="switchFloor(6, this, event)">
+          <span class="menu-badge">3</span>
+          <span class="menu-label">Third Floor</span>
+        </button>
+        <button class="floor-menu-item" data-floor="5" onclick="switchFloor(5, this, event)">
+          <span class="menu-badge">2</span>
+          <span class="menu-label">Second Floor</span>
+        </button>
+        <button class="floor-menu-item" data-floor="4" onclick="switchFloor(4, this, event)">
+          <span class="menu-badge">1</span>
+          <span class="menu-label">First Floor</span>
+        </button>
+        <button class="floor-menu-item" data-floor="3" onclick="switchFloor(3, this, event)">
+          <span class="menu-badge">G</span>
+          <span class="menu-label">Ground Floor</span>
+        </button>
+        <button class="floor-menu-item" data-floor="2" onclick="switchFloor(2, this, event)">
+          <span class="menu-badge">P1</span>
+          <span class="menu-label">Podium-1</span>
+        </button>
+        <button class="floor-menu-item" data-floor="1" onclick="switchFloor(1, this, event)">
+          <span class="menu-badge">ST</span>
+          <span class="menu-label">Stilt Floor</span>
+        </button>
+        <button class="floor-menu-item active" data-floor="0" onclick="switchFloor(0, this, event)">
+          <span class="menu-badge">S</span>
+          <span class="menu-label">Site</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 2D Minimap with Rotating Dynamic Radar Cone -->
+    <div class="minimap-panel" onclick="openEnlargedMap()" title="Click to enlarge floor plan">
+      <div class="minimap-top-row">
+        <span class="map-title" id="map-header">Site Layout</span>
+        <div class="minimap-expand-btn">⤢ ENLARGE</div>
+      </div>
+      <div class="minimap-img-frame">
+        <img id="minimap-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Floor Layout">
+        <svg id="radar-cone" viewBox="0 0 100 100">
+          <defs>
+            <radialGradient id="coneGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#0071e3" stop-opacity="0.9" />
+              <stop offset="100%" stop-color="#0071e3" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <polygon points="50,50 20,5 80,5" fill="url(#coneGrad)" />
+          <circle cx="50" cy="50" r="7" fill="#ffffff" stroke="#0071e3" stroke-width="3" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- 2D Bottom Carousel Strip -->
+    <div class="bottom-carousel-wrapper">
+      <button class="carousel-arrow-btn" onclick="scrollThumbnails(-1)" title="Previous View">‹</button>
+      <div class="carousel-cards-strip" id="thumb-strip"></div>
+      <button class="carousel-arrow-btn" onclick="scrollThumbnails(1)" title="Next View">›</button>
+    </div>
+
+    <!-- 2D Bottom-Right Action Dock -->
+    <div class="bottom-right-action-dock">
+      <button class="dock-action-btn" id="vr-toggle-btn" onclick="enterImmersiveVR()" title="Enter VR Mode">
+        <svg viewBox="0 0 24 24"><path d="M21 7H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3.2l1.8-2h8l1.8 2H21a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-15 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm12 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+      </button>
+      <button class="dock-action-btn" id="fs-toggle-btn" onclick="toggleFullScreen()" title="Fullscreen Mode">
+        <svg id="fs-icon" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+      </button>
+      <button class="dock-action-btn" onclick="resetCameraOrientation()" title="Reset Perspective View">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/></svg>
+      </button>
+    </div>
+
+    <!-- 2D Enlarged Blueprint Modal -->
+    <div id="enlarged-map-modal" class="hidden">
+      <div class="bokeh-background" onclick="closeEnlargedMap()"></div>
+      <div class="enlarged-map-card">
+        <div class="enlarged-map-header-bar">
+          <h2 id="enlarged-modal-title">Interactive Floor Plan</h2>
+          <button class="close-map-btn" onclick="closeEnlargedMap()">✕ Close</button>
+        </div>
+
+        <div class="blueprint-image-wrapper">
+          <img id="enlarged-blueprint-img" src="site_plan.png" onerror="this.src='market_render.JPG'" alt="Enlarged Blueprint">
+          <div id="pins-container"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1306,6 +1373,7 @@
           raycaster="objects: .clickable; far: 40"
           animation__click="property: scale; startEvents: click; dur: 120; from: 0.1 0.1 0.1; to: 1 1 1">
         </a-cursor>
+        <!-- Cubic Fade Transition Sphere -->
         <a-sphere 
           id="fade-sphere" 
           radius="0.1" 
@@ -1321,46 +1389,46 @@
 
     <!-- IN-VR SPATIAL HUD (VISIBLE ONLY IN IMMERSIVE VR HEADSET SESSION) -->
     <a-entity id="in-vr-spatial-hud" visible="false">
-      <!-- 1. Repositioned Bottom-Center Back Button -->
+      <!-- 1. Repositioned Bottom-Center Back Button with Crisp Typography -->
       <a-entity id="vr-in-headset-back" position="0 -1.55 -3.1" rotation="-15 0 0">
-        <a-plane class="clickable" vr-exit-action width="1.15" height="0.28" color="#0a0c10" opacity="0.25" material="shader: flat; transparent: true">
-          <a-ring radius-inner="0.57" radius-outer="0.58" color="#ffffff" opacity="0.35" material="shader: flat"></a-ring>
-          <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.8 0.8 0.8"></a-text>
+        <a-plane class="clickable" vr-exit-action width="1.25" height="0.32" color="#0a0c10" opacity="0.4" material="shader: flat; transparent: true">
+          <a-ring radius-inner="0.62" radius-outer="0.63" color="#ffffff" opacity="0.35" material="shader: flat"></a-ring>
+          <a-text value="< Back to Overview" align="center" color="#FFFFFF" scale="0.85 0.85 0.85" font="roboto" wrap-count="24"></a-text>
         </a-plane>
       </a-entity>
 
       <!-- 2. Top-Left Subtle Hoverable Level Selector in VR -->
       <a-entity id="vr-floors-sidebar" position="-2.4 1.4 -3.4" rotation="10 30 0" vr-sidebar-controller>
         <a-plane class="clickable" vr-sub-elem width="1.0" height="2.5" color="#0b0d14" opacity="0.22" material="shader: flat; transparent: true"></a-plane>
-        <a-text vr-sub-elem value="LEVELS" align="center" position="0 1.12 0.02" scale="0.6 0.6 0.6" color="#0071E3" opacity="0.45"></a-text>
+        <a-text vr-sub-elem value="LEVELS" align="center" position="0 1.12 0.02" scale="0.65 0.65 0.65" color="#0071E3" opacity="0.5" font="roboto" wrap-count="20"></a-text>
 
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 7" position="0 0.82 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="TR  Terrace" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="TR  Terrace" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 6" position="0 0.56 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="3   Third Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="3   Third Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 5" position="0 0.30 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="2   Second Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="2   Second Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 4" position="0 0.04 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="1   First Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="1   First Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 3" position="0 -0.22 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="G   Ground Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="G   Ground Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 2" position="0 -0.48 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="P1  Podium-1" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="P1  Podium-1" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
         <a-plane class="clickable" vr-sub-elem vr-floor-switch="floor: 1" position="0 -0.74 0.02" width="0.88" height="0.22" color="#181a24" opacity="0.3" material="shader: flat; transparent: true">
-          <a-text value="ST  Stilt Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+          <a-text value="ST  Stilt Floor" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
-        <a-plane id="vr-btn-site" class="clickable" vr-sub-elem vr-floor-switch="floor: 0" position="0 -1.0 0.02" width="0.88" height="0.22" color="#0071e3" opacity="0.6" material="shader: flat; transparent: true">
-          <a-text value="S   Site" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF"></a-text>
+        <a-plane id="vr-btn-site" class="clickable" vr-sub-elem vr-floor-switch="floor: 0" position="0 -1.0 0.02" width="0.88" height="0.22" color="#0071e3" opacity="0.7" material="shader: flat; transparent: true">
+          <a-text value="S   Site" align="left" position="-0.38 0 0.02" scale="0.55 0.55 0.55" color="#FFFFFF" font="roboto" wrap-count="24"></a-text>
         </a-plane>
       </a-entity>
 
-      <!-- 3. Pulsing Info Beacon ("i") & Minimizable Space Card -->
+      <!-- 3. Pulsing Info Beacon ("i") & High-DPI Architectural Space Card -->
       <a-entity id="vr-info-beacon-group" position="2.2 0.8 -3.2" look-at-camera>
         <a-circle class="clickable" vr-info-beacon radius="0.2" color="#ffaa55" material="shader: flat; side: double">
           <a-ring radius-inner="0.2" radius-outer="0.25" color="#ffffff" opacity="0.8" animation="property: scale; from: 1 1 1; to: 1.45 1.45 1.45; dir: alternate; loop: true; dur: 900; easing: easeInOutSine"></a-ring>
@@ -1369,17 +1437,17 @@
 
         <a-entity id="vr-info-panel" position="-1.4 0 0.05" visible="false">
           <a-plane width="2.4" height="1.4" color="#11131a" opacity="0.95" material="shader: flat">
-            <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55"></a-text>
-            <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1"></a-text>
+            <a-text id="vr-info-title" value="Upper Junction - Site Context" position="-1.05 0.5 0.02" scale="0.65 0.65 0.65" color="#ffaa55" font="roboto" wrap-count="24"></a-text>
+            <a-text id="vr-info-body" value="Primary urban node interfacing Poorna Market with the Visakhapatnam street network.\n\nPedestrian and transit flow converges here with vendor stall canopies, supporting decentralized market access and vibrant commercial exchange." position="-1.05 0.05 0.02" scale="0.48 0.48 0.48" color="#e5e5e5" width="2.1" font="roboto" wrap-count="28"></a-text>
             <a-plane class="clickable" vr-info-beacon position="0.95 0.52 0.03" width="0.26" height="0.16" color="#ffaa55" material="shader: flat">
-              <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55"></a-text>
+              <a-text value="X" align="center" color="#000000" scale="0.55 0.55 0.55" font="roboto"></a-text>
             </a-plane>
           </a-plane>
         </a-entity>
       </a-entity>
     </a-entity>
 
-    <!-- Dynamic Container for 3D In-Scene Waypoint Portals (Visible in both 2D and VR modes) -->
+    <!-- Dynamic Container for 3D In-Scene Waypoint Portals -->
     <a-entity id="in-scene-teleport-pins"></a-entity>
 
     <!-- 360 Sky Sphere -->
@@ -1722,6 +1790,7 @@
       loadFloorAndPoint(floorNum, firstPoint ? firstPoint.id : null, true);
     }
 
+    // Smooth Cubic View Transition with Camera Zoom Dip
     window.loadFloorAndPoint = function(floorNum, pointId, animate = true) {
       if (isTransitioning && animate) return;
       const floorConfig = floorPlansConfig.find(f => f.level === floorNum) || floorPlansConfig[0];
@@ -1732,6 +1801,7 @@
       window.currentFloorLevel = floorNum;
 
       const fadeSphere = document.getElementById('fade-sphere');
+      const cameraRig = document.getElementById('cameraRig');
 
       if (!animate) {
         applyView(floorConfig, pointData);
@@ -1741,48 +1811,76 @@
       isTransitioning = true;
       if (fadeSphere) {
         fadeSphere.setAttribute('visible', 'true');
-        fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 0, to: 1, dur: 350, easing: 'easeInQuad' });
+        fadeSphere.setAttribute('animation', { 
+          property: 'material.opacity', 
+          from: 0, 
+          to: 1, 
+          dur: 340, 
+          easing: 'easeInOutCubic' 
+        });
+      }
+
+      // Camera subtle forward dip before teleport
+      if (cameraRig) {
+        cameraRig.setAttribute('animation', {
+          property: 'position',
+          to: '0 0 -0.22',
+          dur: 340,
+          easing: 'easeInOutCubic'
+        });
       }
 
       setTimeout(() => {
         applyView(floorConfig, pointData);
+        if (cameraRig) {
+          cameraRig.setAttribute('position', '0 0 0.15');
+          cameraRig.setAttribute('animation', {
+            property: 'position',
+            to: '0 0 0',
+            dur: 400,
+            easing: 'easeOutCubic'
+          });
+        }
         if (fadeSphere) {
-          fadeSphere.setAttribute('animation', { property: 'material.opacity', from: 1, to: 0, dur: 400, easing: 'easeOutQuad' });
+          fadeSphere.setAttribute('animation', { 
+            property: 'material.opacity', 
+            from: 1, 
+            to: 0, 
+            dur: 400, 
+            easing: 'easeOutCubic' 
+          });
         }
         setTimeout(() => {
           if (fadeSphere) {
             fadeSphere.setAttribute('visible', 'false');
             fadeSphere.removeAttribute('animation');
           }
+          if (cameraRig) cameraRig.removeAttribute('animation');
           isTransitioning = false;
         }, 410);
-      }, 360);
+      }, 350);
     };
 
     function applyView(floorConfig, pointData) {
       document.getElementById('location-title').innerText = pointData.name;
       document.getElementById('location-subtitle').innerText = `${floorConfig.floorName} • Architectural 360 Panorama`;
 
-      // Update 2D Minimap
       const mapImg = document.getElementById('minimap-img');
       mapImg.src = floorConfig.planImg;
       mapImg.onerror = () => { mapImg.src = floorConfig.fallbackImg; };
       document.getElementById('map-header').innerText = floorConfig.planTitle;
 
-      // Update in-VR Info Card details
       const vrInfoTitle = document.getElementById('vr-info-title');
       const vrInfoBody = document.getElementById('vr-info-body');
       if (vrInfoTitle) vrInfoTitle.setAttribute('value', `${pointData.name} - ${floorConfig.descTitle}`);
       if (vrInfoBody) vrInfoBody.setAttribute('value', floorConfig.descBody);
 
-      // Update Sky
       const sky = document.getElementById('sky-sphere');
       const imgTester = new Image();
       imgTester.onload = () => sky.setAttribute('src', pointData.src);
       imgTester.onerror = () => sky.setAttribute('src', pointData.fallbackSrc);
       imgTester.src = pointData.src;
 
-      // Update 2D Carousel
       const thumbStrip = document.getElementById('thumb-strip');
       thumbStrip.innerHTML = '';
       floorConfig.points.forEach(pt => {
@@ -1824,6 +1922,7 @@
       });
     }
 
+    // High-DPI Portal Waypoints with solid backing geometry to prevent black hole clipping
     function createVRMarker(parentEl, targetId, name, position, previewSrc, fallbackSrc, isFloorJump, targetFloor) {
       const markerEntity = document.createElement('a-entity');
       markerEntity.setAttribute('position', position);
@@ -1840,17 +1939,18 @@
       markerEntity.innerHTML = `
         <a-sphere class="clickable" ${clickAttr} radius="0.65" material="opacity: 0.001; transparent: true"></a-sphere>
 
-        <!-- 1. Glowing Portal Perimeter Ring -->
+        <!-- 1. Outer Glowing Portal Perimeter Ring -->
         <a-ring radius-inner="0.38" radius-outer="0.42" color="${ringColor}" opacity="0.95" material="shader: flat; side: double"></a-ring>
         <a-ring radius-inner="0.42" radius-outer="0.46" color="${glowColor}" opacity="0.45" material="shader: flat; side: double"></a-ring>
 
-        <!-- 2. Circular Destination Preview Texture -->
+        <!-- 2. Solid Backing Disc to Prevent Zero-Texture Black Hole Artifacts -->
+        <a-circle radius="0.38" color="#1a1e29" material="shader: flat; side: double" position="0 0 0.005"></a-circle>
         <a-circle radius="0.38" src="${previewSrc}" onerror="this.setAttribute('src', '${fallbackSrc}')" material="shader: flat; side: double" position="0 0 0.01"></a-circle>
 
-        <!-- 3. Frosted Glass Destination Capsule -->
+        <!-- 3. High-DPI Frosted Glass Destination Capsule -->
         <a-entity position="0 -0.56 0.02">
-          <a-plane width="1.45" height="0.26" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
-          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.6 0.6 0.6"></a-text>
+          <a-plane width="1.45" height="0.28" color="#181a22" opacity="0.88" material="shader: flat; side: double"></a-plane>
+          <a-text value="${cleanName}  >" align="center" position="0 0 0.02" color="#FFFFFF" scale="0.65 0.65 0.65" font="roboto" wrap-count="24"></a-text>
         </a-entity>
 
         <!-- 4. Vertical Glow Line Stem to Ground Anchor -->
